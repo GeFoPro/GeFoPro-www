@@ -1,0 +1,72 @@
+<?
+if($action!="Nouveau") {
+?>
+
+<br><br><div id='corners'>
+<div id='legend'>Stock</div>
+<table border='0' id="hor-minimalist-b" width='100%'><tr><th>Emplacement</th><th align='center'>Tirroir/étagère -<br>Boîte/rangement</th><th align='center'>Quantité<br>actuelle</th><th align='center'>Quantité<br>minimale</th><th align='center'>Quantité<br>commande</th><th></th></tr>
+<!--tr><td colspan='6'>&nbsp;</td></tr -->
+<!--tr><td colspan='2'><b>Stock</b> (Emplacement)</td><td><b>Quantité</b></td><td colspan='3'></td></tr-->
+<? 
+$requete = "SELECT * FROM $tableStockage stg
+join $tableStock st on stg.IDStock=st.IDStock
+where IDComposant=$IDComp";
+  $resultat =  mysql_query($requete);
+    while ($footLigne = mysql_fetch_assoc($resultat)) {
+	  echo "<tr><td>$footLigne[Emplacement]</td>";
+	  echo "<td align='center'>";
+	  if(hasStockRight()) {
+		  echo "<input type='text' name='Tirroir$footLigne[IDStockage]' value='$footLigne[Tirroir]' size='4' onChange='updateStock($footLigne[IDStockage],\"Tirroir\",this.value)' style='text-align: right'>";
+	  } else {
+		echo "$footLigne[Tirroir]";
+	  }
+	  echo "</td>";
+	  echo "<td align='center'><input type='text' name='Quantite$footLigne[IDStockage]' value='$footLigne[Quantite]' size='4' onChange='updateStock($footLigne[IDStockage],\"Quantite\",this.value)' style='text-align: right'></td>";
+	  echo "<td align='center'>";
+	  if(hasStockRight()) {
+		  echo "<input type='text' name='QuantiteMin$footLigne[IDStockage]' value='$footLigne[QuantiteMin]' size='4' onChange='updateStock($footLigne[IDStockage],\"QuantiteMin\",this.value)' style='text-align: right'>";
+	  } else {
+		  echo $footLigne[QuantiteMin];
+	  }
+	  echo "</td><td align='center'>";
+	  if(hasStockRight()) {
+		  echo "<input type='text' name='QuantiteComm$footLigne[IDStockage]' value='$footLigne[QuantiteComm]' size='4' onChange='updateStock($footLigne[IDStockage],\"QuantiteComm\",this.value)' style='text-align: right'>";
+	  } else {
+		  echo $footLigne[QuantiteComm];
+	  }
+	  echo "</td>";
+	  echo "<td align='right'>";
+	  if(hasStockRight()) {
+		  echo "<a href='comp.php?actionStock=Supprimer&IDStockage=$footLigne[IDStockage]&IDComposant=$IDComp'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a>";
+	  }
+	  echo "</td></tr>";	
+    }
+  if(hasStockRight()) {
+  ?>
+  <tr newStock='1'><td colspan='6' bgColor='#5C5C5C'></td></tr>
+  <tr newStock='1'><td></td><td></td><td></td><td></td><td></td><td align='right'><img src='/iconsFam/add.png' onmouseover="Tip('Ajouter un emplacement')" onmouseout='UnTip()' onclick='toggle("newStock");' align='absmiddle'></td></tr>
+  <tr newStock='1' style='display:none'><td><select name='IDStockNew'>
+  <option selected> </option>
+  <?
+  /* Construction listes stock */
+  $requete = "SELECT * FROM $tableStock";
+  $resultat =  mysql_query($requete);
+    while ($listeLigne = mysql_fetch_array($resultat)) {
+      echo "<option value='$listeLigne[0]'>";
+      echo "$listeLigne[1] </option>";
+    }
+  ?>
+  </select></td><td align='center'><input type='text' name='EmplacementNew' value='' size="10" style='text-align: right'><img src="/iconsFam/help.png" align='absmiddle' onmouseover="TagToTip('tooltipInv')" onmouseout="UnTip()"></td>
+  <span id="tooltipInv">
+  <dl><dt><b>Syntaxe :</b></dt>
+  <dd>[Tirroir/étagère]-[Boîte/rangement]</dd>
+  <dd>Exemple: 02-48</dd>
+  </dl>
+  </span> 
+  <td align='center'><input type='text' name='QuantiteNew' value='' size="4" style='text-align: right'></td>
+  <td align='center'><input type='text' name='QuantiteMinNew' value='' size="4" style='text-align: right'></td>
+  <td align='center'><input type='text' name='QuantiteCommNew' value='' size="4" style='text-align: right'></td>
+  <td align='right'><input type="submit" name="actionStock" value="Ajouter"></tr>
+ <? } ?>
+  </table></div>
+<? } ?>
