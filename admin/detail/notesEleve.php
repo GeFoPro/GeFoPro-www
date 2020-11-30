@@ -80,7 +80,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 			$ponderation = $_POST['Ponderation'.$IDNote];
 			if(empty($note)) {
 				$note = 'NULL';
-			}
+			} 
 			// maj de la note en DB
 	    		$requete = "UPDATE notes set Note=".$note.", RemarqueNote=\"".$remarque."\", Ponderation=".$ponderation." where IDNote=".$IDNote;
 		} else {

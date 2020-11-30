@@ -1,5 +1,9 @@
 <!-- start footer -->
 <?php
+	$release .= "<br><b><i>2.3.3</i></b>";
+	$release .= "<br>Fonctionnalités:";
+	$release .= "<br>- Possibilité de valider une évaluation hebdomadaire/de thème, même si celle-ci n\'est pas complète";
+	$release .= "<br>- Proposition automatique de texte dans la mise des notes, en fonction de ce qui a été saisi dans les évaluations";
 	$release .= "<br><b><i>2.3.2</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Intégration d\'un lien sur Teams";

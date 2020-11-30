@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 date_default_timezone_set('Europe/Zurich');
 if(isset($_GET['vue'])&& 'app'==$_GET['vue']) {
@@ -118,7 +118,7 @@ if(!isset($_POST['noSemaine']) || "" == $_POST['noSemaine']) {
 	$anneeCalc = $_POST['anneeCalc'];
 	$_SESSION['noSemaine'] = $noSemaine;
 	$_SESSION['anneeCalc'] = $anneeCalc;
-	
+
 }
 
 if(isset($_GET['anneeAff'])) {
@@ -246,7 +246,7 @@ if(isset($_POST['AjoutActivite'])) {
 	$heures = $_POST['HeuresActivite'];
 	$heureDebut = $_POST['HeureDebut'];
 	$heureFin = $_POST['HeureFin'];
-	
+
 	//echo strtotime($_POST['DateActivite'])+3600;
 	if(empty($_POST['DateActivite'])) {
 		// date du jour
@@ -292,7 +292,7 @@ if(isset($_POST['AjoutActivite'])) {
 			}
 		}
 	}
-	
+
 	if(empty($msgErreur)) {
 		// ajout d'un attribut
    		$requete = "INSERT INTO journal (IDTheme, IDEleve, DateJournal, Heures, Commentaires, HeureDebut, HeureFin) values ($IDTheme, $IDEl, \"$date\", \"$heures\", \"$commentaires\", \"".$heureDebut.":00\", \"".$heureFin.":00\")";
@@ -324,7 +324,7 @@ if(isset($_POST['actionRemarque'])&&!empty($_POST['actionRemarque'])) {
 			$IDTheme = 1;
 		}
 		$uid = $_SESSION['user_login'];
-		// ajout 
+		// ajout
    		$requete = "INSERT INTO remarquesuivi (IDTheme, IDEleve, DateSaisie, Remarque, TypeRemarque, UserId) values ($IDTheme, $IDEl, \"$dateRema\", \"$rema\", $typeRema, \"$uid\")";
 	} else {
 		// mode modif
@@ -336,7 +336,7 @@ if(isset($_POST['actionRemarque'])&&!empty($_POST['actionRemarque'])) {
 	}
     	//echo $requete;
 	$resultat =  mysql_query($requete);
-	
+
 }
 
 // effacement d'une ligne
@@ -344,7 +344,7 @@ if(isset($_GET['IDJournal'])) {
 	$requete = "DELETE FROM journal where IDJournal=$_GET[IDJournal]";
 	//echo $requete;
 	mysql_query($requete);
-	
+
 }
 // effacement ou changement de type d'une remarque
 if(isset($_GET['IDRemSuivi'])) {
@@ -356,7 +356,7 @@ if(isset($_GET['IDRemSuivi'])) {
 	}
 	//echo $requete;
 	mysql_query($requete);
-	
+
 }
 
 // modification d'une ligne
@@ -366,7 +366,7 @@ if(isset($_POST['activite'])&&!empty($_POST['activite'])) {
 	$dateMaj = date("Y-m-d",strtotime($_POST['DateJournal'.$activite]));
 	$commentairesMaj = $_POST['Commentaires'.$activite];
 	$commentairesMaj = addslashes($commentairesMaj);
-	$heuresMaj = $_POST['Heures'.$activite]; 
+	$heuresMaj = $_POST['Heures'.$activite];
 	$dateCheck = strtotime($_POST['DateJournal'.$activite])+3600;
 	$msgErreur = "";
 	$heureDebutMaj = $_POST['HeureDebut'.$activite];
@@ -409,8 +409,8 @@ if(isset($_POST['activite'])&&!empty($_POST['activite'])) {
 				$heureFinMaj = "00:00";
 			}
 		}
-	}	
-	
+	}
+
 	if(empty($msgErreur)) {
 		$requete = "update journal set IDTheme=$themeMaj , DateJournal=\"".$dateMaj."\", Commentaires=\"".$commentairesMaj."\", Heures=$heuresMaj, HeureDebut=\"".$heureDebutMaj."\", HeureFin=\"".$heureFinMaj."\" where IDJournal=".$activite;
 		//echo "<br>".$requete;
@@ -419,7 +419,7 @@ if(isset($_POST['activite'])&&!empty($_POST['activite'])) {
 
 }
 if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
-	
+
 	if($_POST['validation']=="lock") {
 		//echo "lock";
 		$requete = "update journal set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and DateValidation is null and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
@@ -449,7 +449,7 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 			//echo $requete;
 			mysql_query($requete);
 		}
-		
+
 	} else if($_POST['validation']=="unlockEval") {
 		//if($vue==1) {
 			$requete = "update evalhebdo set DateValidation = null where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $anneeCalc";
@@ -496,7 +496,7 @@ if(isset($_POST['evaluation'])&&!empty($_POST['evaluation'])) {
 	} else {
 		$idth = $IDTheme;
 		//$noSemaine = date('W'); // on s'assure de prendre le no de semaine actuel
-	}		
+	}
 	$requete = "replace into evalhebdo (IDEleve,NoSemaine,Annee,IDTypeEval,IDCompetence,Note,Niveau,Remarque,Responsable, IDTheme) values ($IDEleve,$noSemaine,$anneeCalc,$typeSel,$compSel,$noteEval,$nivEval,$obsEval,\"$uid\", $idth)";
 	//echo $requete;
 	mysql_query($requete);
@@ -549,12 +549,12 @@ function toggleTable(thisname) {
 }
 
 function toggleNot(thisname) {
-	
+
 }
 
 function selectItemByValue(name, value){
 
-  elmnt = document.getElementById(name);	
+  elmnt = document.getElementById(name);
 
   for(var i=0; i < elmnt.options.length; i++)
   {
@@ -614,7 +614,7 @@ function submitEvalution(id,nosemaine,annee) {
 function limitEvent(e) {
     if (window.event) { //IE
         window.event.cancelBubble = true;
-    } else if (e && e.stopPropagation) { //standard 
+    } else if (e && e.stopPropagation) { //standard
         e.stopPropagation();
     }
 }
@@ -799,7 +799,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	$option .= "<option value=".$ligne['IDTheme'];
 	if($lastIDTheme==$ligne['IDTheme']) {
 		$option .= " selected";
-	}	
+	}
 	$option .= ">";
 	if($ligne['TypeTheme']==1) {
 		$option .= "Projet - ";
@@ -815,7 +815,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	$optionAPP .= "<option value=".$ligne['IDTheme'];
 	if($lastIDTheme==$ligne['IDTheme']) {
 		$optionAPP .= " selected";
-	}	
+	}
 	$optionAPP .= ">";
 	if($ligne['TypeTheme']==1) {
 		$optionAPP .= "Projet - ";
@@ -871,10 +871,10 @@ if($vue==1) {
 	//echo "</td></tr>";
 	// ajout tri sur période
 	//echo "<tr><td colspan='3' align='right'>";
-	
+
 	echo "</nobr></td></tr>";
-	
-	
+
+
 }
 echo "</table>";
 echo "<br><div id='corners'>";
@@ -883,7 +883,7 @@ if($vue==1) {
 	if(!$triSemaine) {
 		echo "<div id='criteres' width='100%' align='right'><i>Tri par thème &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=1'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par jour')\" onmouseout='UnTip()'></a></i></div>";
 	} else {
-		echo "<div id='criteres' width='100%' align='right'><i>Tri par jour &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=0'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par thème')\" onmouseout='UnTip()'></a></i></div>"; 
+		echo "<div id='criteres' width='100%' align='right'><i>Tri par jour &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=0'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par thème')\" onmouseout='UnTip()'></a></i></div>";
 	}
 } else {
 	// si pas vue semaine, on n'active pas le tri par jour
@@ -902,7 +902,7 @@ if(empty($IDQuery)) {
 	}
 } else {
 	if($IDQuery==2) {
-		// tout 
+		// tout
 		$requete = "SELECT * FROM journal jou join theme th on jou.IDTheme=th.IDTheme where IDEleve = $IDEleve";
 	} else {
 		// requete pour le theme donné
@@ -980,7 +980,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 					echo "<img src='/iconsFam/comment_add.png'  onclick='toggle(\"newremarque$last\")' onmouseover=\"Tip('Ajouter remarque')\" onmouseout='UnTip()'>";
 				} */
 				echo "</td></tr>";
-				
+
 				$total = 0;
 				/*
 				$total = 0;
@@ -1021,20 +1021,20 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 										//echo "<tr remarque$idRem='1' style='display:none' onclick='toggle(\"remarque$idRem\")'><td valign='top'>A corriger</td><td valign='top'></td><td align='center'></td><td colspan='2'><textarea name='RemarqueJournal' COLS=60 ROWS=20 onclick='limitEvent(event)'>".$txtrem."</textarea></td></tr>";
 									} else {
 										echo "<tr><td valign='top'><b><font color='#FF0000'>A corriger</font></b></td><td valign='top'></td><td align='center'></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
-										
+
 									}
 									$cntErreurSaisie++;
 								} else if($typerem==3&&hasAdminRigth()&&empty($IDQuery)) {
 									echo "<tr><td valign='top'><font color='#FF7F00'>A vérifier</font></td><td valign='top'></td><td align='center'></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Clôturer l\'erreur')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 								}
 							}
-							
+
 						}
 					}
 					$txtrem = "";
 
 					echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='top'><select name='TypeRemarque$last' onclick='limitEvent(event)'><option value='1'>Remarque suivi</option><option value='2'>A corriger</option></select></td><td valign='top'><input type='hidden' name='DateRemarque$last' value='".date('Y-m-d',$vendredi)."'></input></td><td align='center'></td><td><textarea name='Remarque$last' COLS=60 ROWS=20 onclick='limitEvent(event)'></textarea></td><td valign='top'><input type='button' name='AjoutRem' value='Ajouter' onclick='submitRemarque(\"$last\",\"ajout\")'></input></td></tr>";
-				
+
 				echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 				*/
 			}
@@ -1062,7 +1062,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			//echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 			//echo "<tr journal$idJournal='1' onclick='toggle(\"journal$idJournal\")'><td></td>";
 			$last = $ligne['IDTheme'];
-		} 
+		}
 	} else {
 		// tri par jour -> total par jour si nouveau jour
 		if($last != $ligne['DateJournal']) {
@@ -1083,7 +1083,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	//}
 	if(hasAdminRigth()) {
 		echo "<tr onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&DateJournal=$ligne[DateJournal]&vue=1'\">";
-	} else {	
+	} else {
 		if($ligne['DateValidation']!=0) {
 			echo "<tr journal$idJournal='1'>";
 		} else {
@@ -1148,16 +1148,16 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			if(empty($IDQuery)) {
 				if($ligne['Heures']=='0.0') {
 					echo "<img src='/iconsFam/clock_stop.png' align='absmiddle' onmouseover=\"Tip('Terminer l'activité')\" onmouseout='UnTip()' onclick='limitEvent(event);stopActivite(\"$idJournal\",\"$heureAct\")'> ";
-				} 
+				}
 				echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDJournal=$ligne[IDJournal]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
-				
+
 			}
 		} else {
 			if($ligne['Heures']=='0.0') {
 				echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Activité non terminée')\" onmouseout='UnTip()'> ";
-			} 
+			}
 			echo "<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&DateJournal=$ligne[DateJournal]'><img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Saisie à valider')\" onmouseout='UnTip()'></a>";
-			
+
 		}
 	}
 	echo "</td></tr>";
@@ -1199,7 +1199,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 if ($cnt==0) {
 	echo "<tr><td colspan='5' align='center'><i>Aucun enregistrement</i></td></tr>";
 } else {
-	if(!$triSemaine) {	
+	if(!$triSemaine) {
 		if(empty($IDQuery) || $IDQuery==2) {
 			echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 			echo "<tr><td><i>Total thème</i></td><td></td><td align='center'>".$total."h</td><td>";
@@ -1222,7 +1222,7 @@ if ($cnt==0) {
 		echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 		echo "<tr><td><i>Total jour</i></td><td></td><td align='center'>".$nbrJour[$last]."h</td><td>";
 		echo "</td><td></td></tr>";
-		
+
 	}
 	/*
 		if(empty($IDQuery)) {
@@ -1267,10 +1267,10 @@ if ($cnt==0) {
 					echo "<tr><td valign='top'><font color='#FF7F00'>A vérifier</font></td><td valign='top'></td><td align='center'></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Clôturer l\'erreur')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 				}
 			}
-					
+
 		}
 		echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='top'><select name='TypeRemarque$last' onclick='limitEvent(event)'><option value='1'>Remarque suivi</option><option value='2'>A corriger</option></select></td><td valign='top'><input type='hidden' name='DateRemarque$last' value='".date('Y-m-d',$vendredi)."'></input></td><td align='center'></td><td><textarea name='Remarque$last' COLS=60 ROWS=20 onclick='limitEvent(event)'></textarea></td><td valign='top'><input type='button' name='AjoutRem' value='Ajouter' onclick='submitRemarque(\"$last\",\"ajout\")'></input></td></tr>";
-	
+
 	echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 	*/
 	$msgErreur = "";
@@ -1285,7 +1285,7 @@ if ($cnt==0) {
 	}
 	echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 	echo "<tr><td><b><i>Total</i></b></td><td align='center'>";
-	
+
 	if(!empty($msgErreur) && $vendredi<mktime(0, 0, 0, date('m'), date('d'), date('y')) ) {
 		echo "<font color='#FF0000'>".count($nbrJour)." jours </font>";
 		echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$msgErreur."')\" onmouseout='UnTip()'>";
@@ -1294,7 +1294,7 @@ if ($cnt==0) {
 	}
 	echo "</td><td align='center'>".$totalPage."h</td><td colspan='2'></td></tr>";
 
-	
+
 }
 
 // ligne d'ajout
@@ -1315,7 +1315,7 @@ if(hasAdminRigth()) {
 			echo "<img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider le journal')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lock\",".$noSemaine.",".$anneeCalc.")'>";
 		}
 		if($cntlock!=0) {
-			echo "<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider le journal')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\",".$noSemaine.",".$anneeCalc.")'> "; 
+			echo "<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider le journal')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\",".$noSemaine.",".$anneeCalc.")'> ";
 		}
 	}
 } else {
@@ -1332,7 +1332,7 @@ if(!$triSemaine) {
 	echo "<td valign='top'>";
 } else {
 	echo "<td valign='top' align='right'>";
-}	
+}
 echo "<select id='DateActivite' name='DateActivite'>".$listeJours."</select><script>selectList('DateActivite','".date('d.m.Y')."')</script></td>";
 if(empty($heures)) {
 	$heures = "0.0";
@@ -1404,7 +1404,7 @@ echo "<br>";
 			// fin d'année scolaire
 		//	$requeteTri .= "((th.IDTheme=".$IDQuery." and (DateSaisie between '".($anneeCalc-1)."-08-01' and '".$anneeCalc."-07-31'))";
 		//}
-		
+
 		if(!empty($lundiMin)) {
 			// si activités trouvés dans journaux, on utilise la période correspondante pour rechercher les CPG
 			$requeteTri .= " or (th.IDTheme=1 and (DateSaisie between '".$lundiMin."' and '".$vendrediMax."'))";
@@ -1417,11 +1417,11 @@ echo "<br>";
 		echo "<div id='legend' onClick='toggleTable(\"tblSuivi\")'>Suivi</div>";
 		if(!empty($IDQuery)) {
 			if(!empty($lundiMin)) {
-				echo "<div id='criteres' width='100%' align='right'><i>Période CPG/ADM du lundi ".date('d.m.y', strtotime($lundiMin))." au vendredi ".date('d.m.y',strtotime($vendrediMax))."</i></div>"; 
+				echo "<div id='criteres' width='100%' align='right'><i>Période CPG/ADM du lundi ".date('d.m.y', strtotime($lundiMin))." au vendredi ".date('d.m.y',strtotime($vendrediMax))."</i></div>";
 			} else {
 				if($IDQuery!=2) {
 					echo "<div id='criteres' width='100%' align='right'><i>Suivi sans ADM";
-				
+
 					if($IDQuery!=1) {
 						echo " ni CPG";
 					}
@@ -1429,7 +1429,7 @@ echo "<br>";
 				}
 			}
 		} else {
-			//echo "<div id='criteres' width='100%' align='right'><i>Période du lundi ".date('d.m.y', $lundi)." au vendredi ".date('d.m.y',$vendredi)."</i></div>"; 
+			//echo "<div id='criteres' width='100%' align='right'><i>Période du lundi ".date('d.m.y', $lundi)." au vendredi ".date('d.m.y',$vendredi)."</i></div>";
 		}
 		echo "<table id='hor-minimalist-b' border='0' width='100%' tblSuivi='1'>\n";
 		$showtableSuivi = true;
@@ -1437,7 +1437,7 @@ echo "<br>";
 	} else {
 		$requeteTri .= " and TypeRemarque=2";
 	}
-	$requeteRem = "(SELECT IDRemSuivi, NomTheme, DateSaisie, Remarque, TypeRemarque, abbr, th.IDTheme FROM remarquesuivi rem join theme th on rem.IDTheme=th.IDTheme left outer join prof as pr on rem.UserId=pr.userid where IDEleve=".$IDEleve." and ".$requeteTri.")"; 
+	$requeteRem = "(SELECT IDRemSuivi, NomTheme, DateSaisie, Remarque, TypeRemarque, abbr, th.IDTheme FROM remarquesuivi rem join theme th on rem.IDTheme=th.IDTheme left outer join prof as pr on rem.UserId=pr.userid where IDEleve=".$IDEleve." and ".$requeteTri.")";
 	if(hasAdminRigth()) {
 		$requeteRem .= " union (SELECT 0, Nom, Date, Remarque, 0, 'ALL', 0 FROM $tableAttribEleves el join $tableAttribut att on el.IDAttribut=att.IDAttribut where IDEleve = ".$IDEleve." and el.IDAttribut > 100 ";
 		if(empty($IDQuery)) {
@@ -1457,7 +1457,7 @@ echo "<br>";
 						case 3: $requeteRem .= "and (Date >= '".date("Y-m-d",$maxDateEval)."')"; break;
 					}
 				}
-				
+
 			}
 		}
 		$requeteRem .= ")";
@@ -1511,7 +1511,7 @@ echo "<br>";
 						}
 						break;
 				}
-			//}	
+			//}
 		}
 	} else {
 		if(empty($IDQuery)) {
@@ -1538,12 +1538,12 @@ echo "<br>";
 			}
 		}
 	}
-	
+
 	// ajout remarques générale de l'élève
 	/*
 	if(hasAdminRigth()) {
 		$requete = "SELECT * FROM $tableAttribEleves el join $tableAttribut att on el.IDAttribut=att.IDAttribut where IDEleve = ".$IDEleve." and el.IDAttribut > 100 and ";
-		
+
 		if(empty($IDQuery)) {
 			$requete .= "(Date between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') order by Date";
 		} else {
@@ -1643,7 +1643,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				$requete .= " and DateValidation is null";
 			}
 			$requete .=	" order by Annee, NoSemaine LIMIT 20";
-			
+
 			$resultat =  mysql_query($requete);
 			$evalAct = 0;
 			$evalCnt = 0;
@@ -1677,9 +1677,9 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				$noSemaine = date("W");
 			}
 			//echo "<br>".$requete."<br>";
-			
+
 		}
-		
+
 		if(hasAdminRigth()) {
 			$onClickAPP = "toggleNot";
 			$onClickMAI = "toggleTD";
@@ -1697,14 +1697,14 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 		} else {
 			echo "<tr><th width='175'>Compétences</th><th width='50'></th><th width='40' align='center'>Note</th><th width='10'></th><th>Remarques</th><th width='50' align='center'>Moyenne</th><th width='10'></th></tr>";
 		}
-		
+
 		// rechercher des évaluation
 		if($vue==1) {
 			// vue par semaine -> recherche par noSemaine/année
 			$requete = "SELECT * FROM evalhebdo left outer join prof on Responsable=userid where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $anneeCalc order by IDCompetence, IDTypeEval";
 			$requeteMoy = "SELECT IDCompetence, IDTypeEval, AVG(Note) as NoteMoyenne, AVG(Niveau) as NiveauMoyen FROM evalhebdo where IDEleve = $IDEleve";
 		} else {
-			
+
 			//if(empty($dateEvalSel)) {
 				$requete = "SELECT * FROM evalhebdo left outer join prof on Responsable=userid where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $anneeCalc and IDTheme=$IDQuery order by IDCompetence, IDTypeEval";
 				$requeteMoy = "SELECT IDCompetence, IDTypeEval, AVG(Note) as NoteMoyenne, AVG(Niveau) as NiveauMoyen FROM evalhebdo where IDEleve = $IDEleve and IDTheme=$IDQuery";
@@ -1739,9 +1739,12 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 		$abbrResp = null;
 		$moyAPP = 0;
 		$moyMAI = 0;
-		$pondTot = 0;
+		$pondTotAPP = 0;
+		$pondTotMAI = 0;
 		$nbrNotes = 0;
-		
+		$evalCompleteAPP = true;
+		$evalCompleteMAI = true;
+
 		$compEval = $competencesEvaluation;
 		$compPond = $competencesPonderation;
 		if(!empty($lastAnneeEvalOld) && !empty($lastSemestreEvalOld)) {
@@ -1750,7 +1753,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				$compPond = $competencesPonderationOld;
 			}
 		}
-		
+
 		foreach ($compEval as $key => $value) {
 			$noteAPP="";
 			$noteMAI="";
@@ -1760,7 +1763,12 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			$obsMAI="";
 			if($ligne==null&&!empty($resultat)&&mysql_num_rows($resultat)>0) {
 				$ligne = mysql_fetch_assoc($resultat);
+				if($validation==null&&!empty($ligne['DateValidation'])) {
+					//echo "v:".$ligne['DateValidation']."<br>";
+					$validation = $ligne['DateValidation'];
+				}
 			}
+
 			if($key==$ligne['IDCompetence']) {
 				// competence trouvée dans les données DB
 				if(1==$ligne['IDTypeEval']) {
@@ -1774,9 +1782,9 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 						$nbrNotes++;
 					}
 					$obsAPP = $ligne['Remarque'];
-					if($validation==null) {
-						$validation = $ligne['DateValidation'];
-					}
+					//if($validation==null) {
+					//	$validation = $ligne['DateValidation'];
+					//}
 					// test si competence MAI également présente
 					$ligne = mysql_fetch_assoc($resultat);
 					if($key==$ligne['IDCompetence'] && 2==$ligne['IDTypeEval']) {
@@ -1790,9 +1798,9 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 							$nbrNotes++;
 						}
 						$obsMAI = $ligne['Remarque'];
-						if($validation==null) {
-							$validation = $ligne['DateValidation'];
-						}
+						//if($validation==null) {
+						//	$validation = $ligne['DateValidation'];
+						//}
 						if($resp==null) {
 							$resp = $ligne['Responsable'];
 							$abbrResp = $ligne['abbr'];
@@ -1813,9 +1821,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 						$nbrNotes++;
 					}
 					$obsMAI = $ligne['Remarque'];
-					if($validation==null) {
-						$validation = $ligne['DateValidation'];
-					}
+
 					if($resp==null) {
 						$resp = $ligne['Responsable'];
 						$abbrResp = $ligne['abbr'];
@@ -1826,9 +1832,10 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			} else {
 				// aucune compétence trouvée ni pour APP, ni pour MAI -> on garde la ligne actuelle pour le prochain passage
 			}
-			// on part sur le principe que les moyennes existent pour toutes les compétences
-			if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
+
+			if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0 && $ligneMoy==null) {
 				$ligneMoy = mysql_fetch_assoc($resultatMoy);
+				//echo $ligneMoy['NiveauMoyen'];
 			}
 			// évaluation abcd
 			if($typeEvaluation=='abcd') {
@@ -1858,14 +1865,25 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				echo "<td ".$tdid."='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"".$tdid."\",".$noSemaine.",".$anneeCalc.")'></td>";
 				echo "<td ".$tdid."='1'>".wiki2html($obsAPP)."</td>";
 				echo "<td ".$tdid."='1' align='center' valign='top'>";
-				if(!empty($validation)) {
-					echo niveauMoy($ligneMoy['NiveauMoyen']);
-					$moyAPP += $ligneMoy['NiveauMoyen'] * $compPond[$key];
-					$pondTot += $compPond[$key];
+				//if(!empty($validation)) {
+				if($ligneMoy['IDCompetence']==$key && $ligneMoy['IDTypeEval']==1) {
+					if(!empty($validation) && !empty($ligneMoy['NiveauMoyen'])) {
+						echo niveauMoy($ligneMoy['NiveauMoyen']);
+						$moyAPP += $ligneMoy['NiveauMoyen'] * $compPond[$key];
+						$pondTotAPP += $compPond[$key];
+					} else {
+						$evalCompleteAPP = false;
+					}
+					// on lit la moyenne suivante
+					if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
+						$ligneMoy = mysql_fetch_assoc($resultatMoy);
+					}
+				} else {
+					$evalCompleteAPP = false;
 				}
 				echo "</td><td ".$tdid."='1'></td>";
 				echo "</tr>";
-				$ligneMoy = mysql_fetch_assoc($resultatMoy);
+
 				if(hasAdminRigth() || !empty($validation)) {
 					$tdid = "tdid".$key."2";
 					echo "<tr";
@@ -1889,9 +1907,19 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 					echo "<td ".$tdid."='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"".$tdid."\",".$noSemaine.",".$anneeCalc.")'></td>";
 					echo "<td ".$tdid."='1'>".wiki2html($obsMAI)."</td>";
 					echo "<td ".$tdid."='1' align='center' valign='top'>";
-					if(!empty($validation)) {
-						echo niveauMoy($ligneMoy['NiveauMoyen']);
-						$moyMAI += $ligneMoy['NiveauMoyen'] * $compPond[$key];
+					//if(!empty($validation)) {
+					//echo $ligneMoy['IDCompetence']."-".$key."-".$ligneMoy['IDTypeEval']."-1";
+					if($ligneMoy['IDCompetence']==$key && $ligneMoy['IDTypeEval']==2) {
+						if(!empty($validation) &&!empty($ligneMoy['NiveauMoyen'])) {
+							echo niveauMoy($ligneMoy['NiveauMoyen']);
+							$moyMAI += $ligneMoy['NiveauMoyen'] * $compPond[$key];
+							$pondTotMAI += $compPond[$key];
+						} else {
+								$evalCompleteMAI = false;
+						}
+						$ligneMoy = null;
+					} else {
+						$evalCompleteMAI = false;
 					}
 					echo "</td><td ".$tdid."='1'></td>";
 					echo "</tr>";
@@ -1912,16 +1940,24 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				echo "<td ".$tdid."='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"".$tdid."\",".$noSemaine.",".$anneeCalc.")'></td>";
 				echo "<td ".$tdid."='1'>".wiki2html($obsAPP)."</td>";
 				echo "<td ".$tdid."='1' align='center' valign='top'>";
-				if(!empty($validation)) {
-					echo noteMoy($ligneMoy['NoteMoyenne']);
-					$moyAPP += $ligneMoy['NoteMoyenne'] * $compPond[$key];
-					$pondTot += $compPond[$key];
+				if($ligneMoy['IDCompetence']==$key && $ligneMoy['IDTypeEval']==1) {
+					if(!empty($validation) && !empty($ligneMoy['NoteMoyenne'])) {
+						echo noteMoy($ligneMoy['NoteMoyenne']);
+						$moyAPP += $ligneMoy['NoteMoyenne'] * $compPond[$key];
+						$pondTotAPP += $compPond[$key];
+					} else {
+							$evalCompleteAPP = false;
+					}
+					// on lit la moyenne suivante
+					if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
+						$ligneMoy = mysql_fetch_assoc($resultatMoy);
+					}
+				} else {
+					$evalCompleteAPP = false;
 				}
 				echo "</td><td ".$tdid."='1'></td>";
 				echo "</tr>";
-				if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
-					$ligneMoy = mysql_fetch_assoc($resultatMoy);
-				}
+
 				if(hasAdminRigth() || !empty($validation)) {
 					$tdid = "tdid".$key."2";
 					echo "<tr";
@@ -1933,9 +1969,17 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 					echo "<td ".$tdid."='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"".$tdid."\",".$noSemaine.",".$anneeCalc.")'></td>";
 					echo "<td ".$tdid."='1'>".wiki2html($obsMAI)."</td>";
 					echo "<td ".$tdid."='1' align='center' valign='top'>";
-					if(!empty($validation)) {
-						echo noteMoy($ligneMoy['NoteMoyenne']);
-						$moyMAI += $ligneMoy['NoteMoyenne'] * $compPond[$key];
+					if($ligneMoy['IDCompetence']==$key && $ligneMoy['IDTypeEval']==2) {
+						if(!empty($validation) && !empty($ligneMoy['NoteMoyenne'])) {
+							echo noteMoy($ligneMoy['NoteMoyenne']);
+							$moyMAI += $ligneMoy['NoteMoyenne'] * $compPond[$key];
+							$pondTotMAI += $compPond[$key];
+						} else {
+								$evalCompleteMAI = false;
+						}
+						$ligneMoy = null;
+					} else {
+						$evalCompleteMAI = false;
 					}
 					echo "</td><td ".$tdid."='1'></td>";
 					echo "</tr>";
@@ -1972,7 +2016,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				$obsMAI = $ligne['Remarque'];
 			}
 		}
-		
+
 		echo "<tr";
 		if(empty($validation)) {
 			echo " onclick='".$onClickAPP."(\"tdid991\")'";
@@ -1989,11 +2033,11 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 		echo "<td tdid991='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"tdid991\",".$noSemaine.",".$anneeCalc.")'></td>";
 		echo "<td tdid991='1'>".wiki2html($obsAPP)."</td>";
 		echo "<td tdid991='1' align='center' valign='top'>";
-		if(!empty($validation)) {
+		if(!empty($validation) && $pondTotAPP!=0 && $evalCompleteAPP) {
 			if($typeEvaluation=='abcd') {
-				echo niveauMoy($moyAPP / $pondTot);
+				echo niveauMoy($moyAPP / $pondTotAPP);
 			} else {
-				echo noteMoy($moyAPP / $pondTot);
+				echo noteMoy($moyAPP / $pondTotAPP);
 			}
 		}
 		echo "</td><td tdid991='1'></td>";
@@ -2011,37 +2055,39 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			echo "<td tdid992='1' valign='top' style='display:none'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitEvalution(\"tdid992\",".$noSemaine.",".$anneeCalc.")'></td>";
 			echo "<td tdid992='1'>".wiki2html($obsMAI)."</td>";
 			echo "<td tdid992='1' align='center' valign='top'>";
-			if(!empty($validation)) {
+			if(!empty($validation) && $pondTotMAI!=0 && $evalCompleteMAI) {
 				if($typeEvaluation=='abcd') {
-					echo niveauMoy($moyMAI / $pondTot);
+					echo niveauMoy($moyMAI / $pondTotMAI);
 				} else {
-					echo noteMoy($moyMAI / $pondTot);
+					echo noteMoy($moyMAI / $pondTotMAI);
 				}
 			}
 			echo "</td><td tdid992='1'></td>";
 			echo "</tr>";
-			
+
 			if($typeEvaluation=='abcd') {
 				echo "<tr><td colspan='10' bgColor='#5C5C5C'></td></tr><tr><td colspan='10' align='right'>";
 			} else {
 				echo "<tr><td colspan='7' bgColor='#5C5C5C'></td></tr><tr><td colspan='7' align='right'>";
 			}
+			//echo "val:".$validation." resp:".$resp;
 			if(!empty($validation)) {
 				echo "<i>Evaluation validée le ".date('d.m.Y', strtotime($validation))." par ".$abbrResp."</i> ";
 				if(hasAdminRigth() && $resp==$_SESSION['user_login']) {
-					echo "<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider l\'évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlockEval\",".$noSemaine.",".$anneeCalc.")'> "; 					
+					echo "<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider l\'évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlockEval\",".$noSemaine.",".$anneeCalc.")'> ";
 				}
 				echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&IDTheme=".$IDQuery."&annee=".$anneeCalc."&noSemaine=".$noSemaine."&nom=".$nom."&prenom=".$prenom."&tri=".$triPeriode."&only=eval' target='pdf'><img src='/iconsFam/page_white_acrobat.png' align='absmiddle' onmouseover=\"Tip('Imprimer l\'évaluation')\" onmouseout='UnTip()'></a>";
 			} else {
 				//echo (count($compEval)*2)."/".$nbrNotes;
-				if(hasAdminRigth() && $nbrNotes==count($compEval)*2 && $resp==$_SESSION['user_login']) {
+				//
+				if(hasAdminRigth() && $resp==$_SESSION['user_login']) { // && $nbrNotes==count($compEval)*2
 					//echo $resp."/".$_SESSION['user_login'];
 					echo "<img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider l\'évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lockEval\",".$noSemaine.",".$anneeCalc.")'>";
 				}
 			}
 			echo "</td></tr>";
 		}
-		
+
 		echo "</table><br><br>";
 
 		echo "<table border='0' tblEval='1'><tr><td width='550' valign='top'>";
@@ -2085,7 +2131,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			echo "<tr><td width='20'><b>D</b></td><td>Exigences pas atteintes / faible, incomplet</td></tr>";
 			echo "</table>";
 		}
-		
+
 
 		echo "</td></tr></table></div>";
 	}
