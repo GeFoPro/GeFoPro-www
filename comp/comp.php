@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 
 $IDComp = "";
@@ -38,7 +38,7 @@ function toggle(thisname) {
 function checkImage(imageSrc, good, bad) {
 	alert(imageSrc);
     var img = new Image();
-    img.onload = good; 
+    img.onload = good;
     img.onerror = bad;
     img.src = imageSrc;
 }
@@ -51,9 +51,9 @@ function setImgBoitier(url, link) {
 		ref.href= url;
 	} else {
 		ref.href= '#';
-	} 
-	
-	
+	}
+
+
 }
 
 
@@ -92,11 +92,19 @@ function resetImg() {
 		//displayImg = 1;
 		updateImg();
 	}
-	
+
 }
 function updateFournisseur(id,field,value) {
 	//alert("modifier ligne "+id+", champ "+field+", valeur "+value);
 	location.href = 'comp.php?actionFourn=Modifier&IDCommande='+id+'&updateField='+field+'&newValue='+value+'&IDComposant=<?=$IDComp?>';
+}
+function updateInventaire(id,field,value) {
+	//alert("modifier ligne "+id+", champ "+field+", valeur "+value);
+	location.href = 'comp.php?actionInv=Modifier&IDInventaire='+id+'&updateField='+field+'&newValue='+value+'&IDComposant=<?=$IDComp?>';
+}
+function updateEmprunt(id,inventaire,uid) {
+	//alert("modifier ligne "+id+", inv "+inventaire+", uid "+uid);
+	location.href = 'comp.php?actionEmp=Modifier&IDEmprunt='+id+'&IDInventaire='+inventaire+'&Userid='+uid+'&IDComposant=<?=$IDComp?>';
 }
 function updateStock(id,field,value) {
 	//alert("modifier ligne "+id+", champ "+field+", valeur "+value);
@@ -108,7 +116,7 @@ function openImage(image) {
 	xhr.send();
 	return (xhr.status != "404");
 }
-function imageAppear(path, img1, img2, img3) { 
+function imageAppear(path, img1, img2, img3) {
 
 	var image = null;
 	//alert(path);
@@ -187,6 +195,9 @@ if(isset($_GET['actionStock'])) {
 if(isset($_GET['actionInv'])) {
 	$actionInv = $_GET['actionInv'];
 }
+if(isset($_GET['actionEmp'])) {
+	$actionEmp = $_GET['actionEmp'];
+}
 /* Formulaire */
 if(isset($_GET['IDGenre'])) {
 	$IDGenre = $_GET['IDGenre'];
@@ -220,7 +231,7 @@ if(isset($_GET['prixNew'])) {
 	} else {
 		$prixNew = getDBValue($_GET['prixNew']);
 	}
-	
+
 }
 if(isset($_GET['noArticleNew'])) {
 	$noArticleNew = $_GET['noArticleNew'];
@@ -245,6 +256,12 @@ if(isset($_GET['IDReferenceNew'])) {
 if(isset($_GET['ReferenceNew'])) {
 	$ReferenceNew = $_GET['ReferenceNew'];
 }
+if(isset($_GET['IDInventaire'])) {
+	$IDInventaire = $_GET['IDInventaire'];
+}
+if(isset($_GET['IDEmprunt'])) {
+	$IDEmprunt = $_GET['IDEmprunt'];
+}
 if(isset($_GET['IDStockage'])) {
 	$IDStockage = $_GET['IDStockage'];
 }
@@ -263,6 +280,9 @@ if(isset($_GET['NoSerieNew'])) {
 if(isset($_GET['AnneeNew'])) {
 	$AnneeNew = $_GET['AnneeNew'];
 }
+if(isset($_GET['IDTagInvNew'])) {
+	$IDTageInvNew = $_GET['IDTagInvNew'];
+}
 if(isset($_GET['RemarqueInvNew'])) {
 	$RemarqueInvNew = $_GET['RemarqueInvNew'];
 }
@@ -278,6 +298,9 @@ if(isset($_GET['QuantiteMinNew'])) {
 }
 if(isset($_GET['QuantiteCommNew'])) {
 	$QuantiteComm = getDBValue($_GET['QuantiteCommNew']);
+}
+if(isset($_GET['IDTagNew'])) {
+	$IDTag = getDBValue($_GET['IDTagNew']);
 }
 $posPrint1 = "1";
 if(isset($_GET['print1'])) {
@@ -424,7 +447,7 @@ REQ;
     } else {
 	addMEssage("<font color=red>Impossible de supprimer le composant</font>");
     }
-   
+
   }
   if($action=="Modifier") {
     $requete = <<<REQ
@@ -461,7 +484,7 @@ REQ;
   }
   if(!empty($noArticleNew)) {
 	$actionFourn="Ajouter";
-  }	
+  }
   }
   if($action=="SetImage") {
 	$imgnom = $_GET['ImgNom'];
@@ -477,7 +500,7 @@ REQ;
 	$resultat =  mysql_query($requete);
     mysql_query('COMMIT');
 	// tenter d'effacer le fichier propre
-	
+
 	addMEssage("Image désassociée");
   }
   if($action=="RemImageProp") {
@@ -509,7 +532,7 @@ REQ;
     $resultat =  mysql_query($requete);
     mysql_query('COMMIT');
 	addMEssage("Fournisseur ajouté");
-	
+
   }
   if($actionFourn=="Modifier") {
 	$noArticleUpd = $_GET['newValue'];
@@ -533,7 +556,7 @@ REQ;
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le fournisseur</font>");
 	}
-	
+
   }
 }
 /* Fin action fournisseurs */
@@ -596,9 +619,14 @@ REQ;
 /* Fin action footprints */
 
 if(isset($actionInv)) {
-/* Action inventaire */	
+/* Action inventaire */
 	if($actionInv=="Ajouter") {
-		$requete = "INSERT INTO inventaire (IDComposant, NoInventaire, NoSerie, Annee, RemarqueInv) values (".$IDComp.", \"".$NoInventaireNew."\", \"".$NoSerieNew."\", ".$AnneeNew.", \"".$RemarqueInvNew."\")";
+		if($IDTagInvNew == 'null' || empty($IDTagInvNew)) {
+			$IDTagSQL = "null";
+		} else {
+			$IDTagSQL = "0x".$IDTagInvNew;
+		}
+		$requete = "INSERT INTO inventaire (IDComposant, NoInventaire, NoSerie, Annee, IDTag, RemarqueInv) values (".$IDComp.", \"".$NoInventaireNew."\", \"".$NoSerieNew."\", ".$AnneeNew.", ".$IDTagSQL.", \"".$RemarqueInvNew."\")";
 		//echo $requete;
 		$resultat =  mysql_query($requete);
 		if($resultat) {
@@ -608,8 +636,58 @@ if(isset($actionInv)) {
 			addMEssage("<font color=red>Impossible d'ajouter l'appareil</font>");
 		}
 	}
+	if($actionInv=="Modifier") {
+		$valueUpd = $_GET['newValue'];
+		$field = $_GET['updateField'];
+		if($field=="IDTag" && !empty($valueUpd)) {
+			$requete = "UPDATE inventaire set ".$field."=0x".$valueUpd." where IDInventaire=$IDInventaire";
+		} else {
+			if(empty($valueUpd)) {
+				$requete = "UPDATE inventaire set ".$field."=null where IDInventaire=$IDInventaire";
+			} else {
+				$requete = "UPDATE inventaire set ".$field."=\"".$valueUpd."\" where IDInventaire=$IDInventaire";
+			}
+		}
+		//echo $requete;
+		$resultat =  mysql_query($requete);
+		if($resultat) {
+			addMEssage("Inventaire modifié");
+			mysql_query('COMMIT');
+		} else {
+			addMEssage("<font color=red>Impossible de modifier l'inventaire</font>");
+		}
+  }
 }
 /* Fin action inventaire */
+
+/* action emprunt *) */
+if(isset($actionEmp)) {
+	if($actionEmp=="Modifier") {
+		$idInv = $_GET['IDInventaire'];
+		$uid = $_GET['Userid'];
+		//echo $uid."-".$idInv."-".$IDEmprunt;
+		if(!empty($IDEmprunt)) {
+			if(empty($uid)) {
+				//$requete = "DELETE from emprunt where IDEmprunt=$IDEmprunt";
+				$requete = "UPDATE emprunt set DateRetour = \"".date('Y-m-d')."\" where IDEmprunt=$IDEmprunt";
+			} else {
+				$requete = "UPDATE emprunt set Userid=\"".$uid."\" where IDEmprunt=$IDEmprunt";
+			}
+		} else {
+			$requete = "INSERT into emprunt (Userid, IDInventaire, DateEmprunt) values (\"".$uid."\",".$idInv.",\"".date('Y-m-d')."\")";
+		}
+
+		//echo $requete;
+		$resultat =  mysql_query($requete);
+		if($resultat) {
+			addMEssage("Emprunt modifié");
+			mysql_query('COMMIT');
+		} else {
+			addMEssage("<font color=red>Impossible de modifier l'emprunt</font>");
+		}
+	}
+}
+/* fin action emprunt */
 
 if(isset($actionStock)) {
 /* Action stock */
@@ -618,13 +696,18 @@ if(isset($actionStock)) {
     $requete = "select max(IDStockage) from $tableStockage";
     $resultat =  mysql_query($requete);
     $line = mysql_fetch_row($resultat);
+		if($IDTag == 'null' || empty($IDTag)) {
+			$IDTagSQL = "null";
+		} else {
+			$IDTagSQL = "0x".$IDTag;
+		}
     $newId = $line[0]+1;
     $requete = <<<REQ
 INSERT INTO $tableStockage
-(IDStockage, IDComposant, IDStock, Tirroir, Quantite, QuantiteMin, QuantiteComm) values
-($newId, $IDComp, $IDStockNew, "$EmplacementNew", $Quantite, $QuantiteMin, $QuantiteComm)
+(IDStockage, IDComposant, IDStock, Tirroir, Quantite, QuantiteMin, QuantiteComm, IDTag) values
+($newId, $IDComp, $IDStockNew, "$EmplacementNew", $Quantite, $QuantiteMin, $QuantiteComm, $IDTagSQL)
 REQ;
-	//echoS $requete;
+	//echo $requete;
     $resultat =  mysql_query($requete);
     if($resultat) {
 	addMEssage("Emplacement ajouté");
@@ -632,7 +715,7 @@ REQ;
     } else {
 	addMEssage("<font color=red>Impossible d'ajouter l'emplacement</font>");
     }
-	
+
   }
 
   if($actionStock=="Supprimer") {
@@ -645,11 +728,19 @@ REQ;
 		addMEssage("<font color=red>Impossible de supprimer l'emplacement</font>");
 	}
   }
-  
+
   if($actionStock=="Modifier") {
 	$valueUpd = $_GET['newValue'];
 	$field = $_GET['updateField'];
-	$requete = "UPDATE $tableStockage set ".$field."=\"".$valueUpd."\" where IDStockage=$IDStockage";
+	if($field=="IDTag" && !empty($valueUpd)) {
+		$requete = "UPDATE $tableStockage set ".$field."=0x".$valueUpd." where IDStockage=$IDStockage";
+	} else {
+		if(empty($valueUpd)) {
+			$requete = "UPDATE $tableStockage set ".$field."=null where IDStockage=$IDStockage";
+		} else {
+			$requete = "UPDATE $tableStockage set ".$field."=\"".$valueUpd."\" where IDStockage=$IDStockage";
+		}
+	}
 	//echo $requete;
 	$resultat =  mysql_query($requete);
 	if($resultat) {
@@ -692,7 +783,7 @@ REQ;
 		$IDTypeSel = $IDType;
 		$IDBoitierSel = $IDBoitier;
 		$IDSchemaSel = $IDSchema;
-	} else { 
+	} else {
 		$IDGenreSel = $ligne['IDGenre'];
 		$IDTypeSel = $ligne['IDType'];
 		$IDBoitierSel = $ligne['IDBoitier'];
@@ -738,8 +829,8 @@ REQ;
 		break;
 		case 6: $selected62 = $LabelCHK;
 	}
-} 
-?>	
+}
+?>
 <FORM ACTION="<? echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
 <div class='post'>
 <div align='center' width='100%' id='hideMe'><font size="2" color="green" align='center'><i><?=getMessage()?></i></font></div>
@@ -752,7 +843,7 @@ REQ;
 <tr>
 <td colspan="2"></td>
 <? if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
-<? 
+<?
 $imgpathURL = "/".$app_section."/images/articles/";
 $imgpath = "../images/articles/";
 $imgFound = false;
@@ -781,7 +872,7 @@ if(!$imgFound&&is_file($imgpath.$tryImg)) {
 
 if($app_section=='ELT') {
 	echo "<td rowspan='7' valign='top'>";
-} else { 
+} else {
 	echo "<td rowspan='6' valign='top'>";
 }
 if($imgFound) {
@@ -804,7 +895,7 @@ if($imgFound) {
 			$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.$cntImg.'.PNG';
 		}
 	}
-	
+
 }
 echo "</td></tr>";
 $IDUnique = htmlspecialchars($ligne['Description']);
@@ -915,7 +1006,7 @@ $lastIDCom = 0;
 			$noArticle= str_replace(" ","",$fournLigne['NoArticle']);
 			$noArticle= str_replace(".","",$noArticle);
 			$noArticle= str_replace("-","",$noArticle);
-			
+
 			$str = number_format($fournLigne[PrixPce], 2, '.', '');
 			//echo $str;
 			eval( "\$link = \"$link\";" );
@@ -954,8 +1045,8 @@ $lastIDCom = 0;
 			if(!empty($link)) {
 				echo "<a href='$link' target='_fournisseur'><img src='/iconsFam/world_link.png' align='absmiddle' onmouseover=\"Tip('Lien sur article du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
 			}
-			$libelleCom = getFieldToPrint($ligne['PosLigne1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigne2'],$ligne,2);  
-			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander')\" onmouseout='UnTip()'></a></td></tr>";	
+			$libelleCom = getFieldToPrint($ligne['PosLigne1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigne2'],$ligne,2);
+			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander')\" onmouseout='UnTip()'></a></td></tr>";
 		}
     }
 	if(hasStockRight()) {
@@ -988,7 +1079,7 @@ $lastIDCom = 0;
 		}
   ?>
 		</select></td><td><input type='text' name='prixNew' style='text-align: right' size='4' value=''></td><td></td><td></td><td colspan='2' align='right'><input type='submit' name='actionFourn' value='Ajouter'></td></tr>
-  <? } ?>		
+  <? } ?>
   </table></div>
 <? } ?>
 
@@ -1010,7 +1101,7 @@ if($app_section=='ELT') {
 </div> <!-- post -->
 </form>
 <? include("datasheet.php") ?>
-<? include("image.php") ?> 
+<? include("image.php") ?>
 
 </div> <!-- page -->
 

@@ -46,7 +46,7 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 	$noChaise = $_POST['NoChaiseNew'];
 	$noBanc = $_POST['NoBancNew'];
 	//$noCle = $_POST['NoCleNew'];
-	$IDCle = $_POST['IDCleNew'];	
+	$IDCle = $_POST['IDCleNew'];
 	$noVestiaire = $_POST['NoVestiaireNew'];
 	if(empty($noVestiaire)) {
 		$noVestiaire = 'NULL';
@@ -77,11 +77,15 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 	$classe = $_POST['ClasseNew'];
 	$email = $_POST['EmailNew'];
 	$userid = $_POST['UseridNew'];
-	$noSeriePC =  $_POST['NoSeriePCNew'];
-	$nomPC =  $_POST['NomPCNew'];
+	//$noSeriePC =  $_POST['NoSeriePCNew'];
+	//$nomPC =  $_POST['NomPCNew'];
+	$idCard = $_POST['IDCardNew'];
+	if(empty($idCard)) {
+		$idCard = 0;
+	}
 	$macWifi = $_POST['MacAdresseWifiNew'];
 	$macEth = $_POST['MacAdresseEthernetNew'];
-	
+
 	$entreprise = $_POST['IDEntrepriseNew'];
 
 	// requêtes SQL
@@ -94,7 +98,8 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 			//echo $requete;
     			$resultat =  mysql_query($requete);
 			$IDEleve = mysql_insert_id();
-			$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"$noSeriePC\",\"$nomPC\",\"$macWifi\",\"$macEth\",$entreprise)";
+			$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise,IDCard) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"\",\"\",\"$macWifi\",\"$macEth\",$entreprise,0x$idCard)";
+			//$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"$noSeriePC\",\"$nomPC\",\"$macWifi\",\"$macEth\",$entreprise)";
 			//echo $requete;
 			$resultat =  mysql_query($requete);
 			$msg = "<font color='#088A08'>Elève ajouté</font>";
@@ -103,8 +108,9 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
     			$requete = "UPDATE elevesbk set Nom=\"$nom\", Prenom=\"$prenom\", Adresse=\"$adresse\", NPA=\"$npa\", Localite=\"$localite\", Classe=\"$classe\", Email=\"$email\" where IDGDN=$IDEleve";
 			$resultat =  mysql_query($requete);
 			// modification table eleves
-    			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", NoSeriePC=\"$noSeriePC\", NomPC=\"$nomPC\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise where IDGDN=$IDEleve";
-				//echo $requete;
+			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=0x$idCard where IDGDN=$IDEleve";
+			//$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", NoSeriePC=\"$noSeriePC\", NomPC=\"$nomPC\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise where IDGDN=$IDEleve";
+			//echo $requete;
 			$resultat =  mysql_query($requete);
 			$msg = "<font color='#088A08'>Elève modifié</font>";
 		}
@@ -116,13 +122,13 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 if(isset($_GET['IDAttribEleve'])) {
 	$requete = "DELETE FROM $tableAttribEleves where IDAttribEleve=$_GET[IDAttribEleve]";
 	mysql_query($requete);
-	
+
 }
 include("entete.php");
 if(!hasAdminRigth()) {
 	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
 	exit;
-} 
+}
 ?>
 
 <div id="page">
@@ -239,8 +245,15 @@ while ($listeLigne = mysql_fetch_assoc($resultat)) {
 }
 echo "</select>";
 echo "</td><td><input type='texte' name='NoBadgeNew' value='".$ligne['NoBadge']."' size='5'></input></td></tr>\n";
-echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
-echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
+//echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
+//echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
+echo "<tr><td colspan='2'>Carte d'apprenti</td></tr>";
+$idcardTxt = "";
+//echo bin2hex($ligne['IDCard']);
+if(bin2hex($ligne['IDCard'])!=0) {
+	$idcardTxt = strtoupper(bin2hex($ligne['IDCard']));
+}
+echo "<tr><td colspan='2'><input type='texte' name='IDCardNew' value='".$idcardTxt."' size='8'></input></td></tr>";
 echo "<tr><td>PC - MAC Wifi</td><td>PC - MAC Ethernet</td></tr>";
 echo "<tr><td><input type='texte' name='MacAdresseWifiNew' value='".$ligne['MacAdresseWifi']."' size='15'></input></td><td><input type='texte' name='MacAdresseEthernetNew' value='".$ligne['MacAdresseEthernet']."' size='15'></input></td></tr>\n";
 echo "<tr><td>Classe</td><td>Userid</td></tr>";
@@ -275,7 +288,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='3' align='center'><i>Aucun enregistrement</i></td></tr>";
-} 
+}
 // ligne d'ajout
 $requete = "SELECT * FROM $tableAttribut where IDAttribut < 100";
 $resultat =  mysql_query($requete);
@@ -307,7 +320,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='4' align='center'><i>Aucun enregistrement</i></td></tr>";
-} 
+}
 // ligne d'ajout
 $requete = "SELECT * FROM $tableAttribut where IDAttribut > 100";
 $resultat =  mysql_query($requete);

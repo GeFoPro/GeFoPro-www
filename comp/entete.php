@@ -35,11 +35,12 @@
 			<br><a href='<?=$teamsURL?>' target='teams'>Teams atelier</a>
 		<?php } ?>
 		</td></tr></table>
-		
+
 	</div>
 	<div id="menu">
 		<ul>
 			<li class="current_page_item"><a href="compList.php">Articles</a></li>
+			<li class="current_page_item"><a href="listePrets.php">Prêts</a></li>
 			<li class="current_page_item"><a href="commande.php">Commandes en cours</a></li>
 			<?php if(hasAdminRigth()) { ?>
 			<li class="current_page_item"><a href="historique.php">Historique commandes</a></li>

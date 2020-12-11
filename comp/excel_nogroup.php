@@ -119,7 +119,7 @@ if("on" != $tva) {
 }
 
 // requete pour commande
-$requete = "SELECT NumArticle, Libelle, sum(Nombre) as Nombre, PrixUnite FROM $tableCommandeExt";
+$requete = "SELECT * FROM $tableCommandeExt";
 //left outer join $tableCommande comm on comm.IDCommande=commext.IDCommande";
 if(isset($critere) && !empty($critere)) {
 	if(empty($IDPageCommande)) {
@@ -127,7 +127,6 @@ if(isset($critere) && !empty($critere)) {
 	} else {
 		$requete = $requete . " where IDPageCommande= $IDPageCommande";
 	}
-	$requete = $requete . "   group by NumArticle order by NumArticle";
 } 
 //$errorMsg = $requete;
 $resultat =  mysql_query($requete);

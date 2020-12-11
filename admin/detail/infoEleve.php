@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 if(hasAdminRigth()) {
@@ -92,8 +92,10 @@ echo "<tr><td><input type='texte' name='NoVestiaireNew' value='".$ligne['NoVesti
 
 echo "<tr><td>Clé layette</td><td>Badge</td></tr>";
 echo "<tr><td><input type='texte' name='NoCleNew' value='".$ligne['NumeroCle']."' size='15'></input></td><td><input type='texte' name='NoBadgeNew' value='".$ligne['NoBadge']."' size='5'></input></td></tr>\n";
-echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
-echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
+//echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
+//echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
+echo "<tr height='25'><td></td><td></td></tr>";
+echo "<tr height='25'><td></td><td></td></tr>\n";
 echo "<tr height='25'><td></td><td></td></tr>";
 echo "<tr height='25'><td></td><td></td></tr>\n";
 echo "<tr><td>Classe</td><td>Userid</td></tr>";

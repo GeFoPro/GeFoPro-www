@@ -54,9 +54,9 @@ function readKey(event) {
 		<?php } ?>
 		</td></tr></table>
 	</div>
-	
+
 	<div id="menu">
-		
+
 		<ul>
 			<?php if(hasAdminRigth()) { ?>
 			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/horaire.php">Horaires</a></li>
@@ -75,13 +75,13 @@ function readKey(event) {
 				echo "<li class='last'>&nbsp;</li><li class='context'><a href='/".$app_section."/admin/listes/atelier.php?modeHTML=&modeAff=100&resetAndSet=Effacer'>Effacer + oublis</a></li>";
 			} ?>
 		</ul>
-		
+
 	</div>
-	
+
 </div>
-<?php 
+<?php
 if(!hasAdminRigth()) {
 	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
 	exit;
-} 
+}
 ?>

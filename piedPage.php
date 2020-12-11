@@ -1,5 +1,13 @@
 <!-- start footer -->
 <?php
+	$release .= "<br><b><i>2.4</i></b>";
+	$release .= "<br>Fonctionnalités: Gestion des prêts de matériel";
+	$release .= "<br>- Gestion de la liste de numéros d\'inventaire et de série par article";
+	$release .= "<br>- Attribution d\'un identifiant RFID par article ou pour l\'ensemble d\'un même type d\'article, soit dans l\'inventaire (un par article),";
+	$release .= "<br>&nbsp;&nbsp; soit lié au stockage de l\'article (pour l\'ensemble du même type d\'articles)";
+	$release .= "<br>- Gestion des prêts d\'articles, avec historique";
+	$release .= "<br>- Liste des prêts en cours, par personne ou par emplacement de stockage";
+	$release .= "<br>- API REST pour l\'interrogation, le prêt et le retour d\'un article";
 	$release .= "<br><b><i>2.3.3</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Possibilité de valider une évaluation hebdomadaire/de thème, même si celle-ci n\'est pas complète";
@@ -44,7 +52,7 @@
 ?>
 <div id="footer">
 	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.3.2, &copy; 2020 EMT, designed by DGI.</p>
-	
+
 </div>
 <!-- end footer -->
 </div>
