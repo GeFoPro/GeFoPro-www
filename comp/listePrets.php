@@ -20,17 +20,75 @@ if(isset($_POST['IDStock'])) {
 	$IDStock = $_POST['IDStock'];
 }
 
+$IDStockage = "";
+if(isset($_GET['IDStockage'])) {
+	$IDStockage = $_GET['IDStockage'];
+}
+if(isset($_POST['IDStockage'])) {
+	$IDStockage = $_POST['IDStockage'];
+}
+$actionEmp = "";
+if(isset($_POST['actionEmp'])) {
+	$actionEmp = $_POST['actionEmp'];
+}
+$IDEmprunt = "";
+if(isset($_POST['IDEmprunt'])) {
+	$IDEmprunt = $_POST['IDEmprunt'];
+}
+
 include("entete.php");
 ?>
 
 <div id="page">
 <script>
 
+function toggle(thisname) {
+	tr=document.getElementsByTagName('tr')
+	for (i=0;i<tr.length;i++){
+		if (tr[i].getAttribute(thisname)){
+			if ( tr[i].style.display=='none' ){
+				tr[i].style.display = '';
+			} else {
+				tr[i].style.display = 'none';
+			}
+		}
+	}
+}
+
+function submitRetour(id) {
+	//alert(id);
+	document.getElementById('myForm').IDEmprunt.value=id;
+	document.getElementById('myForm').submit();
+}
+
 </script>
 <?
 include($app_section."/userInfo.php");
+
+/* action emprunt *) */
+if(isset($actionEmp)) {
+
+	//mysql_select_db(DBComp);
+	if($actionEmp=="Ajouter") {
+		$idStock = $_POST['IDStockage'];
+		$newuid = $_POST['newUID'];
+
+		$requete = "INSERT into emprunt (Userid, IDStockage, DateEmprunt) values (\"".$newuid."\",".$idStock.",\"".date('Y-m-d')."\")";
+		//echo $requete;
+		$resultat =  mysql_query($requete);
+
+	}
+	if(!empty($IDEmprunt)) {
+		$requete = "UPDATE emprunt set DateRetour = \"".date('Y-m-d')."\" where IDEmprunt=".$IDEmprunt;
+		//echo $requete;
+		$resultat =  mysql_query($requete);
+
+	}
+}
+
 /* en-tête */
 echo "<FORM id='myForm' ACTION='listePrets.php'  METHOD='POST'>";
+echo "<input type='hidden' name='IDEmprunt' value=''>";
 echo "<div class='post'>";
 
 // construction de la liste des élèves
@@ -63,15 +121,18 @@ while ($listeLigne = mysql_fetch_array($resultat)) {
 	$listeEmp .= ">$listeLigne[1] </option>";
 }
 
-
-echo "<br><div id='corners'>";
-echo "<div id='legend'>Liste des prêts</div>";
-if(hasAdminRigth()) {
+if(hasAdminRigth() && empty($IDStockage)) {
 	echo "<table width='100%' border='0'><tr><td align='right'>Apprenti: <select name='Userid' onChange='document.getElementById(\"myForm\").submit();'>".$listeSCT."</select></td></tr>";
 	echo "<tr><td align='right'>Emplacement: <select name='IDStock' onChange='document.getElementById(\"myForm\").submit();'>".$listeEmp."</select></td></tr>";
 	echo "</table>";
 }
 
+echo "<br><div id='corners'>";
+echo "<div id='legend'>Liste des prêts";
+if(!empty($IDStockage)) {
+	echo " de l'appareil";
+}
+echo "</div>";
 echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
 echo "<tr><th width='300'>Appareil</th><th width='100' align='center'>No Inventaire</th><th width='100' align='center'>Emplacement</th><th  width='200'>Utilisé par</th><th>Depuis</th><th width='10'></th></tr>";
 mysql_select_db(DBComp);
@@ -99,13 +160,16 @@ if(empty($uid)) {
 	if(!empty($IDStock)) {
 			$filtreSQL .= " and stg.IDStock=".$IDStock; //." or stg2.IDStock=".$IDStock;
 	}
-	$requete = "select Userid, DateEmprunt, Tirroir, Emplacement, emp.IDInventaire as IDInv, NoInventaire, Stg.IDComposant as IDComp, Description, Caracteristiques from stockage stg";
+	if(!empty($IDStockage)) {
+			$filtreSQL .= " and stg.IDStockage=".$IDStockage; //." or stg2.IDStock=".$IDStock;
+	}
+	$requete = "select Userid, DateEmprunt, Tirroir, Emplacement, emp.IDInventaire as IDInv, emp.IDEmprunt as IDEmp, NoInventaire, Stg.IDComposant as IDComp, Stg.IDStockage as IDStockage, Description, Caracteristiques from stockage stg";
 	$requete .= " left join stock sto on stg.IDStock=sto.IDStock";
-	$requete .= " join composant comp on stg.IDComposant= comp.IDComposant";
-	$requete .= " join inventaire inv on comp.IDComposant=inv.IDComposant";
+	$requete .= " join composant comp on stg.IDComposant=comp.IDComposant";
+	$requete .= " left join inventaire inv on comp.IDComposant=inv.IDComposant";
 	$requete .= " join emprunt emp on (inv.IDInventaire=emp.IDInventaire OR stg.IDStockage=emp.IDStockage)";
 	$requete .= " WHERE DateRetour is null".$filtreSQL;
-	$requete .= " group by Userid,emp.IDInventaire,emp.IDStockage order by Emplacement, Tirroir";
+	$requete .= " group by Userid,emp.IDInventaire,emp.IDStockage,DateEmprunt order by Emplacement, Tirroir";
 	/*
 	$requete .= " join stockage stg on emp.IDStockage=stg.IDStockage";
 	$requete .= " join stock sto on stg.IDStock=sto.IDStock";
@@ -128,7 +192,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	//} else {
 	//	$desc = $ligne['Emplacement'];
 	//}
-	echo "<tr onClick='location.href=\"comp.php?IDComposant=".$ligne['IDComp']."\"'><td>".$desc."</td>";
+	echo "<tr><td onClick='location.href=\"comp.php?IDComposant=".$ligne['IDComp']."\"'>".$desc."</td>";
 	echo "<td align='center'>";
 	//echo $ligne['IDInv'];
 	if(!empty($ligne['IDInv'])) {
@@ -158,13 +222,23 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	}
 	echo "<td>".$usebyTxt."</td>";
 	echo "<td>".date("d.m.Y",strtotime($ligne['DateEmprunt']))."</td>";
-	echo "<td></td></tr>";
+	echo "<td>";
+	if(hasAdminRigth()) {
+		echo "<img src='/iconsFam/user_delete.png' onmouseover=\"Tip('Retour de l\'emprunt')\" onmouseout='UnTip()' onclick='submitRetour(".$ligne['IDEmp'].");' align='absmiddle'>";
+	}
+	echo "</td></tr>";
 	$cnt++;
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='6' align='center'><i>Aucun enregistrement</i></td></tr>";
 }
+echo "<tr><td colspan='6' bgColor='#5C5C5C'></td></tr>";
+if(hasAdminRigth() && !empty($IDStockage)) {
+	// ligne d'ajout
 
+	echo "<tr newEmp='1'><td colspan='5'></td><td align='right'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un emprunt')\" onmouseout='UnTip()' onclick='toggle(\"newEmp\");' align='absmiddle'></td></tr>";
+	echo "<tr newEmp='1' style='display:none'><td colspan='3'><input type='hidden' name='IDStockage' value='".$IDStockage."'></td><td><input type='text' name='newUID' size='10' value=''></td><td colspan='2' align='right'><input type='submit' name='actionEmp' value='Ajouter'></td></tr>";
+}
 echo "</table></div><br>";
 ?>
 
