@@ -1,5 +1,8 @@
 <!-- start footer -->
 <?php
+	$release .= "<br><b><i>2.4.2</i></b>";
+	$release .= "<br>Bugs:";
+	$release .= "<br>- Texte de la ligne de commande coupé si présence d\'apostrophes dans les champs de l\'article";
 	$release .= "<br><b><i>2.4.1</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Possibilité d\'ajouter ou retourner manuellement un prêt dans la liste des prêts";
@@ -54,7 +57,7 @@
 	$release .= "<br>- Problème de création globale des périodes pour les notes, pour le système d\'évaluation hebdomadaire";
 ?>
 <div id="footer">
-	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.4.1, 2020 &copy; Designed by DGI</p>
+	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.4.2, 2020 &copy; Designed by DGI</p>
 
 </div>
 <!-- end footer -->

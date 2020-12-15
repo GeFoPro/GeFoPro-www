@@ -1045,7 +1045,7 @@ $lastIDCom = 0;
 			if(!empty($link)) {
 				echo "<a href='$link' target='_fournisseur'><img src='/iconsFam/world_link.png' align='absmiddle' onmouseover=\"Tip('Lien sur article du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
 			}
-			$libelleCom = getFieldToPrint($ligne['PosLigne1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigne2'],$ligne,2);
+			$libelleCom = urlencode(getFieldToPrint($ligne['PosLigne1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigne2'],$ligne,2));
 			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander')\" onmouseout='UnTip()'></a></td></tr>";
 		}
     }

@@ -80,9 +80,14 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 	//$noSeriePC =  $_POST['NoSeriePCNew'];
 	//$nomPC =  $_POST['NomPCNew'];
 	$idCard = $_POST['IDCardNew'];
-	if(empty($idCard)) {
-		$idCard = 0;
+	if($idCard == 'null' || empty($idCard)) {
+		$idCard = "null";
+	} else {
+		$idCard = "0x".$idCard;
 	}
+	//if(empty($idCard)) {
+	//	$idCard = 0;
+	//}
 	$macWifi = $_POST['MacAdresseWifiNew'];
 	$macEth = $_POST['MacAdresseEthernetNew'];
 
@@ -98,7 +103,7 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 			//echo $requete;
     			$resultat =  mysql_query($requete);
 			$IDEleve = mysql_insert_id();
-			$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise,IDCard) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"\",\"\",\"$macWifi\",\"$macEth\",$entreprise,0x$idCard)";
+			$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise,IDCard) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"\",\"\",\"$macWifi\",\"$macEth\",$entreprise,$idCard)";
 			//$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"$noSeriePC\",\"$nomPC\",\"$macWifi\",\"$macEth\",$entreprise)";
 			//echo $requete;
 			$resultat =  mysql_query($requete);
@@ -108,7 +113,7 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
     			$requete = "UPDATE elevesbk set Nom=\"$nom\", Prenom=\"$prenom\", Adresse=\"$adresse\", NPA=\"$npa\", Localite=\"$localite\", Classe=\"$classe\", Email=\"$email\" where IDGDN=$IDEleve";
 			$resultat =  mysql_query($requete);
 			// modification table eleves
-			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=0x$idCard where IDGDN=$IDEleve";
+			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=$idCard where IDGDN=$IDEleve";
 			//$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", NoSeriePC=\"$noSeriePC\", NomPC=\"$nomPC\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise where IDGDN=$IDEleve";
 			//echo $requete;
 			$resultat =  mysql_query($requete);
@@ -259,7 +264,7 @@ echo "<tr><td><input type='texte' name='MacAdresseWifiNew' value='".$ligne['MacA
 echo "<tr><td>Classe</td><td>Userid</td></tr>";
 echo "<tr><td><input type='texte' name='ClasseNew' value='".$ligne['Classe']."' size='15'></input></td><td><input type='texte' name='UseridNew' value='".$ligne['Userid']."' size='7'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
-echo "<td valign='top'><img src='/".$app_section."/images/photo/".$ligne['Nom']."_".$ligne['Prenom'].".jpg' alt='(pas de photo)' id='studentImg'>";
+echo "<td valign='top'><img src='/".$app_section."/images/photo/".$ligne['Nom']."_".$ligne['Prenom'].".jpg' alt='(pas de photo)' id='studentImg' style='image-orientation: from-image'>";
 echo "</td>";
 
 echo "</tr><tr><td></td><td align='center'>";
