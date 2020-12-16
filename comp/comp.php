@@ -310,6 +310,14 @@ $posPrint2 = "3";
 if(isset($_GET['print2'])) {
 	$posPrint2 = getDBValue($_GET['print2']);
 }
+$posPrintC1 = "6";
+if(isset($_GET['printC1'])) {
+	$posPrintC1 = getDBValue($_GET['printC1']);
+}
+$posPrintC2 = "1";
+if(isset($_GET['printC2'])) {
+	$posPrintC2 = getDBValue($_GET['printC2']);
+}
 
 /* ACTIONS */
 
@@ -460,7 +468,9 @@ IDType = $IDType,
 IDSchema = $IDSchema,
 IDBoitier = $IDBoitier,
 PosLigne1 = $posPrint1,
-PosLigne2 = $posPrint2
+PosLigne2 = $posPrint2,
+PosLigneC1 = $posPrintC1,
+PosLigneC2 = $posPrintC2
 where IDComposant=$IDComp
 REQ;
   $resultat =  mysql_query($requete);
@@ -789,7 +799,7 @@ REQ;
 		$IDBoitierSel = $ligne['IDBoitier'];
 		$IDSchemaSel = $ligne['IDSchema'];
 	}
-	/* selection des lignes d'impression */
+	/* selection des lignes d'impression pour étiquettes */
 	$selected11 = "";
 	$selected21 = "";
 	$selected31 = "";
@@ -829,6 +839,46 @@ REQ;
 		break;
 		case 6: $selected62 = $LabelCHK;
 	}
+	/* selection des lignes pour commandes */
+	$selectedC11 = "";
+	$selectedC21 = "";
+	$selectedC31 = "";
+	$selectedC41 = "";
+	$selectedC51 = "";
+	$selectedC61 = "";
+	$selectedC12 = "";
+	$selectedC22 = "";
+	$selectedC32 = "";
+	$selectedC42 = "";
+	$selectedC52 = "";
+	$selectedC62 = "";
+
+	switch ($ligne['PosLigneC1']) {
+		case 1: $selectedC11 = $LabelCHK;
+		break;
+		case 2: $selectedC21 = $LabelCHK;
+		break;
+		case 3: $selectedC31 = $LabelCHK;
+		break;
+		case 4: $selectedC41 = $LabelCHK;
+		break;
+		case 5: $selectedC51 = $LabelCHK;
+		break;
+		case 6: $selectedC61 = $LabelCHK;
+	}
+	switch ($ligne['PosLigneC2']) {
+		case 1: $selectedC12 = $LabelCHK;
+		break;
+		case 2: $selectedC22 = $LabelCHK;
+		break;
+		case 3: $selectedC32 = $LabelCHK;
+		break;
+		case 4: $selectedC42 = $LabelCHK;
+		break;
+		case 5: $selectedC52 = $LabelCHK;
+		break;
+		case 6: $selectedC62 = $LabelCHK;
+	}
 }
 ?>
 <FORM ACTION="<? echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
@@ -842,7 +892,7 @@ REQ;
 <table border='0' align="center" width='100%'>
 <tr>
 <td colspan="2"></td>
-<? if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
+<? if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Commandes</font></td><td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
 <?
 $imgpathURL = "/".$app_section."/images/articles/";
 $imgpath = "../images/articles/";
@@ -869,11 +919,10 @@ if(!$imgFound&&is_file($imgpath.$tryImg)) {
 	$imgpathURL .= $tryImg;
 	$imgFound = true;
 }
-
-if($app_section=='ELT') {
-	echo "<td rowspan='7' valign='top'>";
+if($action=="Nouveau") {
+	echo "<td rowspan='4 valign='top'>&nbsp;";
 } else {
-	echo "<td rowspan='6' valign='top'>";
+	echo "<td rowspan='7' valign='top'>&nbsp;";
 }
 if($imgFound) {
 	//echo "<img src='".$imgpathURL."' style='width:auto; max-height:150px; max-width:240px;'>";
@@ -901,14 +950,14 @@ echo "</td></tr>";
 $IDUnique = htmlspecialchars($ligne['Description']);
 ?>
 <? if(!empty($IDComp)) { ?>
-<tr><td width='100'>Identifiant:</td><td width='550'><input type="texte" name="Description" value="<?= htmlspecialchars($ligne['Description']) ?>"></td>
-<? if($action!="Nouveau") echo "<td align='right' width='60'><input type='radio' name='print1' value='1' $selected11></td><td align='left' width='60'><input type='radio' name='print2' value='1' $selected12></td>"; ?>
+<tr><td width='100'>Identifiant:</td><td width='490'><input type="texte" name="Description" value="<?= htmlspecialchars($ligne['Description']) ?>" size="30"></td>
+<? if($action!="Nouveau") echo "<td align='right' width='40'><input type='radio' name='printC1' value='1' $selectedC11></td><td align='left' width='40'><input type='radio' name='printC2' value='1' $selectedC12></td><td align='right' width='40'><input type='radio' name='print1' value='1' $selected11></td><td align='left' width='40'><input type='radio' name='print2' value='1' $selected12></td>"; ?>
 </tr>
-<tr><td>Valeur:</td><td><input type="texte" name="Valeur" value="<?= htmlspecialchars($ligne['Valeur']) ?>"></td>
-<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='print1' value='2' $selected21></td><td align='left'><input type='radio' name='print2' value='2' $selected22></td>"; ?>
+<tr><td>Valeur:</td><td><input type="texte" name="Valeur" value="<?= htmlspecialchars($ligne['Valeur']) ?>" size="30"></td>
+<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='2' $selectedC21></td><td align='left'><input type='radio' name='printC2' value='2' $selectedC22></td><td align='right'><input type='radio' name='print1' value='2' $selected21></td><td align='left'><input type='radio' name='print2' value='2' $selected22></td>"; ?>
 </tr>
-<tr><td>Caractéristiques:</td><td><input type="texte" name="Caracteristiques" value="<?= htmlspecialchars($ligne['Caracteristiques']) ?>" size="50"></td>
-<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='print1' value='3' $selected31></td><td align='left'><input type='radio' name='print2' value='3' $selected32></td>"; ?>
+<tr><td>Caractéristiques:</td><td><input type="texte" name="Caracteristiques" value="<?= htmlspecialchars($ligne['Caracteristiques']) ?>" size="60"></td>
+<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='3' $selectedC31></td><td align='left'><input type='radio' name='printC2' value='3' $selectedC32></td><td align='right'><input type='radio' name='print1' value='3' $selected31></td><td align='left'><input type='radio' name='print2' value='3' $selected32></td>"; ?>
 </tr>
 <?
 if($action!="Nouveau") {
@@ -929,9 +978,9 @@ if($action!="Nouveau") {
 	  echo "</select></td>";
 	  //echo "<td colspan='2' rowspan='3'><a id='refBoitier' href='#'><img id='imgBoitier' src='/".$app_section."/images/spacer.gif' onerror='resetImg();' width='100' height='80' ></a><script>updateImg();</script></td>";
 	  //echo "<td colspan='2' rowspan='3'><a id='refBoitier' href='#'><img id='imgBoitier' src='images/spacer.gif' width='100' height='80'></a></td>";
-	  echo "<td align='right'><input type='radio' name='print1' value='4' $selected41></td><td align='left'><input type='radio' name='print2' value='4' $selected42></td></tr>";
+	  echo "<td align='right'><input type='radio' name='printC1' value='4' $selectedC41></td><td align='left'><input type='radio' name='printC2' value='4' $selectedC42></td><td align='right'><input type='radio' name='print1' value='4' $selected41></td><td align='left'><input type='radio' name='print2' value='4' $selected42></td></tr>";
 	} else {
-		echo "<tr><td><input type='hidden' name='IDBoitier' value='".$IDBoitierSel."'></td></tr>";
+		echo "<tr><td colspan='6'><input type='hidden' name='IDBoitier' value='".$IDBoitierSel."'></td></tr>";
 	}
   /* Genre */
   echo "<tr><td>Genre:</td>";
@@ -955,6 +1004,7 @@ if($action!="Nouveau") {
   }
   ?>
   </select></td>
+	<td align='right'><input type='radio' name='printC1' value='5' <?=$selectedC51?>></td><td align='left'><input type='radio' name='printC2' value='5' <?=$selectedC52?>></td>
   <td align='right'><input type='radio' name='print1' value='5' <?=$selected51?>></td><td align='left'><input type='radio' name='print2' value='5' <?=$selected52?>></td>
   </tr>
   <tr><td>Type:</td>
@@ -977,7 +1027,7 @@ if($action!="Nouveau") {
 	}
   }
 
-  echo "</td><td align='right'><input type='radio' name='print1' value='6' $selected61></td><td align='left'><input type='radio' name='print2' value='6' $selected62></td></tr>";
+  echo "</td><td align='right'><input type='radio' name='printC1' value='6' $selectedC61></td><td align='left'><input type='radio' name='printC2' value='6' $selectedC62></td><td align='right'><input type='radio' name='print1' value='6' $selected61></td><td align='left'><input type='radio' name='print2' value='6' $selected62></td></tr>";
 }
 include("footComp.php");
 echo "</table></div>";
@@ -1045,8 +1095,9 @@ $lastIDCom = 0;
 			if(!empty($link)) {
 				echo "<a href='$link' target='_fournisseur'><img src='/iconsFam/world_link.png' align='absmiddle' onmouseover=\"Tip('Lien sur article du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
 			}
-			$libelleCom = urlencode(getFieldToPrint($ligne['PosLigne1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigne2'],$ligne,2));
-			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander')\" onmouseout='UnTip()'></a></td></tr>";
+			$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigneC2'],$ligne,2);
+			$libelleCom = urlencode($libelleComNo);
+			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander &laquo;$libelleComNo&raquo;')\" onmouseout='UnTip()'></a></td></tr>";
 		}
     }
 	if(hasStockRight()) {

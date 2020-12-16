@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 include("entete.php");
 ?>
@@ -113,7 +113,7 @@ if("Supprimer"==$action) {
 if("Ajouter"==$action) {
     $IDCommande = $_GET['IDCommande'];
     $libelle = $_GET['Libelle'];
-	
+
 	$uid = $_SESSION['user_login'];
 	$nomCom = $_SESSION['user_nom'];
     /* recherche max */
@@ -166,11 +166,11 @@ if(isset($_POST['lineChanged']) && !empty($_POST['lineChanged'])) {
 }
 if(isset($_POST['recherche']) && !empty($_POST['recherche'])) {
 	$likeRec = $_POST['recherche'];
-	
+
 }
 if(isset($_POST['compar']) && !empty($_POST['compar'])) {
 	$likeComPar = $_POST['compar'];
-	
+
 }
 if(isset($_POST['ToggleRec']) && !empty($_POST['ToggleRec'])) {
 	$idToggle = ($_POST['ToggleRec']);
@@ -195,7 +195,7 @@ if(isset($_POST['ToggleRec']) && !empty($_POST['ToggleRec'])) {
 				}
 				if(!empty($likeComPar)) {
 					$requete = $requete .= " and Userid = '".$likeComPar."'";
-				} 
+				}
 				if(empty($likeRec) && empty($likeComPar)) {
 					$requete = $requete .= "  and (DateRecption is null OR DateReception = DATE(NOW()))";
 				}
@@ -221,8 +221,8 @@ function getFieldToPrint($value, $ligne, $pos) {
 }
 
 if(isset($_POST['numRecherche']) && !empty($_POST['numRecherche'])) {
-	
-	$requete = "select * from $tableCommande as com join $tableComp as comp on com.IDComposant=comp.IDComposant join $tableGenre as ge on comp.IDGenre=ge.IDGenre where IDFournisseur=".$critere." and replace(NoArticle, ' ','') like '".str_replace(' ', '', $_POST['numRecherche'])."%'";
+
+	$requete = "select * from $tableCommande as com join $tableComp as comp on com.IDComposant=comp.IDComposant join $tableGenre as ge on comp.IDGenre=ge.IDGenre join $tableType as ty on comp.IDType=ty.IDType where IDFournisseur=".$critere." and replace(NoArticle, ' ','') like '".str_replace(' ', '', $_POST['numRecherche'])."%'";
 	//echo $requete;
 	$resultat =  mysql_query($requete);
 	$line = mysql_fetch_array($resultat);
@@ -231,7 +231,7 @@ if(isset($_POST['numRecherche']) && !empty($_POST['numRecherche'])) {
 		//$libelleNew = $line['LibelleGenre']." ".$line['Valeur'];
 		//echo "ligne 1: ".getFieldToPrint($ligne['PosLigne1'],$ligne,1);
 		//echo "ligne 1: ".$line['PosLigne1'];
-		$libelleNew = getFieldToPrint($line['PosLigne1'],$line,1)." ".getFieldToPrint($line['PosLigne2'],$line,2);
+		$libelleNew = getFieldToPrint($line['PosLigneC1'],$line,1)." ".getFieldToPrint($line['PosLigneC2'],$line,2);
 		$prixPce = (float)$line['PrixPce'];
 		$parts = explode(".",$prixPce);
 		if(count($parts)>1) {
@@ -269,7 +269,7 @@ if(isset($_POST['ajoutCommande']) && !empty($_POST['ajoutCommande'])) {
     $resultat =  mysql_query($requete);
     $line = mysql_fetch_row($resultat);
     $newId = $line[0]+1;
-	
+
     $requete = <<<REQ
 INSERT INTO $tableCommandeExt
 (IDCommandeExt, Nombre, PrixUnite, Libelle, Userid, Commandepar, IDFournisseur, NumArticle) values
@@ -317,7 +317,7 @@ Fournisseur :
 </select></td></tr></table><br>
 <div id='corners'>
 <div id='legend'>Liste des articles à commander</div>
-<?  
+<?
 	} else { // fin if $IDPageCommande et recu
 ?>
 <!-- h2>Historique des commandes</h2 -->
@@ -346,14 +346,14 @@ Fournisseur :
 	echo "$listeLigne[1] </option>";
     }
   ?>
-  </select> 
+  </select>
   </td></tr>
 </table><br>
 <? } ?>
 <br>
 <div id='corners'>
 <div id='legend'>Historique des commandes</div>
-<?  
+<?
 	if(!empty($remarque)) {
 		echo "<br>".$remarque;
 	}
@@ -364,13 +364,13 @@ Fournisseur :
 <?
 } // fin else $IDPageCommande
 /* liste composants */
-$requete = "SELECT * FROM $tableCommandeExt commext 
+$requete = "SELECT * FROM $tableCommandeExt commext
 left outer join $tableFournisseur four on commext.IDFournisseur=four.IDFournisseur";
 // left outer join $tableCommande comm on comm.IDCommande=commext.IDCommande
 //echo $requete;
 if(empty($IDPageCommande)) {
 	if(empty($recu)) {
-		$requete = $requete . " where IDPageCommande is null"; 
+		$requete = $requete . " where IDPageCommande is null";
 	} else {
 		$requete = $requete . " where IDPageCommande is not null";
 		if(!empty($likeRec)) {
@@ -378,7 +378,7 @@ if(empty($IDPageCommande)) {
 		}
 		if(!empty($likeComPar)) {
 			$requete .= " and Userid = '".$likeComPar."'";
-		} 
+		}
 		if(empty($likeRec) && empty($likeComPar)) {
 			$requete .= "  and (DateReception is null OR DateReception = DATE(NOW())) ";
 		}
@@ -442,7 +442,7 @@ $totalList = 0;
 if(!empty($resultat)) {
 	while ($ligne = mysql_fetch_assoc($resultat) ) {
 		//if($rowCounter==0) {
-			
+
 		//}
 		$rowCounter++;
 		$link = $ligne['LienArticle'];
@@ -450,7 +450,25 @@ if(!empty($resultat)) {
 		$noArticle= str_replace(" ","",$ligne['NumArticle']);
 		$noArticle= str_replace(".","",$noArticle);
 		$noArticle= str_replace("-","",$noArticle);
-		
+
+		// recherche si article semble exister dans la gestion du matériel
+		/* liste composants */
+		/*
+		$requeteFound = "SELECT count(*) FROM $tableComp comp where ";
+		$words = explode(" ",$ligne['Libelle']);
+		$requeteFoundWhere = "";
+		foreach ($words as $keyword) {
+			if(!empty($requeteFoundWhere)) $requeteFoundWhere .= " OR ";
+			$requeteFoundWhere .= 	"description like \"%$keyword%\" OR valeur like \"%$keyword%\" OR caracteristiques like \"%$keyword%\"";
+		}
+		//echo $requeteFound.$requeteFoundWhere;
+		$resultatFound =  mysql_query($requeteFound.$requeteFoundWhere);
+		$ligneFound = mysql_fetch_row($resultatFound);
+		$compFound = "";
+		if($ligneFound!=null && $ligneFound[0]>0) {
+			$compFound = $ligneFound[0];
+		}
+		*/
 		eval( "\$link = \"$link\";" );
 		if(!empty($IDPageCommande)||!empty($recu)) {
 			echo "<tr id='comp".$ligne['IDCommandeExt']."' onclick='callDetail(\"".$ligne['NumArticle']."\");'>";
@@ -487,7 +505,7 @@ if(!empty($resultat)) {
 		} else {
 			$prixUnite = $prixUnite . ".00";
 		}
-       
+
 		$total = round($total,2);
 		$totalList = $totalList + $total;
 		$totalStr = sprintf("%01.2f", $total);
@@ -512,7 +530,7 @@ if(!empty($resultat)) {
 			echo"<td align='right'>$totalStr</td>";
 			echo"<td>&nbsp;".$ligne['Commandepar']."</td><td></td></tr>";
 		}
-		
+
 	}
 }
 if($rowCounter==0) {
@@ -527,7 +545,7 @@ if($rowCounter==0) {
 		}
 	}
 	echo "</td></tr>";
-} 
+}
 if(empty($IDPageCommande)&&empty($recu)) {
 	echo "<tr newArticle='1' style='display:none' >";
 	echo "<td><input type='text' name='NumArticle' value='$numArticleNew' size='8' onChange='rechercheArticle(this.value)'></td>";

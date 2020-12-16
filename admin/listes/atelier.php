@@ -64,7 +64,7 @@ if(isset($_GET['modeLocal'])) {
 } else {
 	if(isset($_SESSION['APP']['modeGDN'])) {
 		$modeLocal = !$_SESSION['APP']['modeGDN'];
-	} 
+	}
 }
 
 if(!$modeHTML) {
@@ -114,7 +114,7 @@ if(!$modeHTML) {
 }
 
 
-	
+
 function writeToCell($stmt, $dataCol, $objPHPExcel, $excelCol, $excelLine, $mode) {
 	$cell = ociresult($stmt,$dataCol);
 	writeDataToCell($cell, $objPHPExcel, $excelCol, $excelLine, $mode);
@@ -163,7 +163,7 @@ if($mois<8) {
 }
 if(!$modeHTML) {
 	$objPHPExcel->getActiveSheet()->setCellValue('A1', "$annee - $anneePlus");
-} else { 
+} else {
 	echo "<center> <font color='#088A08'></font></center>";
 	// form
 	echo "<FORM id='myForm' ACTION='atelier.php'  METHOD='GET'>";
@@ -274,13 +274,13 @@ if(isset($classe)&&$classe==100) {
 		$configurationATE[] = $ligne['Classe'];
 		$cnt++;
 	}
-	
+
 }
 
 // construction de la liste des classe qui commencent par l'abbreviation de la section (ELT, AUT, etc.)
 if(isset($classe)&&$classe==101) {
 	$requeteCl = "select distinct Classe from elevesbk where Classe like '".$app_section."%' order by Classe desc";
-	
+
 		//echo $requete."<br>";
 	$resultat =  mysql_query($requeteCl);
 	// construction de la nouvelle configuration
@@ -290,7 +290,7 @@ if(isset($classe)&&$classe==101) {
 		$configurationATE[] = $ligne['Classe'];
 		$cnt++;
 	}
-	
+
 }
 
 
@@ -301,7 +301,7 @@ foreach ($configurationATE as $pos => $value) {
 		// Récupérer la liste des adresses e-mail des profs (seulement si la DB de la GDN est accessible)
 		$liste_emails_profs = "" ;
 		/*
-		if($connexion!=null) 
+		if($connexion!=null)
 		{
 			// pas accessible pour l'instant
 			//$stmt = ociparse($connexion,"SELECT DISTINCT EMAIL_PROF FROM VU_PROF, TB_SUIVRE, TB_COURS, TB_SOUS_CLASSE WHERE FK_COURS_PROF = PK_PROF AND PK_FK_SUIVRE_COURS = PK_COURS AND PK_FK_SUIVRE_SOUS_CLASSE = PK_SOUS_CLASSE AND NOM_SOUS_CLASSE like '$value%'");
@@ -333,10 +333,10 @@ foreach ($configurationATE as $pos => $value) {
 		}
 		$emailGroup = "";
 		$emailGroupOutlook = "";
-		while ($data = mysql_fetch_assoc($stmt)) {	
+		while ($data = mysql_fetch_assoc($stmt)) {
 		//while (($data = nextEntry($connexion,$stmt))!=null){
 			$troisplusun = false;
-			
+
 			//if(strstr(getValue($connexion,$data,9),"+1")) {
 			//	$troisplusun = true;
 			//}
@@ -348,7 +348,7 @@ foreach ($configurationATE as $pos => $value) {
 			$prenom = $data['Prenom'];
 			//echo $idGDN."-".$nom."-".$prenom;
 
-			
+
 			$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle where el.IDGDN = $idGDN";
 	//echo $requete."<br>";
 			$resultat =  mysql_query($requete);
@@ -357,12 +357,12 @@ foreach ($configurationATE as $pos => $value) {
 			}
 			// ajout dans liste éleves si internes
 			//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
-			if($ligne['IDEntreprise']==1) {	
+			if($ligne['IDEntreprise']==1) {
 				$listeIds[] = array($idGDN,htmlentities($nom, ENT_QUOTES),$prenom,$value);
 			}
 			if((!empty($classe)&&$classe!=0)||$ligne['IDEntreprise']==1) {
 				if(!$modeHTML) {
-					
+
 					writeDataToCell($nom,$objPHPExcel,"A",$cntCell,$troisplusun);
 					//writeToCell($stmt,2,$objPHPExcel,"A",$cntCell,$troisplusun);
 					writeDataToCell($prenom,$objPHPExcel,"B",$cntCell,$troisplusun);
@@ -388,7 +388,7 @@ foreach ($configurationATE as $pos => $value) {
 					writeDataToCell($ligne['NoMobile'],$objPHPExcel,"M",$cntCell,$troisplusun);
 					$dateNaissance = explode("-", $ligne['DateNaissance']);
 					if(count($dateNaissance)==3) {
-						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0])); 
+						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
 						writeDataToCell($dateList,$objPHPExcel,"O",$cntCell,$troisplusun);
 					}
 					writeDataToCell($ligne['NoSeriePC'],$objPHPExcel,"P",$cntCell,$troisplusun);
@@ -419,14 +419,14 @@ foreach ($configurationATE as $pos => $value) {
 					$ico = mysql_fetch_assoc($resultat);
 					if($ico!=null) {
 						echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
-					} 
+					}
 					if($ligne['IDEntreprise']!=1) {
 						echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
 					}
 					echo "><td><nobr>";
 					if($modeAff==0) {
 						$cntIcon = 1;
-					
+
 						// mode Normal
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribFem";
 		//echo $requete."<br>";
@@ -437,107 +437,95 @@ foreach ($configurationATE as $pos => $value) {
 						} else {
 							echo "<img src='/iconsFam/user.png'>";
 						}
-						$cntIcon++;
+
+						if($ligne['IDEntreprise']!=1) {
+							echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'>";
+							$cntIcon++;
+						} else {
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
+							$resultat =  mysql_query($requete);
+							$ico = mysql_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('En stage')\" onmouseout='UnTip()'>";
+								$cntIcon++;
+							}
+						}
+						
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribtroisplusun, $attribMPT, $attribMPTtrois, $attribfuturtrois)";
-		//echo $requete."<br>";
 						$resultat =  mysql_query($requete);
 						$ico = mysql_fetch_assoc($resultat);
 						if($ico!=null || $troisplusun) {
 							if($ico['IDAttribut']==$attribtroisplusun || $troisplusun) {
 								echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('3+1')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribfuturtrois) {
 								echo "<img src='/iconsFam/award_star_bronze_2.png' onmouseover=\"Tip('Inscrit 3+1')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMPTtrois) {
 								echo "<img src='/iconsFam/award_star_silver_3.png' onmouseover=\"Tip('Inscrit 3+1, MPT')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMPT) {
 								echo "<img src='/iconsFam/medal_silver_3.png' onmouseover=\"Tip('MPT')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribPAS) {
 								echo "<img src='/iconsFam/arrow_switch.png' onmouseover=\"Tip('Passerelle')\" onmouseout='UnTip()'>";
-							} else {
-								//echo "<img src='/iconsFam/empty.png'>";
-								$cntIcon--;
+								$cntIcon++;
 							}
-						} else {
-							//echo "<img src='/iconsFam/empty.png'>";
-							$cntIcon--;
 						}
-							
+						if($cntIcon==3) {
+							echo "<br>";
+							$cntIcon = 0;
+						}
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribResp";
-		//echo $requete."<br>";
 						$resultat =  mysql_query($requete);
 						$ico = mysql_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Délégué de classe')\" onmouseout='UnTip()'>";
 							$cntIcon++;
-						} else {
-							if($ligne['IDEntreprise']!=1) {
-								echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else {
-								$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
-								$resultat =  mysql_query($requete);
-								$ico = mysql_fetch_assoc($resultat);
-								if($ico!=null) {
-									echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('En stage')\" onmouseout='UnTip()'>";
-									$cntIcon++;
-								}
-							}
-							//echo "<img src='/iconsFam/empty.png'>";
 						}
-						
 						if($cntIcon==3) {
 							echo "<br>";
 							$cntIcon = 0;
 						}
-						
-						$cntIcon++;
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribANG, $attribALL,$attribMAT)";
-		//echo $requete."<br>";
 						$resultat =  mysql_query($requete);
 						while(($ico = mysql_fetch_assoc($resultat))!=null) {
 							//if($ico!=null) {
 							if($ico['IDAttribut']==$attribANG) {
-									echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('Anglais')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('Anglais')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribALL) {
 								echo "<img src='/iconsFam/flag-german.png' onmouseover=\"Tip('Allemand')\" onmouseout='UnTip()'>";
+								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMAT) {
 								echo "<img src='/iconsFam/calculator.png' onmouseover=\"Tip('Maths')\" onmouseout='UnTip()'>";
-							} else {
-								//echo "<img src='/iconsFam/empty.png'>";
-								$cntIcon--;
+								$cntIcon++;
 							}
-						//} else {
-							//echo "<img src='/iconsFam/empty.png'>";
-						//	$cntIcon--;
-						//}
 							if($cntIcon==3) {
 								echo "<br>";
 								$cntIcon = 0;
 							}
 						}
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribHOR";
-		//echo $requete."<br>";
 						$resultat =  mysql_query($requete);
 						$ico = mysql_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('Horaire bloqué')\" onmouseout='UnTip()'>";
 							$cntIcon++;
-						} else {
-							//echo "<img src='/iconsFam/empty.png'>";
 						}
 						if($cntIcon==3) {
 							echo "<br>";
 							$cntIcon = 0;
 						}
-						
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribDual";
-		//echo $requete."<br>";
 						$resultat =  mysql_query($requete);
 						$ico = mysql_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('Hors liste tâches')\" onmouseout='UnTip()'>";
-						} else {
-							//echo "<img src='/iconsFam/empty.png'>";
 						}
 
 					} else {
@@ -586,7 +574,7 @@ foreach ($configurationATE as $pos => $value) {
 					*/
 					$dateNaissance = explode("-", $ligne['DateNaissance']);
 					if(count($dateNaissance)==3) {
-						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0])); 
+						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
 						echo "<td align='center'>$dateList</td>";
 					} else {
 						echo "<td align='center'>-</td>";
@@ -595,7 +583,7 @@ foreach ($configurationATE as $pos => $value) {
 					//echo "<td>$cell</td>";
 					//writeToHTMLCell($stmt,1,$troisplusun);
 					echo "</tr>\n";
-					
+
 				}
 			}
 			$cntCell++;
@@ -611,13 +599,13 @@ foreach ($configurationATE as $pos => $value) {
 
 //mémorisation de la liste d'éleves en session
 $_SESSION['listeId'] = $listeIds;
-	
+
 if(!$modeHTML) {
 	// générer la feuille excel
 	$writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 	header('Content-type: application/vnd.ms-excel');
 	header("Content-Disposition: attachment;Filename=liste.xls");
-	$writer->save('php://output'); 
+	$writer->save('php://output');
 } else {
 ?>
 </table></div><br><br>
@@ -636,11 +624,3 @@ if(!$modeHTML) {
 <?php include($app_section."/piedPage.php"); ?>
 <!-- end page -->
 <?php  // fin modeHTML?>
-
-
-
-
-
-
-
-
