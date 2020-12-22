@@ -210,10 +210,22 @@ if(isset($_POST['ToggleRec']) && !empty($_POST['ToggleRec'])) {
 }
 function getFieldToPrint($value, $ligne, $pos) {
 	switch ($value) {
-		case 0: if($pos==2) return $ligne['Valeur'];
-		case 1: return substr($ligne['Description'],0,18);
+		case 0: if($pos!=1) return $ligne['Valeur'];
+		case 1:
+			if($pos!=0) {
+				return substr($ligne['Description'],0,18);
+			} else {
+				// si une seule position utilisée, on coupe à 45
+				return substr($ligne['Description'],0,45);;
+			}
 		case 2: return $ligne['Valeur'];
-		case 3: return substr($ligne['Caracteristiques'],0,25);
+		case 3:
+			if($pos!=0) {
+				return substr($ligne['Caracteristiques'],0,25);
+			} else {
+				// si une seule position utilisée, on coupe à 45
+				return substr($ligne['Caracteristiques'],0,45);
+			}
 		case 4: return $ligne['LibelleBoitier'];
 		case 5: return $ligne['LibelleGenre'];
 		case 6: return $ligne['LibelleType'];
@@ -231,7 +243,11 @@ if(isset($_POST['numRecherche']) && !empty($_POST['numRecherche'])) {
 		//$libelleNew = $line['LibelleGenre']." ".$line['Valeur'];
 		//echo "ligne 1: ".getFieldToPrint($ligne['PosLigne1'],$ligne,1);
 		//echo "ligne 1: ".$line['PosLigne1'];
-		$libelleNew = getFieldToPrint($line['PosLigneC1'],$line,1)." ".getFieldToPrint($line['PosLigneC2'],$line,2);
+		if($line['PosLigneC1']!=$line['PosLigneC2']) {
+			$libelleNew = getFieldToPrint($line['PosLigneC1'],$line,1)." ".getFieldToPrint($line['PosLigneC2'],$line,2);
+		} else {
+				$libelleNew = getFieldToPrint($line['PosLigneC1'],$line,0);
+		}
 		$prixPce = (float)$line['PrixPce'];
 		$parts = explode(".",$prixPce);
 		if(count($parts)>1) {

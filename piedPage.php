@@ -3,6 +3,8 @@
 	$release .= "<br><b><i>2.4.3</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Textes pour commandes et étiquettes séparés";
+	$release .= "<br>- Possibilité d\'utiliser qu\'un seul champ pour le texte des commandes (sélectionner deux fois la même ligne)";
+	$release .= "<br>- Possibilité de valider une évaluation avec seulement un commentaire dans les observations";
 	$release .= "<br><b><i>2.4.2</i></b>";
 	$release .= "<br>Bugs:";
 	$release .= "<br>- Texte de la ligne de commande coupé si présence d\'apostrophes dans les champs de l\'article";

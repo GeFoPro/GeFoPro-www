@@ -765,10 +765,22 @@ REQ;
 
 function getFieldToPrint($value, $ligne, $pos) {
 	switch ($value) {
-		case 0: if($pos==2) return $ligne['Valeur'];
-		case 1: return substr($ligne['Description'],0,18);
+		case 0: if($pos!=1) return $ligne['Valeur'];
+		case 1:
+			if($pos!=0) {
+				return substr($ligne['Description'],0,18);
+			} else {
+				// si une seule position utilisée, on coupe à 45
+				return substr($ligne['Description'],0,45);;
+			}
 		case 2: return $ligne['Valeur'];
-		case 3: return substr($ligne['Caracteristiques'],0,25);
+		case 3:
+			if($pos!=0) {
+				return substr($ligne['Caracteristiques'],0,25);
+			} else {
+				// si une seule position utilisée, on coupe à 45
+				return substr($ligne['Caracteristiques'],0,45);
+			}
 		case 4: return $ligne['LibelleBoitier'];
 		case 5: return $ligne['LibelleGenre'];
 		case 6: return $ligne['LibelleType'];
@@ -1054,6 +1066,7 @@ $lastIDCom = 0;
 			$link = $fournLigne['LienArticle'];
 			$dataSheet = $fournLigne['LienDatasheet'];
 			$noArticle= str_replace(" ","",$fournLigne['NoArticle']);
+			$noArticleSep = $noArticle;
 			$noArticle= str_replace(".","",$noArticle);
 			$noArticle= str_replace("-","",$noArticle);
 
@@ -1095,7 +1108,12 @@ $lastIDCom = 0;
 			if(!empty($link)) {
 				echo "<a href='$link' target='_fournisseur'><img src='/iconsFam/world_link.png' align='absmiddle' onmouseover=\"Tip('Lien sur article du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
 			}
-			$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigneC2'],$ligne,2);
+			if($ligne['PosLigneC1']!=$ligne['PosLigneC2']) {
+				$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigneC2'],$ligne,2);
+			} else {
+				$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,0);
+			}
+			//$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigneC2'],$ligne,2);
 			$libelleCom = urlencode($libelleComNo);
 			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander &laquo;$libelleComNo&raquo;')\" onmouseout='UnTip()'></a></td></tr>";
 		}

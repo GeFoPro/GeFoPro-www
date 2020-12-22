@@ -1647,7 +1647,10 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			$resultat =  mysql_query($requete);
 			$evalAct = 0;
 			$evalCnt = 0;
-			$numEval = mysql_num_rows($resultat);
+			$numEval = 0;
+			if(!empty($resultat)) {
+				$numEval = mysql_num_rows($resultat);
+			}
 			if(!empty($resultat)&&$numEval>0) {
 				echo "<div id='criteres' width='100%' align='right'><i>Evaluation(s) présente(s), semaine(s) no: ";
 				while ($ligne = mysql_fetch_assoc($resultat)) {
@@ -2010,10 +2013,18 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				if(99==$ligne['IDCompetence'] && 2==$ligne['IDTypeEval']) {
 					// observation MAI également présente
 					$obsMAI = $ligne['Remarque'];
+					if($resp==null) {
+						$resp = $ligne['Responsable'];
+						$abbrResp = $ligne['abbr'];
+					}
 				}
 			} else {
 				// seule observation MAI présente
 				$obsMAI = $ligne['Remarque'];
+				if($resp==null) {
+					$resp = $ligne['Responsable'];
+					$abbrResp = $ligne['abbr'];
+				}
 			}
 		}
 
