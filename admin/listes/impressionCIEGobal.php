@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 // chargement des librairies PHPWord

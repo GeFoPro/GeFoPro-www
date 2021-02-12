@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 
@@ -62,10 +62,10 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		$requete = "update evaluation set DateValidationAuto = \"".date('Y-m-d')."\", Annee=".$annee.", NoSemestre=1 where IDEvaluation = $IDEvaluation";
 		//echo $requete;
 		mysql_query($requete);
-		
+
 	} else if($_POST['validation']=="unlock") {
 		//echo "unlock";
-		$requete = "update evaluation set DateValidationAuto = null, Annee=null, NoSemestre=null where IDEvaluation = $IDEvaluation"; 
+		$requete = "update evaluation set DateValidationAuto = null, Annee=null, NoSemestre=null where IDEvaluation = $IDEvaluation";
 		//echo $requete;
 		mysql_query($requete);
 	}
@@ -89,7 +89,7 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 	$seremsql = addslashes($_POST['remse']);
 
 	if($_POST['action']=="new") {
-		// nouvelles notes pour autre semestre (thème n'existe pas, période à tester)
+		// nouvelles notes pour autre semestre (thï¿½me n'existe pas, pï¿½riode ï¿½ tester)
 		// notes et remarques vides
 		$tesql='null';
 		$apsql='null';
@@ -100,34 +100,34 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 		$reremsql = "";
 		$seremsql = "";
 	} else if($_POST['action']=="insert") {
-		// aucune note présente (peut-être ni période, ni thème)
+		// aucune note prï¿½sente (peut-ï¿½tre ni pï¿½riode, ni thï¿½me)
 		$semestre = $_POST['semestreNew'];
 	} else if($_POST['action']=="update") {
-		// mise à jour (période et thème existent)
-		
+		// mise ï¿½ jour (pï¿½riode et thï¿½me existent)
+
 	}
 
 
-	// test période
+	// test pï¿½riode
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=1 and IDTypeNote=0 and Annee=".$annee." and NoSemestre=".$semestre;
 	$resultat =  mysql_query($requete);
 	if(mysql_num_rows($resultat)==0) {
-		// créer le thème avec pondération par défaut (0)
+		// crï¿½er le thï¿½me avec pondï¿½ration par dï¿½faut (0)
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (NULL, ".$IDEleve.", 1, 0, ".$semestre.", ".$annee.", '', 0)";
 		//echo $requete."<br>";
 		mysql_query($requete);
 	}
-	
-	// test thème
+
+	// test thï¿½me
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=0 and Annee=".$annee." and NoSemestre=".$semestre;
 	$resultat =  mysql_query($requete);
 	if(mysql_num_rows($resultat)==0) {
-		// créer le thème avec pondération par défaut (0)
+		// crï¿½er le thï¿½me avec pondï¿½ration par dï¿½faut (0)
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (NULL, ".$IDEleve.", ".$IDTheme.", 0, ".$semestre.", ".$annee.", '', ".$updPond.")";
 	} else {
-		// mise à jour de la pondération dans le thème
+		// mise ï¿½ jour de la pondï¿½ration dans le thï¿½me
 		$requete = "update notes set ponderation=".$updPond." where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=0 and NoSemestre=".$semestre." and Annee=".$annee;
-		
+
 	}
 	//echo $requete."<br>";
 	mysql_query($requete);
@@ -139,12 +139,12 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 		// pas de note -> insertion
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (".$tesql.", ".$IDEleve.", ".$IDTheme.", 2, ".$semestre.", ".$annee.", '".$teremsql."', 0)";
 	} else {
-		// note trouvée -> mise à jour
+		// note trouvï¿½e -> mise ï¿½ jour
 		$requete = "update notes set Note=".$tesql.", RemarqueNote='".$teremsql."' where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=2 and NoSemestre=".$semestre." and Annee=".$annee;
 	}
 	//echo $requete."<br>";
 	mysql_query($requete);
-	
+
 	// test note application
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=3 and Annee=".$annee." and NoSemestre=".$semestre;
 	$resultat =  mysql_query($requete);
@@ -152,12 +152,12 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 		// pas de note -> insertion
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (".$apsql.", ".$IDEleve.", ".$IDTheme.", 3, ".$semestre.", ".$annee.", '".$apremsql."', 0)";
 	} else {
-		// note trouvée -> mise à jour
+		// note trouvï¿½e -> mise ï¿½ jour
 		$requete = "update notes set Note=".$apsql.", RemarqueNote='".$apremsql."' where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=3 and NoSemestre=".$semestre." and Annee=".$annee;
 	}
 	//echo $requete."<br>";
 	mysql_query($requete);
-	
+
 	// test note rendement
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=4 and Annee=".$annee." and NoSemestre=".$semestre;
 	$resultat =  mysql_query($requete);
@@ -165,20 +165,20 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 		// pas de note -> insertion
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (".$resql.", ".$IDEleve.", ".$IDTheme.", 4, ".$semestre.", ".$annee.", '".$reremsql."', 0)";
 	} else {
-		// note trouvée -> mise à jour
+		// note trouvï¿½e -> mise ï¿½ jour
 		$requete = "update notes set Note=".$resql.", RemarqueNote='".$reremsql."' where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=4 and NoSemestre=".$semestre." and Annee=".$annee;
 	}
 	//echo $requete."<br>";
 	mysql_query($requete);
-	
-	// test note savoir être
+
+	// test note savoir ï¿½tre
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=5 and Annee=".$annee." and NoSemestre=".$semestre;
 	$resultat =  mysql_query($requete);
 	if(mysql_num_rows($resultat)==0) {
 		// pas de note -> insertion
 		$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (".$sesql.", ".$IDEleve.", ".$IDTheme.", 5, ".$semestre.", ".$annee.", '".$seremsql."', 0)";
 	} else {
-		// note trouvée -> mise à jour
+		// note trouvï¿½e -> mise ï¿½ jour
 		$requete = "update notes set Note=".$sesql.", RemarqueNote='".$seremsql."' where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=5 and NoSemestre=".$semestre." and Annee=".$annee;
 	}
 	//echo $requete."<br>";
@@ -249,7 +249,7 @@ function selNote(thisname) {
 
 function selSuivi(thisname) {
 	//alert(thisname);
-	
+
 	ta=document.getElementsByTagName('table')
 	for (i=0;i<ta.length;i++){
 		if (ta[i].getAttribute('tableSuivi')){
@@ -276,7 +276,7 @@ function submitNote(semestre,action) {
 </script>
 <?
 include($app_section."/userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 
 function wiki2html($text)
 {
@@ -320,7 +320,7 @@ echo "<div class='post'>";
 if(!empty($msg)) {
 	echo "<center>".$msg."</center>";
 }
-//echo "<center> <font color='#088A08'>Nouveauté: suivi simple de projets (21.03.2013)<br>Seuls les projets attribués à l'élève sont disponibles lors de l'ajour d'un suivi (15.01.2014)<br>Par défaut, seuls les suivi de projets en cours sont affichés. Un filtre de recherche est disponible (15.01.2014)<br>Le suivi est modifiable en cliquant simplement sur la ligne! (21.01.2014)<br>Support d'une syntaxe wiki simplifiée pour écriture en gras, italique et insertion de listes (21.01.2014)</font></center>";
+//echo "<center> <font color='#088A08'>Nouveautï¿½: suivi simple de projets (21.03.2013)<br>Seuls les projets attribuï¿½s ï¿½ l'ï¿½lï¿½ve sont disponibles lors de l'ajour d'un suivi (15.01.2014)<br>Par dï¿½faut, seuls les suivi de projets en cours sont affichï¿½s. Un filtre de recherche est disponible (15.01.2014)<br>Le suivi est modifiable en cliquant simplement sur la ligne! (21.01.2014)<br>Support d'une syntaxe wiki simplifiï¿½e pour ï¿½criture en gras, italique et insertion de listes (21.01.2014)</font></center>";
 echo "<br><table border='0' width='1000'><tr><td width='500'><h2>";
 
 foreach($listeId as $key => $valeur) {
@@ -338,7 +338,7 @@ foreach($listeId as $key => $valeur) {
 }
 echo "</h2></td><td align='center' width='500'><h2>";
 
-// si IDTheme pas imposé, prendre celui en cours
+// si IDTheme pas imposï¿½, prendre celui en cours
 if($IDTheme==0) {
 	// recherche du theme en cours selon journal de l'apprenti
 	$requete = "SELECT jo.IDTheme from journal as jo join theme as th on jo.IDTheme=th.IDTheme  where IDEleve=".$IDEleve." and TypeTheme < 2 order by DateJournal desc limit 1";
@@ -349,7 +349,7 @@ if($IDTheme==0) {
 	//echo "Actu: ".$IDTheme;
 }
 
-// recherche des themes à afficher
+// recherche des themes ï¿½ afficher
 $requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (TypeTheme=1 and pr.IDEleve = $IDEleve) group by IDTheme order by TypeTheme, NomTheme";
 //echo $requete;
 $resultat =  mysql_query($requete);
@@ -381,7 +381,7 @@ if($IDTheme==0) {
 
 
 
-// Rechercher l'année correspondant au thème choisi (IDTheme transmis)
+// Rechercher l'annï¿½e correspondant au thï¿½me choisi (IDTheme transmis)
 
 $requete = "SELECT min(DateJournal) as min, max(DateJournal) as max FROM journal jou where IDEleve = $IDEleve and jou.IDTheme = $IDTheme";
 $resultat =  mysql_query($requete);
@@ -394,13 +394,13 @@ if(!empty($resultat)&&mysql_num_rows($resultat)>0) {
 	$min = 0;
 }
 
-	
-// définition de l'annee et mois de la date max
+
+// dï¿½finition de l'annee et mois de la date max
 if($max!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisAct = date('m',strtotime($max));
 	$anneeAct = date('Y',strtotime($max));
-	//echo "date: ".$max.", mois: ".$moisAct.", année: ".$anneeAct;
+	//echo "date: ".$max.", mois: ".$moisAct.", annï¿½e: ".$anneeAct;
 	if($moisAct<8) {
 		if(empty($annee)) {
 			$annee = $anneeAct-1;
@@ -417,29 +417,29 @@ if($max!=0) {
 } else {
 	$anneeMax=date('Y');
 }
-	
-// définition de l'annee et mois min
+
+// dï¿½finition de l'annee et mois min
 if($min!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisActMin = date('m',strtotime($min));
 	$anneeActMin = date('Y',strtotime($min));
-	//echo "date: ".$min.", mois: ".$moisActMin.", année: ".$anneeActMin;
+	//echo "date: ".$min.", mois: ".$moisActMin.", annï¿½e: ".$anneeActMin;
 	if($moisActMin<8) {
 		$anneeMin = $anneeActMin-1;
 	} else {
 		$anneeMin = $anneeActMin;
 	}
-	
+
 } else {
 	$anneeMin = date('Y') - 5;
 }
-	
 
-/* année en cours */
+
+/* annï¿½e en cours */
 //$annee = date('Y');
 
 //$mois = date('m');
-/* années pour en-tête */
+/* annï¿½es pour en-tï¿½te */
 //if($mois<8) {
 //	$anneePlus = $annee;
 //	$annee = $annee-1;
@@ -447,15 +447,15 @@ if($min!=0) {
 //	$anneePlus= $annee+1;
 //}
 //echo $annee."/".$anneeMin."/".$anneeMax
-// construction de la liste d'années
-$optionAnneeEval = "<select id='anneeAff' name='anneeAff' onChange='document.getElementById(\"myForm\").submit();'>";	
-$anneeToday = date('Y');	
+// construction de la liste d'annï¿½es
+$optionAnneeEval = "<select id='anneeAff' name='anneeAff' onChange='document.getElementById(\"myForm\").submit();'>";
+$anneeToday = date('Y');
 for($cntA=0;$cntA<5;$cntA++) {
 	//echo $annee."/".$anneeMin."/".$anneeMax."//".($anneeToday-$cntA)."<br>";
 	if($anneeMin<=($anneeToday-$cntA)&&$anneeMax>=($anneeToday-$cntA)) {
 		$optionAnneeEval .= "<option value='".($anneeToday-$cntA)."'";
 		if(($anneeToday-$cntA)==$annee) {
-			$optionAnneeEval .= " selected ";	
+			$optionAnneeEval .= " selected ";
 		}
 		$optionAnneeEval .= ">".($anneeToday-$cntA)."/".($anneeToday-$cntA+1)."</option>";
 	}
@@ -463,7 +463,7 @@ for($cntA=0;$cntA<5;$cntA++) {
 $optionAnneeEval .= "</select>";
 
 echo "</h2></td><td width='150' align='right'><b>Theme/Projet:</b></td><td><select name='IDTheme' onChange='document.getElementById(\"anneeAff\").value=0;document.getElementById(\"myForm\").submit();'>".$option."</select></td></tr>";
-	echo "<tr><td></td><td></td><td width='150' align='right'><b>Année:</b></td><td>".$optionAnneeEval."</td></tr>";
+	echo "<tr><td></td><td></td><td width='150' align='right'><b>Annï¿½e:</b></td><td>".$optionAnneeEval."</td></tr>";
 	echo "</table>";
 
 if($IDTheme!=0) {
@@ -483,18 +483,18 @@ GROUP BY IDTheme";
 	$resultat =  mysql_query($requete);
 	$ligneHeures = mysql_fetch_assoc($resultat);
 
-	// selection de l'évaluation
+	// selection de l'ï¿½valuation
 	//if($mois<8) {
 	//	$anneeToday = $anneeToday-1;
 	//}
-	// recherche de l'auto-évaluation concernée
+	// recherche de l'auto-ï¿½valuation concernï¿½e
 	//if($annee!=$anneeToday) {
 	//	$requete = "SELECT * FROM evaluation where IDTheme=".$IDTheme." and IDEleve=".$IDEleve." and Annee = ".$annee;
 	//} else {
 		$requete = "SELECT * FROM evaluation where IDTheme=".$IDTheme." and IDEleve=".$IDEleve." and (Annee is null OR Annee = ".$annee.")";
 	//}
 	//echo $requete;
-	// lecture de l'autoévaluation
+	// lecture de l'autoï¿½valuation
 	$resultat =  mysql_query($requete);
 	if(!empty($resultat)) {
 		$num_rows = mysql_num_rows($resultat);
@@ -509,7 +509,7 @@ GROUP BY IDTheme";
 			//$trtxt = str_replace('"', "'", $ligne['TravailRemarque']);
 			//$trtxt = str_replace("\r\n", '<br/>', $trtxt);
 			$prtxt = wiki2html($ligne['ProgretsRemarque']);
-			
+
 			$ditxt = wiki2html($ligne['DifficultesRemarque']);
 			//echo $ditxt;
 			$amtxt = $ligne['Ameliorations'];
@@ -522,18 +522,18 @@ GROUP BY IDTheme";
 			echo "<input type='hidden' name='IDEvaluation' value='".$ligne['IDEvaluation']."'>";
 		} else if($num_rows>0) {
 			// ne devrait pas arriver
-			echo "Oups, plus d'un enregistrement trouvé...";
+			echo "Oups, plus d'un enregistrement trouvï¿½...";
 		}
 	}
 
-	// recherche de la période en fonction des journaux
-	// requete pour le theme donné (retiré: join theme th on jou.IDTheme=th.IDTheme)
+	// recherche de la pï¿½riode en fonction des journaux
+	// requete pour le theme donnï¿½ (retirï¿½: join theme th on jou.IDTheme=th.IDTheme)
 	$requete = "SELECT min(DateJournal) as min, max(DateJournal) as max FROM journal jou where IDEleve = $IDEleve and jou.IDTheme = $IDTheme ";
 	$requete .= "and (DateJournal between '".$annee."-08-01' and '".$anneePlus."-07-31') order by DateJournal";
-	//echo "Période:".$requete."<br>";
+	//echo "Pï¿½riode:".$requete."<br>";
 	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);	
-	$min = $ligne['min']; 
+	$ligne = mysql_fetch_assoc($resultat);
+	$min = $ligne['min'];
 	$max = $ligne['max'];
 	$semMin = date('W',strtotime($min));
 	$semMax = date('W',strtotime($max));
@@ -543,13 +543,13 @@ GROUP BY IDTheme";
 		$vendredi = strtotime($max)+(5-date("N",strtotime($max)))*86400;
 		//echo date("N",strtotime($max))." ,vendredi: ".date('d.m.Y',$vendredi);
 		$maxVendredi = date('Y-m-d',$vendredi);
-		
+
 	}
 
-	// recherche de l'évaluation		
+	// recherche de l'ï¿½valuation
 	$notesTE = array();
 	$pondsTE = array();
-	$remsTE = array(); 
+	$remsTE = array();
 	$notesTECnt[1] = 0;
 	$notesTECnt[2] = 0;
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and Annee=".$annee." and IDTypeNote <> 6";
@@ -568,19 +568,19 @@ GROUP BY IDTheme";
 			}
 		}
 	}
-	
+
 	$pondDef="";
-	// si pas de pondération, recherche de la podération par défaut du thème
+	// si pas de pondï¿½ration, recherche de la podï¿½ration par dï¿½faut du thï¿½me
 	$requete = "SELECT * from theme where IDTheme = ".$IDTheme;
 	$resultatTheme = mysql_query($requete);
 	$ligne = mysql_fetch_assoc($resultatTheme);
 	if(isset($ponderation[1]) && $ponderation[1]==0) {
-		$ponderation[1] = $ligne['PonderationTheme'];	
+		$ponderation[1] = $ligne['PonderationTheme'];
 	}
 	if(isset($ponderation[2]) && $ponderation[2]==0) {
-		$ponderation[2] = $ligne['PonderationTheme'];	
+		$ponderation[2] = $ligne['PonderationTheme'];
 	}
-	$pondDef="Pondération par défaut: ".$ligne['PonderationTheme'];
+	$pondDef="Pondï¿½ration par dï¿½faut: ".$ligne['PonderationTheme'];
 	//print_r($ponderation);
 
 	echo "<br><div id='corners'>";
@@ -591,14 +591,14 @@ GROUP BY IDTheme";
 	if($ligne['Objectif']!=0) {
 		 $objtxt = "Objectif: ".$ligne['Objectif']."h";
 	}
-	echo "<tr><td width='150'><b><a href=$href>Heures consacrées <img src='/iconsFam/external.png'>:</a></b></td><td>".sprintf("%2.1f",$ligneHeures['heures'])."h / ".sprintf("%d",$ligneHeures['jours'])." jours</td><td width='10'></td><td width='150'>".$objtxt."</td>";
-	
-	//echo "<td width='50'></td><td width='100'><b>Suivi:</b></td><td onmouseover='Tip(\"<table><tr><td>19.02.2016</td><td>endort sur son bureau</td></tr><tr><td>23.02.2016</td><td>Est tombé de sa chaise</td></tr></table>\")' onmouseout='UnTip()'>12 entrées</td></tr>";
-	
-	// 2ème colonne : partie prof
+	echo "<tr><td width='150'><b><a href=$href>Heures consacrï¿½es <img src='/iconsFam/external.png'>:</a></b></td><td>".sprintf("%2.1f",$ligneHeures['heures'])."h / ".sprintf("%d",$ligneHeures['jours'])." jours</td><td width='10'></td><td width='150'>".$objtxt."</td>";
+
+	//echo "<td width='50'></td><td width='100'><b>Suivi:</b></td><td onmouseover='Tip(\"<table><tr><td>19.02.2016</td><td>endort sur son bureau</td></tr><tr><td>23.02.2016</td><td>Est tombï¿½ de sa chaise</td></tr></table>\")' onmouseout='UnTip()'>12 entrï¿½es</td></tr>";
+
+	// 2ï¿½me colonne : partie prof
 	echo "<td width='60'></td><td width='10'></td><td width='450'></td></tr>";
-	// fin première ligne
-	
+	// fin premiï¿½re ligne
+
 	if($min!='') {
 		if($semMax>=$semMin) {
 			$nombreSem = $semMax-$semMin+1;
@@ -607,12 +607,12 @@ GROUP BY IDTheme";
 			$nombreSem = $semMax+52-$semMin+1;
 		}
 		$txtsemaines = $nombreSem." semaine(s)";
-		
-		echo "<tr><td><b>Période:</b></td><td colspan='3'>du ".date('d.m.Y', strtotime($min))." au ".date('d.m.Y', strtotime($max))." / ".$txtsemaines."</td>";
+
+		echo "<tr><td><b>Pï¿½riode:</b></td><td colspan='3'>du ".date('d.m.Y', strtotime($min))." au ".date('d.m.Y', strtotime($max))." / ".$txtsemaines."</td>";
 	} else {
-		echo "<tr><td><b>Période:</b></td><td colspan='3'>Aucun journal trouvé</td>";
+		echo "<tr><td><b>Pï¿½riode:</b></td><td colspan='3'>Aucun journal trouvï¿½</td>";
 	}
-	
+
 	if(empty($semestre)) {
 		if(isset($ponderation[1])) {
 			$semestre = 1;
@@ -626,7 +626,7 @@ GROUP BY IDTheme";
 
 	echo "<tr height='20'><td><td></td><td></td><td></td><td></td><td></td><td></td></tr>";
 	$href = "evaluations.php?from=theme&anneeAff=".$annee."&nom=".urlencode($nom)."&prenom=".$prenom."&idEleve=".$IDEleve."&IDTheme=".$IDTheme;
-	echo "<tr><td><b><a href=$href>Auto-évaluation <img src='/iconsFam/external.png'></a></b><td></td>";
+	echo "<tr><td><b><a href=$href>Auto-ï¿½valuation <img src='/iconsFam/external.png'></a></b><td></td>";
 	$href = "notesEleve.php?from=theme&annee=".$annee."&nom=".urlencode($nom)."&prenom=".$prenom."&expand=expand&idEleve=".$IDEleve."&IDTheme=".$IDTheme;
 	$hrefSem1 = "themes.php?from=theme&anneeAff=".$annee."&semestre=1&nom=".urlencode($nom)."&prenom=".$prenom."&idEleve=".$IDEleve."&IDTheme=".$IDTheme;
 	$hrefSem2 = "themes.php?from=theme&anneeAff=".$annee."&semestre=2&nom=".urlencode($nom)."&prenom=".$prenom."&idEleve=".$IDEleve."&IDTheme=".$IDTheme;
@@ -634,7 +634,7 @@ GROUP BY IDTheme";
 	if(isset($ponderation[1])&&isset($ponderation[2])) {
 		if($semestre==1) {
 			echo "(<a href=$hrefSem1><b>S1</b></a> | <a href=$hrefSem2>S2</a>) ";
-		} else { 
+		} else {
 			echo "(<a href=$hrefSem1>S1</a> | <a href=$hrefSem2><b>S2</b></a>) ";
 		}
 	}
@@ -642,22 +642,22 @@ GROUP BY IDTheme";
 
 	echo "<tr valign='bottom'><td>Travail accompli:</td><td onmouseover=\"Tip('".addslashes($trtxt)."')\" onmouseout='UnTip()'>".progressB($trpond)."</td>";
 
-	echo "<td rowspan='8' onmouseover='selNote(\"\")'></td><td rowspan='2' valign='middle'>Pondération thème:</td><td rowspan='2'><input type='texte' name='ponderation' value='".$ponderation[$semestre]."' size ='3' onmouseover=\"Tip('".$pondDef."')\" onmouseout='UnTip()'></td><td rowspan='2'></td><td rowspan='2'></td></tr>";
+	echo "<td rowspan='8' onmouseover='selNote(\"\")'></td><td rowspan='2' valign='middle'>Pondï¿½ration thï¿½me:</td><td rowspan='2'><input type='texte' name='ponderation' value='".$ponderation[$semestre]."' size ='3' onmouseover=\"Tip('".$pondDef."')\" onmouseout='UnTip()'></td><td rowspan='2'></td><td rowspan='2'></td></tr>";
 	echo "<tr><td>Progrets:</td><td onmouseover=\"Tip('".addslashes($prtxt)."')\" onmouseout='UnTip()'>".progressB($prpond)."</td></tr>";
-	echo "<tr onmouseover='selNote(\"\")'><td>Difficultés:</td><td onmouseover=\"Tip('".addslashes($ditxt)."')\" onmouseout='UnTip()'>".progressB($dipond)."</td>";
-	echo "<td rowspan='2'>Travaux écrits:</td><td rowspan='2' colspan='3'>";
+	echo "<tr onmouseover='selNote(\"\")'><td>Difficultï¿½s:</td><td onmouseover=\"Tip('".addslashes($ditxt)."')\" onmouseout='UnTip()'>".progressB($dipond)."</td>";
+	echo "<td rowspan='2'>Travaux ï¿½crits:</td><td rowspan='2' colspan='3'>";
 	$moyenne = 0;
 	$cntMoy = 0;
 	if(!empty($notesTE[$semestre])) {
 		foreach($notesTE[$semestre] as $key => $valeur) {
 			$txt = $remsTE[$semestre][$key];
-			if($pondsTE[$semestre][$key]!=1) $txt.="<br>Pondération x".($pondsTE[$semestre][$key]);
+			if($pondsTE[$semestre][$key]!=1) $txt.="<br>Pondï¿½ration x".($pondsTE[$semestre][$key]);
 			echo "<input type='text' name='note$key' value='$valeur' size='3' readonly onmouseover=\"Tip('".addslashes($txt)."')\" onmouseout='UnTip()'>";
 			$moyenne += $valeur*$pondsTE[$semestre][$key];
 			$cntMoy += $pondsTE[$semestre][$key];
 		}
 		if(count($notesTE[$semestre])!=0) {
-			echo " = <input type='text' name='moyenne' value='".sprintf("%01.1f",round($moyenne/($cntMoy),1))."' size='3' readonly onmouseover=\"Tip('Moyenne travaux écrits')\" onmouseout='UnTip()'>";
+			echo " = <input type='text' name='moyenne' value='".sprintf("%01.1f",round($moyenne/($cntMoy),1))."' size='3' readonly onmouseover=\"Tip('Moyenne travaux ï¿½crits')\" onmouseout='UnTip()'>";
 		}
 	}
 	echo "</td>";
@@ -678,21 +678,21 @@ GROUP BY IDTheme";
 	echo "<td noteSel='ap' onmouseover='selNote(\"ap\")'>Application:</td><td noteSel='ap' onmouseover='selNote(\"ap\")'><input type='text' name='ap' value='".$notePap[$semestre]."' size='3'></td></td><td><img noteSel='ap' src='/iconsFam/fleche.png' style='display:none'></td></tr>";
 	echo "<tr><td>Rendement:</td><td><input type='text' name='rero' value='".$notere."' size='3' readonly></td>";
 	echo "<td noteSel='re' onmouseover='selNote(\"re\")'>Rendement:</td><td noteSel='re' onmouseover='selNote(\"re\")'><input type='text' name='re' value='".$notePre[$semestre]."' size='3'></td></td><td><img noteSel='re' src='/iconsFam/fleche.png' style='display:none'></td></tr>";
-	echo "<tr><td>Savoir-être:</td><td ><input type='text' name='sero' value='".$notese."' size='3' readonly></td>";
-	echo "<td noteSel='se' onmouseover='selNote(\"se\")'>Savoir-être:</td><td noteSel='se' onmouseover='selNote(\"se\")'><input type='text' name='se' value='".$notePse[$semestre]."' size='3'></td></td><td><img noteSel='se' src='/iconsFam/fleche.png' style='display:none'></td></tr>";
-	
-	echo "<tr style='height:15px;' onmouseover='selNote(\"\")'></tr><tr onmouseover='selNote(\"\")'><td><i>Auto-évaluation validée le:</i></td><td colspan ='2'><i>";
+	echo "<tr><td>Savoir-ï¿½tre:</td><td ><input type='text' name='sero' value='".$notese."' size='3' readonly></td>";
+	echo "<td noteSel='se' onmouseover='selNote(\"se\")'>Savoir-ï¿½tre:</td><td noteSel='se' onmouseover='selNote(\"se\")'><input type='text' name='se' value='".$notePse[$semestre]."' size='3'></td></td><td><img noteSel='se' src='/iconsFam/fleche.png' style='display:none'></td></tr>";
+
+	echo "<tr style='height:15px;' onmouseover='selNote(\"\")'></tr><tr onmouseover='selNote(\"\")'><td><i>Auto-ï¿½valuation validï¿½e le:</i></td><td colspan ='2'><i>";
 	if($num_rows==0) {
 		echo "pas encore saisie";
 	} else {
 		if(empty($dateValidation) || $dateValidation=="0000-00-00") {
-			echo "pas encore validée&nbsp;&nbsp;<img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider l\'auto-évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lock\")'>";
+			echo "pas encore validï¿½e&nbsp;&nbsp;<img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider l\'auto-ï¿½valuation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lock\")'>";
 		} else {
-			echo date('d.m.Y', strtotime($dateValidation))."&nbsp;&nbsp;<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider l\'auto-évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\")'>";
+			echo date('d.m.Y', strtotime($dateValidation))."&nbsp;&nbsp;<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dï¿½valider l\'auto-ï¿½valuation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\")'>";
 		}
 	}
 	//echo "</i></td><td></td><td></td><td></td><td></td></tr>";
-	//echo "<tr><td><i>Période concernée:</i></td><td colspan ='2'><i>";
+	//echo "<tr><td><i>Pï¿½riode concernï¿½e:</i></td><td colspan ='2'><i>";
 	//if($num_rows==0) {
 	//	echo "-";
 	//} else {
@@ -702,9 +702,9 @@ GROUP BY IDTheme";
 	//		echo $anneeEval."/".($anneeEval+1).", semestre ".$semestreEval;;
 	//	}
 	//}
-	echo "</i></td><td><i>Période concernée:</i></td><td colspan='3'>";
+	echo "</i></td><td><i>Pï¿½riode concernï¿½e:</i></td><td colspan='3'>";
 	if(!isset($ponderation[$semestre])) {
-		echo "<select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ème semestre</option></select><img src='/iconsFam/page_add.png' onmouseover=\"Tip('Ajouter les notes au semestre')\" onmouseout='UnTip()' align='absmiddle' onClick='submitNote(0,\"insert\")'>";
+		echo "<select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ï¿½me semestre</option></select><img src='/iconsFam/page_add.png' onmouseover=\"Tip('Ajouter les notes au semestre')\" onmouseout='UnTip()' align='absmiddle' onClick='submitNote(0,\"insert\")'>";
 	} else {
 		echo "<i>".$annee."/".$anneePlus.", semestre ".$semestre."</i> <img src='/iconsFam/page_save.png' onmouseover=\"Tip('Appliquer les modifications')\" onmouseout='UnTip()' align='absmiddle' onClick='submitNote(".$semestre.",\"update\")'>";
 		if(!isset($ponderation[1])||!isset($ponderation[2])) {
@@ -719,17 +719,17 @@ GROUP BY IDTheme";
 	echo "<table border='0'><tr><td valign='top'>";
 	echo "<table id='hor-minimalist-b'><tr><th>Source</th><th>Nbr</th></tr>";
 
-	// Remarques générales
+	// Remarques gï¿½nï¿½rales
 	$requete = "select * from attribeleves where IDEleve=".$IDEleve." and IDAttribut=102 and (Date between '".$min."' and '".$maxVendredi."') order by Date";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
-	echo "<tr onmouseover='selSuivi(\"tableRem\")'><td>Remarques générales</td><td align='right'>".$num_rows."</td></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableRem\")'><td>Remarques gï¿½nï¿½rales</td><td align='right'>".$num_rows."</td></tr>";
 	$tableRem = "<table id='hor-minimalist-b' tableSuivi='tableRem' style='display:none'><tr><th width='70'>Date</th><th width='700'>Remarque</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableRem .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Remarque']."</td></tr>";
 	}
 	$tableRem .= "</table>";
-	
+
 
 	// Annonce maladie
 	$requete = "select * from attribeleves where IDEleve=".$IDEleve." and IDAttribut=101 and (Date between '".$min."' and '".$maxVendredi."') order by Date";
@@ -741,21 +741,21 @@ GROUP BY IDTheme";
 		$tableMal .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Remarque']."</td></tr>";
 	}
 	$tableMal .= "</table>";
-	
 
-	// Annonce congé
+
+	// Annonce congï¿½
 	$requete = "select * from attribeleves where IDEleve=".$IDEleve." and IDAttribut=106 and (Date between '".$min."' and '".$maxVendredi."') order by Date";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
-	echo "<tr onmouseover='selSuivi(\"tableCong\")'><td>Annonce congé</td><td align='right'>".$num_rows."</td></tr>";
-	$tableCong = "<table id='hor-minimalist-b' tableSuivi='tableCong' style='display:none'><tr><th width='70'>Date</th><th width='700'>Motif congé</th></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableCong\")'><td>Annonce congï¿½</td><td align='right'>".$num_rows."</td></tr>";
+	$tableCong = "<table id='hor-minimalist-b' tableSuivi='tableCong' style='display:none'><tr><th width='70'>Date</th><th width='700'>Motif congï¿½</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableCong .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Remarque']."</td></tr>";
 	}
 	$tableCong .= "</table>";
-	
 
-	// Carnet non signé/présenté
+
+	// Carnet non signï¿½/prï¿½sentï¿½
 	$requete = "select * from attribeleves where IDEleve=".$IDEleve." and IDAttribut=103 and (Date between '".$min."' and '".$maxVendredi."') order by Date";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
@@ -763,15 +763,15 @@ GROUP BY IDTheme";
 	if($num_rows>0) {
 		$style = "style='color:#ff0000'";
 	}
-	echo "<tr onmouseover='selSuivi(\"tableCar\")'><td>Carnet non signé/présenté</td><td align='right' ".$style.">".$num_rows."</td></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableCar\")'><td>Carnet non signï¿½/prï¿½sentï¿½</td><td align='right' ".$style.">".$num_rows."</td></tr>";
 	$tableCar = "<table id='hor-minimalist-b' tableSuivi='tableCar' style='display:none'><tr><th width='70'>Date</th><th width='700'>Remarques</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableCar .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Remarque']."</td></tr>";
 	}
 	$tableCar .= "</table>";
-	
 
-	// Absence sans appel téléphonique
+
+	// Absence sans appel tï¿½lï¿½phonique
 	$requete = "select * from attribeleves where IDEleve=".$IDEleve." and IDAttribut=105 and (Date between '".$min."' and '".$maxVendredi."') order by Date";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
@@ -779,20 +779,20 @@ GROUP BY IDTheme";
 	if($num_rows>0) {
 		$style = "style='color:#ff0000'";
 	}
-	echo "<tr onmouseover='selSuivi(\"tableAbs\")'><td>Absence sans appel téléphonique</td><td align='right' ".$style.">".$num_rows."</td></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableAbs\")'><td>Absence sans appel tï¿½lï¿½phonique</td><td align='right' ".$style.">".$num_rows."</td></tr>";
 	$tableAbs = "<table id='hor-minimalist-b'  tableSuivi='tableAbs' style='display:none'><tr><th width='70'>Date</th><th width='700'>Remarques</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableAbs .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Remarque']."</td></tr>";
 	}
 	$tableAbs .= "</table>";
-	
-	
-	// Activités journaux
+
+
+	// Activitï¿½s journaux
 	$requete = "select * from journal where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and (DateJournal between '".$min."' and '".$maxVendredi."') order by DateJournal";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
-	echo "<tr onmouseover='selSuivi(\"tableJrn\")'><td>Activités jounaux</td><td align='right'>".$num_rows."</td></tr>";
-	$tableJrn = "<table id='hor-minimalist-b' tableSuivi='tableJrn' style='display:none'><tr><th width='70'>Date</th><th width='700'>Activités</th></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableJrn\")'><td>Activitï¿½s jounaux</td><td align='right'>".$num_rows."</td></tr>";
+	$tableJrn = "<table id='hor-minimalist-b' tableSuivi='tableJrn' style='display:none'><tr><th width='70'>Date</th><th width='700'>Activitï¿½s</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		if(empty($ligne['DateValidation']) || $ligne['DateValidation']=='0000-00-00') {
 			$tableJrn .= "<tr><td style='color:#C0C0C0' valign='top'>".date('d.m.Y', strtotime($ligne['DateJournal']))."</td><td style='color:#C0C0C0'>".wiki2html($ligne['Commentaires'])."</td></tr>";
@@ -802,7 +802,7 @@ GROUP BY IDTheme";
 	}
 	$tableJrn .= "</table>";
 
-	// Activités journaux non validées
+	// Activitï¿½s journaux non validï¿½es
 	$requete = "select * from journal where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and (DateJournal between '".$min."' and '".$maxVendredi."') and DateValidation is null order by DateJournal";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
@@ -810,31 +810,31 @@ GROUP BY IDTheme";
 	if($num_rows>0) {
 		$style = "style='color:#ff0000'";
 	}
-	echo "<tr onmouseover='selSuivi(\"tableJnv\")'><td>&nbsp &nbsp non validées</td><td align='right' ".$style.">".$num_rows."</td></tr>";
-	$tableJnv = "<table id='hor-minimalist-b' tableSuivi='tableJnv' style='display:none'><tr><th width='70'>Date</th><th width='700'>Activités</th></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableJnv\")'><td>&nbsp &nbsp non validï¿½es</td><td align='right' ".$style.">".$num_rows."</td></tr>";
+	$tableJnv = "<table id='hor-minimalist-b' tableSuivi='tableJnv' style='display:none'><tr><th width='70'>Date</th><th width='700'>Activitï¿½s</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableJnv .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['DateJournal']))."</td><td>".wiki2html($ligne['Commentaires'])."</td></tr>";
 	}
 	$tableJnv .= "</table>";
 
-	
-	// Corrections demandées sur journaux
+
+	// Corrections demandï¿½es sur journaux
 	$requete = "select * from remarquesuivi where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and (DateSaisie between '".$min."' and '".$maxVendredi."') and TypeRemarque=2 order by DateSaisie";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
-	echo "<tr onmouseover='selSuivi(\"tableJer\")'><td>&nbsp &nbsp corrections demandées</td><td align='right'>".$num_rows."</td></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableJer\")'><td>&nbsp &nbsp corrections demandï¿½es</td><td align='right'>".$num_rows."</td></tr>";
 	$tableJer = "<table id='hor-minimalist-b' tableSuivi='tableJer' style='display:none'><tr><th width='70'>Date</th><th width='700'>Remarques</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableJer .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['DateSaisie']))."</td><td>".wiki2html($ligne['Remarque'])."</td></tr>";
 	}
 	$tableJer.= "</table>";
 
-	
-	// Corrections sur journaux à valider
+
+	// Corrections sur journaux ï¿½ valider
 	$requete = "select * from remarquesuivi where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and (DateSaisie between '".$min."' and '".$maxVendredi."') and TypeRemarque=3 order by DateSaisie";
 	$resultat =  mysql_query($requete);
 	$num_rows = mysql_num_rows($resultat);
-	echo "<tr onmouseover='selSuivi(\"tableJco\")'><td>&nbsp &nbsp corrections à valider</td><td align='right'>".$num_rows."</td></tr>";
+	echo "<tr onmouseover='selSuivi(\"tableJco\")'><td>&nbsp &nbsp corrections ï¿½ valider</td><td align='right'>".$num_rows."</td></tr>";
 	$tableJco = "<table id='hor-minimalist-b' tableSuivi='tableJco' style='display:none'><tr><th width='70'>Date</th><th width='700'>Remarques</th></tr>";
 	while ($ligne = mysql_fetch_assoc($resultat)) {
 		$tableJco .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['DateSaisie']))."</td><td>".wiki2html($ligne['Remarque'])."</td></tr>";
@@ -864,7 +864,7 @@ GROUP BY IDTheme";
 	//	$tableSpr .= "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['DateSaisie']))."</td><td>".wiki2html($ligne['RemarqueSuivi'])."</td></tr>";
 	//}
 	//$tableSpr .= "</table>";
-	
+
 	echo "</table></td><td width='800' valign='top' height='250'><div style='overflow-y:auto; height:250px'>";
 
 	echo $tableRem;
@@ -878,9 +878,9 @@ GROUP BY IDTheme";
 	echo $tableJco;
 	echo $tableShe;
 	//echo $tableSpr;
-	
+
 	echo "</div></td></tr></table></div>";
-	
+
 
 }
 

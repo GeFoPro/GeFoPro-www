@@ -9,7 +9,7 @@ if(hasAdminRigth()) {
 		$nom = $_GET['nom'];
 		$prenom = $_GET['prenom'];
 		$IDEleve = $_GET['idEleve'];
-		$classe = $_GET['Classe'];
+		$classe = (isset($_GET['Classe'])?$_GET['Classe']:"");
 	} else if(isset($_POST['nom'])) {
 		$nom = $_POST['nom'];
 		$prenom = $_POST['prenom'];
@@ -24,8 +24,8 @@ if(hasAdminRigth()) {
 		$requete = "select * from eleves el join elevesbk bk on el.IDGDN=bk.IDGDN where Userid='".$_SESSION['user_login']."'";
     }
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_assoc($resultat);
 	$nom = $ligne['Nom'];
 	//echo "Nom: ".$nom;
 	$prenom = $ligne['Prenom'];
@@ -49,7 +49,7 @@ if(isset($_GET['triSem'])) {
 	$triSemaine = $_GET['triSem'];
 	$_SESSION['triSem'] = $triSemaine;
 } else {
-	$triSemaine = $_SESSION['triSem'];
+	$triSemaine = (isset($_SESSION['triSem'])?$_SESSION['triSem']:"");
 }
 if(isset($_POST['vue'])) {
 	$vue = $_POST['vue'];
@@ -151,7 +151,7 @@ if(isset($_POST['triPeriode'])) {
 		$triPeriode = $_GET['triPeriode'];
 		$_SESSION['triPeriode'] = $triPeriode;
 	} else {
-		$triPeriode = $_SESSION['triPeriode'];
+		$triPeriode = (isset($_SESSION['triPeriode'])?$_SESSION['triPeriode']:"");
 	}
 }
 
@@ -297,7 +297,7 @@ if(isset($_POST['AjoutActivite'])) {
 		// ajout d'un attribut
    		$requete = "INSERT INTO journal (IDTheme, IDEleve, DateJournal, Heures, Commentaires, HeureDebut, HeureFin) values ($IDTheme, $IDEl, \"$date\", \"$heures\", \"$commentaires\", \"".$heureDebut.":00\", \"".$heureFin.":00\")";
     		//echo "requete avec ".$login.":".$requete."<br>";
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 }
 
@@ -335,7 +335,7 @@ if(isset($_POST['actionRemarque'])&&!empty($_POST['actionRemarque'])) {
 		$requete = "UPDATE remarquesuivi set Remarque=\"$rema\", DateSaisie=\"$dateRema\" where IDRemSuivi=".$idremUpd;
 	}
     	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 
 }
 
@@ -343,7 +343,7 @@ if(isset($_POST['actionRemarque'])&&!empty($_POST['actionRemarque'])) {
 if(isset($_GET['IDJournal'])) {
 	$requete = "DELETE FROM journal where IDJournal=$_GET[IDJournal]";
 	//echo $requete;
-	mysql_query($requete);
+	mysqli_query($connexionDB,$requete);
 
 }
 // effacement ou changement de type d'une remarque
@@ -355,7 +355,7 @@ if(isset($_GET['IDRemSuivi'])) {
 		$requete = "UPDATE remarquesuivi set TypeRemarque=3 where IDRemSuivi=$_GET[IDRemSuivi]";
 	}
 	//echo $requete;
-	mysql_query($requete);
+	mysqli_query($connexionDB,$requete);
 
 }
 
@@ -414,7 +414,7 @@ if(isset($_POST['activite'])&&!empty($_POST['activite'])) {
 	if(empty($msgErreur)) {
 		$requete = "update journal set IDTheme=$themeMaj , DateJournal=\"".$dateMaj."\", Commentaires=\"".$commentairesMaj."\", Heures=$heuresMaj, HeureDebut=\"".$heureDebutMaj."\", HeureFin=\"".$heureFinMaj."\" where IDJournal=".$activite;
 		//echo "<br>".$requete;
-    	$resultat =  mysql_query($requete);
+    	$resultat =  mysqli_query($connexionDB,$requete);
 	}
 
 }
@@ -424,12 +424,12 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		//echo "lock";
 		$requete = "update journal set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and DateValidation is null and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
 		//echo $requete;
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	} else if($_POST['validation']=="unlock") {
 		//echo "unlock";
 		$requete = "update journal set DateValidation = null where IDEleve = $IDEleve and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
 		//echo $requete;
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	} else if($_POST['validation']=="lockEval") {
 		//if($vue==1) {
 			$requete = "update evalhebdo set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $anneeCalc";
@@ -437,17 +437,17 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		//	$requete = "update evalhebdo set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and DateValidation is NULL";
 		//}
 		//echo $requete;
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 		if($vue==1) {
 			// si vue semaine, valider journaux de la semaine également
 			$requete = "update journal set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and DateValidation is null and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
 			//echo $requete;
-			mysql_query($requete);
+			mysqli_query($connexionDB,$requete);
 		} else {
 			// si vue theme, valider tous les journaux jusqu'à la semaine précédente
 			$requete = "update journal set DateValidation = \"".date('Y-m-d')."\" where IDEleve = $IDEleve and DateValidation is null and IDTheme=".$IDTheme." and DateJournal < '".date('Y-m-d', $lundi)."'";
 			//echo $requete;
-			mysql_query($requete);
+			mysqli_query($connexionDB,$requete);
 		}
 
 	} else if($_POST['validation']=="unlockEval") {
@@ -457,7 +457,7 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		//	$requete = "update evalhebdo set DateValidation = null where IDEleve = $IDEleve and DateValidation = \"".$_POST['validation']."\"";
 		//}
 		//echo $requete;
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 }
 if(isset($_POST['evaluation'])&&!empty($_POST['evaluation'])) {
@@ -476,20 +476,16 @@ if(isset($_POST['evaluation'])&&!empty($_POST['evaluation'])) {
 	//echo "<br>type: ".$typeSel;
 	//echo "<br>évaluation: ".$_POST['eval'.$_POST['evaluation']];
 	//echo "<br>observation: ".$_POST['obs'.$_POST['evaluation']];
-	$noteEval = $_POST['eval'.$_POST['evaluation']];
-	if(empty($noteEval)) {
-		$noteEval = "NULL";
-	}
+	$noteEval = (!empty($_POST['eval'.$_POST['evaluation']])?$_POST['eval'.$_POST['evaluation']]:"NULL");
+
 	$obsEval = $_POST['obs'.$_POST['evaluation']];
 	if(empty($obsEval)) {
 		$obsEval = "NULL";
 	} else {
 		$obsEval = "\"".$obsEval."\"";
 	}
-	$nivEval = $_POST['niv'.$_POST['evaluation']];
-	if(empty($nivEval) || $nivEval == 0) {
-		$nivEval = "NULL";
-	}
+	$nivEval = (!empty($_POST['niv'.$_POST['evaluation']])?$_POST['niv'.$_POST['evaluation']]:"NULL");
+
 	$uid = $_SESSION['user_login'];
 	if(empty($IDTheme)) {
 		$idth = 10;
@@ -499,7 +495,7 @@ if(isset($_POST['evaluation'])&&!empty($_POST['evaluation'])) {
 	}
 	$requete = "replace into evalhebdo (IDEleve,NoSemaine,Annee,IDTypeEval,IDCompetence,Note,Niveau,Remarque,Responsable, IDTheme) values ($IDEleve,$noSemaine,$anneeCalc,$typeSel,$compSel,$noteEval,$nivEval,$obsEval,\"$uid\", $idth)";
 	//echo $requete;
-	mysql_query($requete);
+	mysqli_query($connexionDB,$requete);
 }
 
 include("entete.php");
@@ -636,8 +632,8 @@ function selectList(select,date) {
 
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 function wiki2html($text)
@@ -704,9 +700,9 @@ echo "<input type='hidden' name='Classe' value='".$classe."'>";
 echo "<input type='hidden' name='IDRemarque' value=''>";
 echo "<input type='hidden' name='actionRemarque' value=''>";
 echo "<input type='hidden' name='evaluation' value=''>";
-echo "<input type='hidden' name='tblActivite' value='".$_POST['tblActivite']."'>";
-echo "<input type='hidden' name='tblSuivi' value='".$_POST['tblSuivi']."'>";
-echo "<input type='hidden' name='tblEval' value='".$_POST['tblEval']."'>";
+echo "<input type='hidden' name='tblActivite' value='".(isset($_POST['tblActivite'])?$_POST['tblActivite']:"")."'>";
+echo "<input type='hidden' name='tblSuivi' value='".(isset($_POST['tblSuivi'])?$_POST['tblSuivi']:"")."'>";
+echo "<input type='hidden' name='tblEval' value='".(isset($_POST['tblEval'])?$_POST['tblEval']:"")."'>";
 
 echo "<div class='post'>";
 if(!empty($msgErreur)) {
@@ -778,8 +774,8 @@ $lastIDTheme;
 
 	if(empty($IDQuery)) {
 		$requete = "SELECT jo.IDTheme from journal as jo join theme as th on jo.IDTheme=th.IDTheme  where IDEleve=".$IDEleve." and TypeTheme < 2 order by DateJournal desc limit 1";
-		$resultat =  mysql_query($requete);
-		$ligne = mysql_fetch_row($resultat);
+		$resultat =  mysqli_query($connexionDB,$requete);
+		$ligne = mysqli_fetch_row($resultat);
 		if($vue==2) {
 			$IDQuery = $ligne[0];
 		}
@@ -793,9 +789,9 @@ $lastIDTheme;
 //$requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (IDEtatProjet=1 and IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (TypeTheme=2) order by TypeTheme, NomTheme";
 $requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (TypeTheme=1 and IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) order by TypeTheme, NomTheme";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $option = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$option .= "<option value=".$ligne['IDTheme'];
 	if($lastIDTheme==$ligne['IDTheme']) {
 		$option .= " selected";
@@ -809,9 +805,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 $requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (IDEtatProjet=1 and IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (TypeTheme=2) order by TypeTheme, NomTheme";
 //$requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (TypeTheme=1 and IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) order by TypeTheme, NomTheme";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $optionAPP = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$optionAPP .= "<option value=".$ligne['IDTheme'];
 	if($lastIDTheme==$ligne['IDTheme']) {
 		$optionAPP .= " selected";
@@ -841,9 +837,9 @@ if($vue==1) {
 	echo "<option value='2'".($triPeriode==2?$txtSelected:"").">Année en cours</option>";
 	// recherche dernière date d'évaluation pour le thème donné
 	$requete = "SELECT noSemaine, annee FROM evalhebdo where IDEleve = $IDEleve and IDTheme=$IDQuery and Datevalidation is not null order by annee desc ,noSemaine desc LIMIT 1";
-	$resultat =  mysql_query($requete);
-	if(!empty($resultat)&&mysql_num_rows($resultat)>0) {
-		$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	if(!empty($resultat)&&mysqli_num_rows($resultat)>0) {
+		$ligne = mysqli_fetch_assoc($resultat);
 	}
 	if(!empty($ligne['noSemaine'])) {
 		$dateCalcEval=mktime(0,0,0,1,4,$ligne['annee']);
@@ -940,7 +936,7 @@ if(empty($IDQuery)) {
 	}
 }
 echo "</th></tr>";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 $last = 0;
 $total = 0;
@@ -952,7 +948,7 @@ $lastJour = 0;
 $cntErreurSaisie=0;
 $ligneHeures = array();
 //$objectif = 0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$idJournal = $ligne['IDJournal'];
 	//$idTh = $ligne['IDTheme'];
 	$lastJour = $ligne['DateJournal'];
@@ -1000,9 +996,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 						$requeteRem = "SELECT * FROM remarquesuivi where IDEleve=".$IDEleve." and IDTheme=".$last." and ".$requeteTri." order by DateSaisie";
 					}
 					//echo "requ ".$requeteRem;
-					$resultatRem =  mysql_query($requeteRem);
+					$resultatRem =  mysqli_query($connexionDB,$requeteRem);
 					if(!empty($resultatRem)) {
-						while ($ligneRem = mysql_fetch_assoc($resultatRem)) {
+						while ($ligneRem = mysqli_fetch_assoc($resultatRem)) {
 							$idRem = $ligneRem['IDRemSuivi'];
 							$txtrem = $ligneRem['Remarque'];
 							$typerem = $ligneRem['TypeRemarque'];
@@ -1051,8 +1047,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			}
 			$requeteTot .= " GROUP BY jo.IDTheme, DateJournal) AS res GROUP BY IDTheme";
 			//echo "Heures: ".$requeteTot."<br>";
-			$resultatTot =  mysql_query($requeteTot);
-			$ligneHeures = mysql_fetch_assoc($resultatTot);
+			$resultatTot =  mysqli_query($connexionDB,$requeteTot);
+			$ligneHeures = mysqli_fetch_assoc($resultatTot);
 			//$objectif = $ligne['Objectif'];
 			echo $ligne['NomTheme']."</b></td><td align='center' bgColor='#DEDEDE'>";
 			if($ligne['Objectif']!=0) {
@@ -1241,8 +1237,8 @@ if ($cnt==0) {
 			$requeteRem = "SELECT * FROM remarquesuivi where IDEleve=".$IDEleve." and IDTheme=".$last." and ".$requeteTri." order by DateSaisie";
 		//}
 		//echo "requ ".$requeteRem;
-		$resultatRem =  mysql_query($requeteRem);
-		while ($ligneRem = mysql_fetch_assoc($resultatRem)) {
+		$resultatRem =  mysqli_query($connexionDB,$requeteRem);
+		while ($ligneRem = mysqli_fetch_assoc($resultatRem)) {
 			$idRem = $ligneRem['IDRemSuivi'];
 			$txtrem = $ligneRem['Remarque'];
 			$typerem = $ligneRem['TypeRemarque'];
@@ -1348,6 +1344,7 @@ echo "</table></div><br>";
 echo "<br>";
 
 // suivi
+$requeteTri = "";
 	if(empty($IDQuery)) {
 		$requeteTri = "(DateSaisie between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
 	} else {
@@ -1364,11 +1361,11 @@ echo "<br>";
 					case 2: $requete .= " and (DateJournal ".$betweenSQLAnn.")"; break;
 					case 3: $requete .= " and (DateJournal >= '".date("Y-m-d",$maxDateEval)."')"; break;
 				}
-				$resultat =  mysql_query($requete);
+				$resultat =  mysqli_query($connexionDB,$requete);
 				//echo $requete;
-				if(!empty($resultat)&&mysql_num_rows($resultat)>0) {
+				if(!empty($resultat)&&mysqli_num_rows($resultat)>0) {
 					// des activités existent dans les journaux
-					$ligne = mysql_fetch_assoc($resultat);
+					$ligne = mysqli_fetch_assoc($resultat);
 					$max = $ligne['max'];
 					$min = $ligne['min'];
 					// -> calcul du premier lundi au dernier vendredi pour effectuer une recherche sur des semaines complètes
@@ -1464,8 +1461,10 @@ echo "<br>";
 	}
 	//$requeteRem .= " order by DateSaisie";
 	//echo $requeteRem;
-	$resultatRem =  mysql_query($requeteRem." order by DateSaisie");
-	if(!empty($resultatRem)&&mysql_num_rows($resultatRem)>0) {
+	$noEntrySuivi = false;
+	$showtableSuivi = false;
+	$resultatRem =  mysqli_query($connexionDB,$requeteRem." order by DateSaisie");
+	if(!empty($resultatRem)&&mysqli_num_rows($resultatRem)>0) {
 		if(!hasAdminRigth()) {
 			echo "<div id='corners'>";
 			echo "<div id='legend'>Suivi</div>";
@@ -1473,7 +1472,7 @@ echo "<br>";
 			$showtableSuivi = true;
 			echo "<tr><th width='175'>Concerne</th><th width='90'></th><th width='40'></th><th>Remarques</th><th width='10'></th></tr>";
 		}
-		while ($ligneRem = mysql_fetch_assoc($resultatRem)) {
+		while ($ligneRem = mysqli_fetch_assoc($resultatRem)) {
 			$idRem = $ligneRem['IDRemSuivi'];
 			$txtrem = $ligneRem['Remarque'];
 			$typerem = $ligneRem['TypeRemarque'];
@@ -1525,8 +1524,8 @@ echo "<br>";
 				} else {
 					$requeteRem .= " and (DateSaisie between '".($anneeCalc-1)."-08-01' and '".$anneeCalc."-07-31')";
 				}
-				$resultatRem =  mysql_query($requeteRem);
-				if (mysql_num_rows($resultatRem) != 0) {
+				$resultatRem =  mysqli_query($connexionDB,$requeteRem);
+				if (mysqli_num_rows($resultatRem) != 0) {
 					echo "<div id='corners'>";
 					echo "<div id='legend'>Suivi</div>";
 					echo "<table id='hor-minimalist-b' border='0' width='100%'>\n";
@@ -1550,9 +1549,9 @@ echo "<br>";
 			$requete .= "(Date between '".$min."' and '".$max."')";
 		}
 		//echo $requete;
-		$resultat =  mysql_query($requete);
-		if(!empty($resultat)&&mysql_num_rows($resultat)>0) {
-			while ($ligne = mysql_fetch_assoc($resultat)) {
+		$resultat =  mysqli_query($connexionDB,$requete);
+		if(!empty($resultat)&&mysqli_num_rows($resultat)>0) {
+			while ($ligne = mysqli_fetch_assoc($resultat)) {
 				echo "<tr><td valign='top'><i>ADM</i> - ".$ligne['Nom']."</td><td>".date('d.m.Y', strtotime($ligne['Date']))."</td><td></td><td>".$ligne['Remarque']."</td><td align='center' valign='top'></td></tr>";
 			}
 		} else {
@@ -1570,12 +1569,12 @@ echo "<br>";
 		//echo $requete;
 		//$requete = "SELECT * FROM projets ep join theme th on ep.IDTheme=th.IDTheme where IDEleve = $IDEleve ".$filtreSQL." order by NomTheme";
 		// IDEtatProjet=1 and, supprimé le 12.06.2015
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		$option = "";
-		//while ($ligne = mysql_fetch_assoc($resultat)) {
+		//while ($ligne = mysqli_fetch_assoc($resultat)) {
 		//	$option .= "<option value=".$ligne['IDProjet'].">".$ligne['NomTheme']."</option>";
 		//}
-		while ($ligne = mysql_fetch_assoc($resultat)) {
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			$option .= "<option value=".$ligne['IDTheme'];
 			//echo $ligne['IDTheme']."/".$IDTheme."/".$ligne['IDProjet']."<br>";
 			if($ligne['IDTheme']==$IDQuery) {
@@ -1644,16 +1643,16 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			}
 			$requete .=	" order by Annee, NoSemaine LIMIT 20";
 
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 			$evalAct = 0;
 			$evalCnt = 0;
 			$numEval = 0;
 			if(!empty($resultat)) {
-				$numEval = mysql_num_rows($resultat);
+				$numEval = mysqli_num_rows($resultat);
 			}
 			if(!empty($resultat)&&$numEval>0) {
 				echo "<div id='criteres' width='100%' align='right'><i>Evaluation(s) présente(s), semaine(s) no: ";
-				while ($ligne = mysql_fetch_assoc($resultat)) {
+				while ($ligne = mysqli_fetch_assoc($resultat)) {
 					$evalCnt++;
 					echo "<a id='circle";
 					if(empty($ligne['DateValidation'])) {
@@ -1733,8 +1732,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 		$requeteMoy .= " and DateValidation is not null group by IDCompetence,IDTypeEval order by IDCompetence, IDTypeEval";
 		//echo $requete;
 		//echo "<br>".$requeteMoy;
-		$resultat =  mysql_query($requete);
-		$resultatMoy =  mysql_query($requeteMoy);
+		$resultat =  mysqli_query($connexionDB,$requete);
+		$resultatMoy =  mysqli_query($connexionDB,$requeteMoy);
 		$ligne = null;
 		$ligneMoy = null;
 		$validation = null;
@@ -1764,8 +1763,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 			$nivMAI="";
 			$obsAPP="";
 			$obsMAI="";
-			if($ligne==null&&!empty($resultat)&&mysql_num_rows($resultat)>0) {
-				$ligne = mysql_fetch_assoc($resultat);
+			if($ligne==null&&!empty($resultat)&&mysqli_num_rows($resultat)>0) {
+				$ligne = mysqli_fetch_assoc($resultat);
 				if($validation==null&&!empty($ligne['DateValidation'])) {
 					//echo "v:".$ligne['DateValidation']."<br>";
 					$validation = $ligne['DateValidation'];
@@ -1789,7 +1788,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 					//	$validation = $ligne['DateValidation'];
 					//}
 					// test si competence MAI également présente
-					$ligne = mysql_fetch_assoc($resultat);
+					$ligne = mysqli_fetch_assoc($resultat);
 					if($key==$ligne['IDCompetence'] && 2==$ligne['IDTypeEval']) {
 						// competence MAI également présente
 						$noteMAI = $ligne['Note'];
@@ -1836,8 +1835,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				// aucune compétence trouvée ni pour APP, ni pour MAI -> on garde la ligne actuelle pour le prochain passage
 			}
 
-			if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0 && $ligneMoy==null) {
-				$ligneMoy = mysql_fetch_assoc($resultatMoy);
+			if(!empty($resultatMoy)&&mysqli_num_rows($resultatMoy)>0 && $ligneMoy==null) {
+				$ligneMoy = mysqli_fetch_assoc($resultatMoy);
 				//echo $ligneMoy['NiveauMoyen'];
 			}
 			// évaluation abcd
@@ -1878,8 +1877,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 						$evalCompleteAPP = false;
 					}
 					// on lit la moyenne suivante
-					if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
-						$ligneMoy = mysql_fetch_assoc($resultatMoy);
+					if(!empty($resultatMoy)&&mysqli_num_rows($resultatMoy)>0) {
+						$ligneMoy = mysqli_fetch_assoc($resultatMoy);
 					}
 				} else {
 					$evalCompleteAPP = false;
@@ -1952,8 +1951,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 							$evalCompleteAPP = false;
 					}
 					// on lit la moyenne suivante
-					if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
-						$ligneMoy = mysql_fetch_assoc($resultatMoy);
+					if(!empty($resultatMoy)&&mysqli_num_rows($resultatMoy)>0) {
+						$ligneMoy = mysqli_fetch_assoc($resultatMoy);
 					}
 				} else {
 					$evalCompleteAPP = false;
@@ -2000,8 +1999,8 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 		}
 		$obsAPP="";
 		$obsMAI="";
-		if($ligne==null&&!empty($resultat)&&mysql_num_rows($resultat)>0) {
-			$ligne = mysql_fetch_assoc($resultat);
+		if($ligne==null&&!empty($resultat)&&mysqli_num_rows($resultat)>0) {
+			$ligne = mysqli_fetch_assoc($resultat);
 		}
 		if(99==$ligne['IDCompetence']) {
 			// observation trouvée dans les données DB
@@ -2009,7 +2008,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				// observation pour APP trouvée dans DB
 				$obsAPP = $ligne['Remarque'];
 				// test si observation MAI également présente
-				$ligne = mysql_fetch_assoc($resultat);
+				$ligne = mysqli_fetch_assoc($resultat);
 				if(99==$ligne['IDCompetence'] && 2==$ligne['IDTypeEval']) {
 					// observation MAI également présente
 					$obsMAI = $ligne['Remarque'];
@@ -2168,4 +2167,4 @@ if(document.getElementsByName('tblEval')[0].value=='none') {
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

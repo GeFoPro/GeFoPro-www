@@ -1,34 +1,28 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 /* PDF */
 include("phpToPDF.php");
 
-
+$noSemaine = date('W');
 if(isset($_GET['nom'])) {
 	$nom = $_GET['nom'];
 	$prenom = $_GET['prenom'];
 	$IDEleve = $_GET['IDEleve'];
 	$IDTheme = $_GET['IDTheme'];
-	$noSemaine = $_GET['noSemaine'];
+	$noSemaine = (isset($_GET['noSemaine'])?$_GET['noSemaine']:date('W'));
 	$annee = $_GET['annee'];
-	$tri = $_GET['tri'];
-	$only = $_GET['only'];
+	$tri = (isset($_GET['tri'])?$_GET['tri']:1);
+	$only = (isset($_GET['only'])?$_GET['only']:"");
 } else if(isset($_POST['nom'])) {
 	$nom = $_POST['nom'];
 	$prenom = $_POST['prenom'];
 	$IDEleve = $_POST['IDEleve'];
 	$IDTheme = $_POST['IDTheme'];
-	$noSemaine = $_POST['noSemaine'];
+	$noSemaine = (isset($_POST['noSemaine'])?$_POST['noSemaine']:date('W'));
 	$annee = $_POST['annee'];
-	$tri = $_POST['tri'];
-	$only = $_POST['only'];
-}
-if(empty($noSemaine)) {
-	$noSemaine = date('W');
-}
-if(empty($tri)&&tri!=0) {
-	$tri=1; // pas défaut tri sur le semestre
+	$tri = (isset($_POST['tri'])?$_POST['tri']:1);
+	$only = (isset($_POST['only'])?$_POST['only']:"");
 }
 
 $dateCalc=mktime(0,0,0,1,4,$annee);
@@ -66,8 +60,8 @@ if($noSemaine<30) {
 if(!empty($IDTheme)) {
 	// recherche dernière date d'évaluation pour le thème donné
 	$requete = "SELECT noSemaine, annee FROM evalhebdo where IDEleve = $IDEleve and IDTheme=$IDTheme and Datevalidation is not null order by annee desc ,noSemaine desc LIMIT 1";
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_assoc($resultat);
 	if(!empty($ligne['noSemaine'])) {
 		$dateCalcEval=mktime(0,0,0,1,4,$ligne['annee']);
 		//echo date("d.m.Y",$dateCalcEval);
@@ -101,8 +95,8 @@ if(!empty($IDTheme)) {
 	) AS res
 	GROUP BY IDTheme";
 	//echo $requete;
-	$resultat =  mysql_query($requeteH);
-	$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requeteH);
+	$ligne = mysqli_fetch_assoc($resultat);
 	$strHeures = sprintf("%2.1f",$ligne['heures'])."h / ".sprintf("%d",$ligne['jours'])." jours";
 	$nomTheme = $ligne['NomTheme'];
 } else {
@@ -114,9 +108,9 @@ if(!empty($IDTheme)) {
 	JOIN theme th ON jo.IDTheme=th.IDTheme
 	WHERE IDGDN=".$IDEleve." and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') GROUP BY DateJournal
 	) AS res";
-	$resultat =  mysql_query($requeteH);
-	$ligne = mysql_fetch_assoc($resultat);
-	
+	$resultat =  mysqli_query($connexionDB,$requeteH);
+	$ligne = mysqli_fetch_assoc($resultat);
+
 	$nomTheme = "Semaine: ".$noSemaine.", du ".date("d.m.Y",$lundi)." au ".date("d.m.Y",$vendredi);
 	$strHeures = sprintf("%2.1f",$ligne['heures'])."h / ".sprintf("%d",$ligne['jours'])." jours";;
 }
@@ -180,7 +174,7 @@ function Header()
 		$this->SetXY(20,35);
 		$this->Write(0,"Date");
 		$this->SetXY(40,35);
-		$this->Write(0,"Sem.");	
+		$this->Write(0,"Sem.");
 		$this->SetXY(50,35);
 		$this->Write(0,"Heures");
 		$this->SetXY(65,35);
@@ -232,10 +226,10 @@ if($only!="eval") {
 		$requete = "SELECT * FROM journal jou join theme th on jou.IDTheme=th.IDTheme where IDEleve = $IDEleve and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') order by jou.IDTheme, DateJournal";
 	}
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-	
-	while ($ligne = mysql_fetch_assoc($resultat)) {
-		
+	$resultat =  mysqli_query($connexionDB,$requete);
+
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
+
 		//$idJournal = $ligne['IDJournal'];
 		if(!empty($ligne['NomTheme'])&&$nomTheme!=$ligne['NomTheme']) {
 			//$posLigne = $posLigne+2;
@@ -245,7 +239,7 @@ if($only!="eval") {
 			$PDF->SetXY($posCol,$posLigne-2.5);
 			$PDF->Cell(177,4,$nomTheme,1,1,'L',1);
 			//$PDF->Write(0,$nomTheme);
-			
+
 			// recherche du nombre d'heures déjà effectuées pour le thème sur l'année scolaire entière
 			$requeteTot = "SELECT IDTheme, sum( heures ) AS heures, count( heures ) AS jours FROM (SELECT  jo.IDTheme as IDTheme, sum( Heures ) AS heures FROM elevesbk JOIN journal jo ON IDGDN = IDEleve JOIN theme th ON jo.IDTheme=th.IDTheme";
 			if($noSemaine>30) {
@@ -255,15 +249,15 @@ if($only!="eval") {
 			}
 			$requeteTot .= " GROUP BY jo.IDTheme, DateJournal) AS res GROUP BY IDTheme";
 			//echo "Heures: ".$requeteTot."<br>";
-			$resultatTot =  mysql_query($requeteTot);
-			$ligneHeures = mysql_fetch_assoc($resultatTot);
+			$resultatTot =  mysqli_query($connexionDB,$requeteTot);
+			$ligneHeures = mysqli_fetch_assoc($resultatTot);
 			$PDF->SetXY(130,$posLigne-0.5);
 			if($ligne['Objectif']!=0) {
 				$PDF->Write(0,"Cumul: ".$ligneHeures['heures']."h, objectif: ".$ligne['Objectif']."h");
 			} else {
 				$PDF->Write(0,"Cumul: ".$ligneHeures['heures']);
 			}
-			
+
 			$posLigne += 5;
 			$PDF->SetFont("Arial","",8);
 		}
@@ -293,7 +287,7 @@ if($only!="eval") {
 			while(strlen($tok) > $debut) {
 				$fin = 98;
 				$txt = substr($tok,$debut,$fin);
-				if(strlen($txt)==$fin) {	
+				if(strlen($txt)==$fin) {
 					$fin = strrpos($txt," ");
 				}
 				$PDF->Write(0,substr($tok,$debut,$fin));
@@ -312,7 +306,7 @@ if($only!="eval") {
 		if($found) {
 			$posLigne -= 3.5;
 		}
-		
+
 		$PDF->Line($posCol,$posLigne+2.5,$posCol+177,$posLigne+2.5);
 
 		$posLigne += 5;
@@ -356,12 +350,12 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 	} else {
 		$requete = "SELECT * FROM evalhebdo left outer join prof on Responsable=userid where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $annee and IDTheme=$IDTheme order by IDCompetence, IDTypeEval";
 	}
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	$idcomp = 0;
 	$dateValidation = "";
 	$respValidation = "";
-	if(!empty($resultat)&&mysql_num_rows($resultat)>0) {
-		while ($ligne = mysql_fetch_assoc($resultat)) {
+	if(!empty($resultat)&&mysqli_num_rows($resultat)>0) {
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			// ne pas afficher les entrées non validées pour l'apprenti
 			if(hasAdminRigth() || !empty($ligne['DateValidation']) || $ligne['IDTypeEval']==1 ) {
 				if($idcomp!=$ligne['IDCompetence']) {
@@ -410,13 +404,13 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 					while(strlen($tok) > $debut) {
 						$fin = 98;
 						$txt = substr($tok,$debut,$fin);
-						if(strlen($txt)==$fin) {	
+						if(strlen($txt)==$fin) {
 							$fin = strrpos($txt," ");
 						}
 						$PDF->Write(0,substr($tok,$debut,$fin));
 						$posLigne += 3.5;
 						$found=1;
-						
+
 						if($posLigne>275) {
 							$PDF->AddPage();
 							$posLigne = 40;
@@ -430,9 +424,9 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 				if($found) {
 					$posLigne -= 3.5;
 				}
-				
+
 				$PDF->Line($posCol+23.5,$posLigne+2.5,$posCol+177,$posLigne+2.5);
-				
+
 				$posLigne += 5;
 				if($posLigne>260) {
 					$PDF->AddPage();

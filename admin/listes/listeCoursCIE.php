@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 $annee = date('Y');
@@ -11,14 +11,14 @@ if(isset($_POST['inscrire'])) {
 	$coursIns = $_POST['ajCours'];
 	//echo "Recherche pour ".$classeIns." au cours ".$coursIns;
 	$requete = "SELECT IDGDN from elevesbk where classe like '".$classeIns."%' and IDGDN not in (select IDEleve from docelevecie where IDCours=".$coursIns.")";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	//echo $requete;
 	if(!empty($resultat)) {
-		while($ligne = mysql_fetch_assoc($resultat)) {
+		while($ligne = mysqli_fetch_assoc($resultat)) {
 			//echo "<br>inscrire ".$ligne['IDGDN'].": ";
 			$requeteIns = "INSERT INTO docelevecie (IDEleve, IDCours) values (".$ligne['IDGDN'].", ".$coursIns.")";
 			//echo "<br>".$requeteIns;
-			$resultatIns =  mysql_query($requeteIns);
+			$resultatIns =  mysqli_query($connexionDB,$requeteIns);
 		}
 	}
 }
@@ -29,28 +29,28 @@ if(isset($_POST['ajouterCours'])) {
 	$respAj = $_POST['Responsable'];
 	$requete = "INSERT INTO courscie (IDDoc,Dates,NbrJours,Responsable) value ($docAj,\"$datesAj\",$joursAj,\"$respAj\")";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(isset($_GET['effacerCours'])) {
 	$IDCours = $_GET['effacerCours'];
 	// effacer cours
 	$requete = "DELETE FROM courscie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	// rechercher les évlauationa et observation pour chaque inscriptions à effacer
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
-	while($ligne = mysql_fetch_assoc($resultat)) {
+	$resultat =  mysqli_query($connexionDB,$requete);
+	while($ligne = mysqli_fetch_assoc($resultat)) {
 		// évaluations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 		// observation
 		$requeteDel = "DELETE FROM appbloccie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 	}
 	// effacer fianlement les inscription
 	$requete = "DELETE FROM docelevecie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	//echo $requete;
 }
 
@@ -58,31 +58,31 @@ if(isset($_GET['effacerInscription'])) {
 	$IDCours = $_GET['effacerInscription'];
 	// rechercher les évlauations et observation pour chaque inscription à effacer
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
-	while($ligne = mysql_fetch_assoc($resultat)) {
+	$resultat =  mysqli_query($connexionDB,$requete);
+	while($ligne = mysqli_fetch_assoc($resultat)) {
 		// évaluations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 		// observation
 		$requeteDel = "DELETE FROM appbloccie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 	}
 	$requete = "DELETE FROM docelevecie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 
 }
 if(isset($_GET['effacerEvaluation'])) {
 	$IDCours = $_GET['effacerEvaluation'];
 	// rechercher les évlauations et observation pour chaque inscription concernée
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
-	$resultat =  mysql_query($requete);
-	while($ligne = mysql_fetch_assoc($resultat)) {
+	$resultat =  mysqli_query($connexionDB,$requete);
+	while($ligne = mysqli_fetch_assoc($resultat)) {
 		// évaluations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 		// observation
 		$requeteDel = "DELETE FROM appbloccie where IDDocEleve=".$ligne['IDDocEleve'];
-		mysql_query($requeteDel);
+		mysqli_query($connexionDB,$requeteDel);
 	}
 }
 $id = 0;
@@ -91,31 +91,31 @@ if(isset($_GET['effacerCompetence'])) {
 	$id = $_GET['IDDoc'];
 	$requete = "DELETE FROM competencedoccie where IDCompetence=$comp AND IDDoc=$id";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(isset($_POST['actionCours'])) {
 	if("newCompetence"==$_POST['actionCours']) {
 		$id = $_POST['doc'];
 		$comp = $_POST['comp'.$id];
-		$requete = "INSERT INTO competencedoccie (IDCompetence, IDDoc) values ($comp,$id)";	
-		$resultat =  mysql_query($requete);
+		$requete = "INSERT INTO competencedoccie (IDCompetence, IDDoc) values ($comp,$id)";
+		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 }
 
 if(isset($_POST['ajouterDoc'])) {
 	$titreAj = $_POST['NomDoc'];
 	$versionAj = $_POST['VersionDoc'];
-	
+
 	$requete = "INSERT INTO doccie (TitreCIE,Version) value (\"$titreAj\",\"$versionAj\")";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 if(isset($_GET['effacerDoc'])) {
 	$id = $_GET['effacerDoc'];
 	$requete = "DELETE FROM doccie where IDDoc=$id";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 include("entete.php");
@@ -157,8 +157,8 @@ if(<?=$id?>!=0) {
 }
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 echo "<FORM id='myForm' ACTION='listeCoursCIE.php'  METHOD='POST'>";
 echo "<input type='hidden' name='actionCours' value=''>";
@@ -172,7 +172,7 @@ $optionAnnee = "";
 for($cntA=0;$cntA<5;$cntA++) {
 	$optionAnnee .= "<option value='".($annee-$cntA)."'";
 	if(($annee-$cntA)==$anneeTri) {
-		$optionAnnee .= " selected ";	
+		$optionAnnee .= " selected ";
 	}
 	$optionAnnee .= ">".($annee-$cntA)."</option>";
 }
@@ -185,10 +185,10 @@ echo "<tr><th width='250'>Cours</th><th width='80'>Version CC</th><th width='150
 //$requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, sum(if(''=PDFSigne OR PDFSigne is NULL, 0, 1)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours group by cours.IDCours order by TitreCIE, Dates";
 $requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, coalesce(sum(Uploaded)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours where Dates like '%".$anneeTri."' group by cours.IDCours order by TitreCIE, Dates";
 //echo $requeteH;
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 $totalJour=0;
 //$totalApp=0;
-while($ligne = mysql_fetch_assoc($resultat)) {
+while($ligne = mysqli_fetch_assoc($resultat)) {
 	echo "<tr>";
 	echo "<td><input type='radio' name='ajCours' value='".$ligne['IDCours']."' insCours='1' style='display:none'><b> ".$ligne['TitreCIE']."</b></td>";
 	echo "<td align='center'>".$ligne['Version']."</td>";
@@ -204,16 +204,16 @@ while($ligne = mysql_fetch_assoc($resultat)) {
 	echo ">".$ligne['pdf']."</td>";
 	// recherche des éventuelles évaluations présentes
 	$requeteEval = "select IDEleve from docelevecie as docel join appcompetencecie as app on docel.IDDocEleve=app.IDDocEleve where IDCours=".$ligne['IDCours']." and EvalAPP <> 0 group by IDEleve";
-	$resultEval = mysql_query($requeteEval);
-	$num = mysql_num_rows($resultEval);
+	$resultEval = mysqli_query($connexionDB,$requeteEval);
+	$num = mysqli_num_rows($resultEval);
 	echo "<td align='center'";
 	if($num!=$ligne['Inscrits']&&$ligne['Inscrits']!=$ligne['pdf']) {
 		echo " style='color:#FF0000'";
 	}
 	echo ">".$num."</td>";
 	$requeteEval = "select IDEleve from docelevecie as docel join appcompetencecie as app on docel.IDDocEleve=app.IDDocEleve where IDCours=".$ligne['IDCours']." and EvalMAI <> 0 group by IDEleve";
-	$resultEval = mysql_query($requeteEval);
-	$num = mysql_num_rows($resultEval);
+	$resultEval = mysqli_query($connexionDB,$requeteEval);
+	$num = mysqli_num_rows($resultEval);
 	echo "<td align='center'";
 	if($num!=$ligne['Inscrits']&&$ligne['Inscrits']!=$ligne['pdf']) {
 		echo " style='color:#FF0000'";
@@ -238,10 +238,10 @@ echo "<tr><td colspan='3'><b>Total</b></td><td align='center'>".sprintf("%01.1f"
 echo "<tr newCours='1' style='display:none' ><td colspan='10' valign='bottom' height='30'><b>Ajouter un cours CIE:</b></td></tr>";
 // liste des documents
 $requeteD = "SELECT * from doccie ORDER BY TitreCIE";
-$resultatD =  mysql_query($requeteD);
+$resultatD =  mysqli_query($connexionDB,$requeteD);
 $options = "";
-while($li = mysql_fetch_assoc($resultatD)) {
-	$options .= "<option value='".$li['IDDoc']."'>".$li['TitreCIE']." (".$li['Version'].")</option>"; 
+while($li = mysqli_fetch_assoc($resultatD)) {
+	$options .= "<option value='".$li['IDDoc']."'>".$li['TitreCIE']." (".$li['Version'].")</option>";
 }
 
 echo "<tr newCours='1' style='display:none'><td colspan='2'><select name='IDDoc'>".$options."</select></td><td><input name='Dates' value='' size='15'></td><td><input name='Jours' value='' size='1'></td><td colspan='2'><input name='Responsable' value='' size='15'></td><td colspan='4' align='right'><input type='submit' name='ajouterCours' value='Ajouter'></td></tr>";
@@ -257,45 +257,45 @@ echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250' colspan='3'>Document</th><th width='150'>Version</th><th></th width='10'></tr>";
 // liste des ressources
 $requeteR = "SELECT * from competencecie where Archive is null ORDER BY IDBlocRessource,Numero";
-$resultatR =  mysql_query($requeteR);
+$resultatR =  mysqli_query($connexionDB,$requeteR);
 $optionsR = "<option value='0'></option>";
-while($liR = mysql_fetch_assoc($resultatR)) {
+while($liR = mysqli_fetch_assoc($resultatR)) {
 	$optionsR .= "<option value='".$liR['IDCompetence']."'>".$liR['Numero']." ";
 	//$optionsR .= $liR['Niveau']." ";
 	if($liR['Niveau']=='P') {
 		$optionsR .= " - ";
 	} else {
 		$optionsR .= " --- ";
-	}	
+	}
 	if(strlen($liR['Description'])>100) {
 		$optionsR .= substr($liR['Description'],0,100)."...";
 	} else {
 		$optionsR .= $liR['Description'];
 	}
 	$optionsR .= "</option>";
-	 
+
 }
 //$requeteH = "SELECT doc.IDDoc, doc.TitreCIE, doc.Version, com.Numero, com.Description, com.IDCompetence, sum(if(IDAppComp is NULL,0,1)) as eval FROM doccie as doc left join competencedoccie as cdc on doc.IDDoc=cdc.IDDoc left join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence group by doc.IDDoc,com.IDCompetence order by TitreCIE, IDBlocRessource, Numero";
 $requeteH = "SELECT doc.IDDoc, doc.TitreCIE, doc.Version, com.Numero, com.Description, com.IDCompetence FROM doccie as doc left join competencedoccie as cdc on doc.IDDoc=cdc.IDDoc left join competencecie as com on cdc.IDCompetence=com.IDCompetence order by TitreCIE, IDBlocRessource, Numero";
 //echo "<tr><td>".$requeteH."</td></tr>";
-$resultatH =  mysql_query($requeteH);
+$resultatH =  mysqli_query($connexionDB,$requeteH);
 $doc = 0;
 $ressource = "";
-while($ligne = mysql_fetch_assoc($resultatH)) {
+while($ligne = mysqli_fetch_assoc($resultatH)) {
 	if($doc!=$ligne['IDDoc']) {
 		if($doc!=0) {
 			echo "<tr doc$doc='1' style='display:none'><td width='25'></td><td width='10'></td><td colspan='2'><select name='comp".$doc."' onChange='submitNewCompetence(".$doc.")'>".$optionsR."</select></td><td></td></tr>";
 		}
 		$doc = $ligne['IDDoc'];
 		$ressource = "";
-		echo "<tr><td colspan='3'><img src='/iconsFam/Bullet_arrow_down.png' onclick='toggle(\"doc$doc\")'><b>".$ligne['TitreCIE']."</td><td>".$ligne['Version']."</b></td>";
+		echo "<tr><td colspan='3'><img src='/iconsFam/bullet_arrow_down.png' onclick='toggle(\"doc$doc\")'><b>".$ligne['TitreCIE']."</td><td>".$ligne['Version']."</b></td>";
 		if(!empty($ligne['Numero'])) {
 			// terminer la ligne avec lien sur document
 			echo "<td width='10'><a href='impressionBaseCIE.php?IDDoc=".$doc."'><img src='/iconsFam/page_word.png'></a></td></tr>";
 		} else {
 			// permettre d'effacer le document
 			echo "<td width='10'><a href='listeCoursCIE.php?effacerDoc=".$doc."'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce document')\" onmouseout='UnTip()'></a></td></tr>";
-		} 
+		}
 	}
 	if(!empty($ligne['Numero'])) {
 		if($ressource!=substr($ligne['Numero'], 0, 3 )) {
@@ -308,7 +308,7 @@ while($ligne = mysql_fetch_assoc($resultatH)) {
 			echo "<a href='listeCoursCIE.php?effacerCompetence=".$ligne['IDCompetence']."&IDDoc=".$doc."'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette compétence')\" onmouseout='UnTip()'></a>";
 		//}
 		echo "</td></tr>";
-	} 
+	}
 }
 if($doc!=0) {
 	echo "<tr doc$doc='1' style='display:none'><td width='25'></td><td width='10'></td><td colspan='2'><select name='comp".$doc."' onChange='submitNewCompetence(".$doc.")'>".$optionsR."</select></td><td></td></tr>";
@@ -318,7 +318,7 @@ echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td
 echo "<tr><td colspan='4'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un document')\" onmouseout='UnTip()' onclick='toggle(\"newDoc\");' align='absmiddle'></td></tr>";
 echo "<tr newDoc='1' style='display:none' ><td colspan='5' valign='bottom' height='30'><b>Ajouter un document de contrôle de compétences:</b></td></tr>";
 echo "<tr newDoc='1' style='display:none' ><td colspan='3'><input type='text' name='NomDoc' size='30'></input></td><td><input type='text' name='VersionDoc' size='10'></td><td><input type='submit' name='ajouterDoc' value='Ajouter'></input></td></tr>";
-echo "</table></div>"; 
+echo "</table></div>";
 
 ?>
 <script>
@@ -332,4 +332,4 @@ if(<?=$id?>!=0) {
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

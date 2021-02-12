@@ -6,9 +6,9 @@ if(isset($_GET['nom'])) {
 	$prenom = $_GET['prenom'];
 	$IDEleve = $_GET['idEleve'];
 } else {
-	$nom = $_POST['nom'];
-	$prenom = $_POST['prenom'];
-	$IDEleve = $_POST['IDEleve'];
+	$nom = (isset($_POST['nom'])?$_POST['nom']:"");
+	$prenom = (isset($_POST['prenom'])?$_POST['prenom']:"");
+	$IDEleve = (isset($_POST['IDEleve'])?$_POST['IDEleve']:"");
 }
 
 $listeId = array();
@@ -21,7 +21,7 @@ if(isset($_POST['ajoutAttribut'])) {
 	$remarque = $_POST['Remarque'];
 	// ajout d'un attribut
     	$requete = "INSERT INTO $tableAttribEleves (IDAttribut, IDEleve, Remarque) values ($IDAttribut, $IDEleve, \"$remarque\")";
-    	$resultat =  mysql_query($requete);
+    	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(isset($_POST['ajoutRemarque'])) {
@@ -34,7 +34,7 @@ if(isset($_POST['ajoutRemarque'])) {
 	}
 	// ajout d'un attribut
     	$requete = "INSERT INTO $tableAttribEleves (IDAttribut, IDEleve, Remarque, Date) values ($IDAttribut, $IDEleve, \"$remarque\",\"$date\")";
-    	$resultat =  mysql_query($requete);
+    	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 
@@ -43,8 +43,8 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 	if(empty($_POST['DateNaissanceNew'])) {
 		$dateNaissance = 'NULL';
 	}
-	$noChaise = $_POST['NoChaiseNew'];
-	$noBanc = $_POST['NoBancNew'];
+	$noChaise = ""; //$_POST['NoChaiseNew'];
+	$noBanc = ""; //$_POST['NoBancNew'];
 	//$noCle = $_POST['NoCleNew'];
 	$IDCle = $_POST['IDCleNew'];
 	$noVestiaire = $_POST['NoVestiaireNew'];
@@ -101,22 +101,22 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 			// ajout dans elevesbk
 			$requete = "INSERT into elevesbk (Nom,Prenom,Adresse,NPA,Localite,Classe,Email) values (\"$nom\",\"$prenom\",\"$adresse\",\"$npa\",\"$localite\",\"$classe\",\"$email\")";
 			//echo $requete;
-    			$resultat =  mysql_query($requete);
-			$IDEleve = mysql_insert_id();
+    			$resultat =  mysqli_query($connexionDB,$requete);
+			$IDEleve = mysqli_insert_id($connexionDB);
 			$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise,IDCard) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"\",\"\",\"$macWifi\",\"$macEth\",$entreprise,$idCard)";
 			//$requete = "INSERT into eleves (IDGDN,DateNaissance,noChaise,noBanc,IDCle,NoVestiaire,NoJeton,NoBadge,NoTel,NoMobile,Userid,Origine,NoSeriePC,NomPC,MacAdresseWifi,MacAdresseEthernet,IDEntreprise) values ($IDEleve,$dateNaissance,\"$noChaise\",\"$noBanc\",$IDCle,$noVestiaire,$noJeton,$noBadge,\"$noTel\",\"$noMobile\",\"$userid\",\"$origine\",\"$noSeriePC\",\"$nomPC\",\"$macWifi\",\"$macEth\",$entreprise)";
 			//echo $requete;
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 			$msg = "<font color='#088A08'>Elève ajouté</font>";
 		} else {
 			// modification table elevesbk
     			$requete = "UPDATE elevesbk set Nom=\"$nom\", Prenom=\"$prenom\", Adresse=\"$adresse\", NPA=\"$npa\", Localite=\"$localite\", Classe=\"$classe\", Email=\"$email\" where IDGDN=$IDEleve";
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 			// modification table eleves
 			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=$idCard where IDGDN=$IDEleve";
 			//$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", NoSeriePC=\"$noSeriePC\", NomPC=\"$nomPC\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise where IDGDN=$IDEleve";
 			//echo $requete;
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 			$msg = "<font color='#088A08'>Elève modifié</font>";
 		}
 	}
@@ -126,7 +126,7 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 // effacement d'une ligne
 if(isset($_GET['IDAttribEleve'])) {
 	$requete = "DELETE FROM $tableAttribEleves where IDAttribEleve=$_GET[IDAttribEleve]";
-	mysql_query($requete);
+	mysqli_query($connexionDB,$requete);
 
 }
 include("entete.php");
@@ -152,8 +152,8 @@ function toggle(thisname) {
 }
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 echo "<FORM id='myForm' ACTION='detailEleve.php'  METHOD='POST'>";
@@ -184,11 +184,11 @@ foreach($listeId as $key => $valeur) {
 echo "</h2><br>\n";
 
 $requete = "SELECT * FROM elevesbk bk join eleves el on el.IDGDN=bk.IDGDN left join cleatelier ca on el.IDCle=ca.IDCle where bk.IDGDN = $IDEleve";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 //echo $requete;
 $ligne = array();
 if(!empty($resultat)) {
- $ligne = mysql_fetch_assoc($resultat);
+ $ligne = mysqli_fetch_assoc($resultat);
 }
 echo "<br><div id='corners'>";
 echo "<div id='legend'>Données personnelles</div>";
@@ -196,21 +196,24 @@ echo "<table border='0'><tr>";
 
 echo "<td><table border='0'>\n";
 echo "<tr><td>NOM</td><td>Prénom</td><td></td></tr>";
-echo "<tr><td><input type='texte' name='NomNew' value='".htmlentities($ligne['Nom'], ENT_QUOTES)."'></input></td><td><input type='texte' name='PrenomNew' value='".$ligne['Prenom']."'></input></td><td></td></tr>\n";
+echo "<tr><td><input type='texte' name='NomNew' value='".htmlentities((isset($ligne['Nom'])?$ligne['Nom']:""), ENT_QUOTES)."'></input></td>";
+echo "<td><input type='texte' name='PrenomNew' value='".(isset($ligne['Prenom'])?$ligne['Prenom']:"")."'></input></td><td></td></tr>\n";
 echo "<tr><td>Adresse</td><td></td><td></td></tr>";
-echo "<tr><td colspan='2'><input type='texte' name='AdresseNew' value=\"".$ligne['Adresse']."\" size='45'></input></td><td></td></tr>\n";
+echo "<tr><td colspan='2'><input type='texte' name='AdresseNew' value=\"".(isset($ligne['Adresse'])?$ligne['Adresse']:"")."\" size='45'></input></td><td></td></tr>\n";
 echo "<tr><td>NPA</td><td>Localité</td><td></td></tr>";
-echo "<tr><td><input type='texte' name='NPANew' value='".$ligne['NPA']."' size='4'></input></td><td><input type='texte' name='LocaliteNew' value='".$ligne['Localite']."'></input></td><td></td></tr>\n";
+echo "<tr><td><input type='texte' name='NPANew' value='".(isset($ligne['NPA'])?$ligne['NPA']:"")."' size='4'></input></td>";
+echo "<td><input type='texte' name='LocaliteNew' value='".(isset($ligne['Localite'])?$ligne['Localite']:"")."'></input></td><td></td></tr>\n";
 echo "<tr><td>Date de naissance</td><td>Lieu d'origine</td><td></td><td></td></tr>";
-$date = date('d.m.Y', strtotime($ligne['DateNaissance']));
+$date = date('d.m.Y', strtotime((isset($ligne['DateNaissance'])?$ligne['DateNaissance']:"")));
 if(empty($ligne['DateNaissance'])) {
 	$date = '';
 }
-echo "<tr><td><input type='texte' name='DateNaissanceNew' value='".$date."' size='10'></input></td><td><input type='texte' name='OrigineNew' value=\"".$ligne['Origine']."\"></input></td><td></td></tr>\n";
+echo "<tr><td><input type='texte' name='DateNaissanceNew' value='".$date."' size='10'></input></td><td><input type='texte' name='OrigineNew' value=\"".(isset($ligne['Origine'])?$ligne['Origine']:"")."\"></input></td><td></td></tr>\n";
 echo "<tr><td>Téléphone parents</td><td>Téléphone personnel</td><td></td></tr>";
-echo "<tr><td><input type='texte' name='NoTelNew' value='".$ligne['NoTel']."' size='13'></input></td><td><input type='texte' name='NoMobileNew' value='".$ligne['NoMobile']."' size='13'></input></td><td></td></tr>\n";
+echo "<tr><td><input type='texte' name='NoTelNew' value='".(isset($ligne['NoTel'])?$ligne['NoTel']:"")."' size='13'></input></td>";
+echo "<td><input type='texte' name='NoMobileNew' value='".(isset($ligne['NoMobile'])?$ligne['NoMobile']:"")."' size='13'></input></td><td></td></tr>\n";
 echo "<tr><td colspan='3'>Email</td></td></tr>";
-echo "<tr><td colspan='3'><input type='texte' name='EmailNew' value='".$ligne['Email']."' size='45'></input></td></tr>\n";
+echo "<tr><td colspan='3'><input type='texte' name='EmailNew' value='".(isset($ligne['Email'])?$ligne['Email']:"")."' size='45'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
 
 echo "<td><table border='0'>\n";
@@ -220,10 +223,10 @@ echo "<tr><td colspan='2'>Employeur</td></tr>";
 echo "<tr><td colspan='2'>";
 // préparation de la liste des entreprises
 $requete = "SELECT * FROM entreprise order by NomEntreprise";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 echo "<select name='IDEntrepriseNew'>";
-while ($listeLigne = mysql_fetch_assoc($resultat)) {
-	if($listeLigne['IDEntreprise']==$ligne['IDEntreprise'])
+while ($listeLigne = mysqli_fetch_assoc($resultat)) {
+	if(isset($ligne['IDEntreprise']) && $listeLigne['IDEntreprise']==$ligne['IDEntreprise'])
       		echo "<option value='$listeLigne[IDEntreprise]' selected='selected'>";
     	else
       		echo "<option value='$listeLigne[IDEntreprise]'>";
@@ -232,39 +235,43 @@ while ($listeLigne = mysql_fetch_assoc($resultat)) {
 echo "</select></td></tr>";
 
 echo "<tr><td>Vestiaire</td><td>Jeton</td></tr>";
-echo "<tr><td><input type='texte' name='NoVestiaireNew' value='".$ligne['NoVestiaire']."' size='3'></input></td><td><input type='texte' name='NoJetonNew' value='".$ligne['NoJeton']."' size='2'></input></td></tr>\n";
+echo "<tr><td><input type='texte' name='NoVestiaireNew' value='".(isset($ligne['NoVestiaire'])?$ligne['NoVestiaire']:"")."' size='3'></input></td>";
+echo "<td><input type='texte' name='NoJetonNew' value='".(isset($ligne['NoJeton'])?$ligne['NoJeton']:"")."' size='2'></input></td></tr>\n";
 
 echo "<tr><td>Clé layette</td><td>Badge</td></tr>";
 echo "<tr><td>";
 //<input type='texte' name='NoCleNew' value='".$ligne['NumeroCle']."' size='15'></input>
 // préparation de la liste des clés
 $requete = "SELECT * FROM cleatelier order by NumeroCle";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 echo "<select name='IDCleNew'><option></option>";
-while ($listeLigne = mysql_fetch_assoc($resultat)) {
-	if($listeLigne['IDCle']==$ligne['IDCle'])
+while ($listeLigne = mysqli_fetch_assoc($resultat)) {
+	if(isset($ligne['IDCle']) && $listeLigne['IDCle']==$ligne['IDCle'])
       		echo "<option value='$listeLigne[IDCle]' selected='selected'>";
     	else
       		echo "<option value='$listeLigne[IDCle]'>";
     	echo "$listeLigne[NumeroCle] </option>";
 }
 echo "</select>";
-echo "</td><td><input type='texte' name='NoBadgeNew' value='".$ligne['NoBadge']."' size='5'></input></td></tr>\n";
+echo "</td><td><input type='texte' name='NoBadgeNew' value='".(isset($ligne['NoBadge'])?$ligne['NoBadge']:"")."' size='5'></input></td></tr>\n";
 //echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
 //echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
 echo "<tr><td colspan='2'>Carte d'apprenti</td></tr>";
 $idcardTxt = "";
 //echo bin2hex($ligne['IDCard']);
-if(bin2hex($ligne['IDCard'])!=0) {
+if(isset($ligne['IDCard']) && bin2hex($ligne['IDCard'])!=0) {
 	$idcardTxt = strtoupper(bin2hex($ligne['IDCard']));
 }
 echo "<tr><td colspan='2'><input type='texte' name='IDCardNew' value='".$idcardTxt."' size='8'></input></td></tr>";
 echo "<tr><td>PC - MAC Wifi</td><td>PC - MAC Ethernet</td></tr>";
-echo "<tr><td><input type='texte' name='MacAdresseWifiNew' value='".$ligne['MacAdresseWifi']."' size='15'></input></td><td><input type='texte' name='MacAdresseEthernetNew' value='".$ligne['MacAdresseEthernet']."' size='15'></input></td></tr>\n";
+echo "<tr><td><input type='texte' name='MacAdresseWifiNew' value='".(isset($ligne['MacAdresseWifi'])?$ligne['MacAdresseWifi']:"")."' size='15'></input></td>";
+echo "<td><input type='texte' name='MacAdresseEthernetNew' value='".(isset($ligne['MacAdresseEthernet'])?$ligne['MacAdresseEthernet']:"")."' size='15'></input></td></tr>\n";
 echo "<tr><td>Classe</td><td>Userid</td></tr>";
-echo "<tr><td><input type='texte' name='ClasseNew' value='".$ligne['Classe']."' size='15'></input></td><td><input type='texte' name='UseridNew' value='".$ligne['Userid']."' size='7'></input></td></tr>\n";
+echo "<tr><td><input type='texte' name='ClasseNew' value='".(isset($ligne['Classe'])?$ligne['Classe']:"")."' size='15'></input></td>";
+echo "<td><input type='texte' name='UseridNew' value='".(isset($ligne['Userid'])?$ligne['Userid']:"")."' size='7'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
-echo "<td valign='top'><img src='/".$app_section."/images/photo/".$ligne['Nom']."_".$ligne['Prenom'].".jpg' alt='(pas de photo)' id='studentImg' style='image-orientation: from-image'>";
+echo "<td valign='top'><img src='".$_SESSION['home']."images/photo/".(isset($ligne['Nom'])?$ligne['Nom']:"")."_";
+echo (isset($ligne['Prenom'])?$ligne['Prenom']:"").".jpg' alt='(pas de photo)' id='studentImg' style='image-orientation: from-image'>";
 echo "</td>";
 
 echo "</tr><tr><td></td><td align='center'>";
@@ -285,9 +292,9 @@ echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='270'>Attribut</th><th width='500'>Remarque</th><th width='10'></th></tr>";
 // recherche des attributs généraux (1 à 6)
 $requete = "SELECT * FROM $tableAttribEleves el join $tableAttribut att on el.IDAttribut=att.IDAttribut where IDEleve = $IDEleve and el.IDAttribut < 100";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	echo "<tr><td>".$ligne['Nom']."</td><td>".nl2br($ligne['Remarque'])."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
 	$cnt++;
 }
@@ -296,9 +303,9 @@ if ($cnt==0) {
 }
 // ligne d'ajout
 $requete = "SELECT * FROM $tableAttribut where IDAttribut < 100";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $option = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$option .= "<option value=".$ligne['IDAttribut'].">".$ligne['Nom']."</option>";
 }
 echo "<tr><td colspan='3' bgColor='#5C5C5C'></td></tr>";
@@ -317,9 +324,9 @@ echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='80'>Date</th><th width='175'>Raison</th><th width='500'>Remarque</th><th width='10'></th></tr>";
 // recherche des attributs généraux (1 à 6)
 $requete = "SELECT * FROM $tableAttribEleves el join $tableAttribut att on el.IDAttribut=att.IDAttribut where IDEleve = $IDEleve and el.IDAttribut > 100 order by Date";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	echo "<tr><td>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Nom']."</td><td>".$ligne['Remarque']."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
 	$cnt++;
 }
@@ -328,9 +335,9 @@ if ($cnt==0) {
 }
 // ligne d'ajout
 $requete = "SELECT * FROM $tableAttribut where IDAttribut > 100";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $option = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$option .= "<option value=".$ligne['IDAttribut'].">".$ligne['Nom']."</option>";
 }
 echo "<tr><td colspan='4' bgColor='#5C5C5C'></td></tr>";
@@ -349,4 +356,4 @@ echo "</table><br>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

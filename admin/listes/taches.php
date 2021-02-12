@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 /* mode html ou excel */
@@ -19,8 +19,8 @@ if(!$modeHTML) {
 ?>
 
 <div id="page">
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 }
 
 /* position de départ pour excel */
@@ -51,19 +51,19 @@ $eleves = array();
 $cnt = 1;
 foreach ($configurationTCH as $pos => $value) {
 	// associer la liste d'élève
-	
+
 		$requete = "SELECT * FROM $tableElevesBK el join eleves eli on el.IDGDN=eli.IDGDN and IDEntreprise=1 left outer join $tableAttribEleves at on (el.IDGDN = at.IDEleve and (at.IDAttribut = 8 OR at.IDAttribut = 13)) where Classe like '$value%' order by Nom, Prenom";
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		$classe = array();
 		//echo "classe: ".$value."<br>";
-		while ($ligne = mysql_fetch_assoc($resultat) ) {
+		while ($ligne = mysqli_fetch_assoc($resultat) ) {
 			//echo $ligne['Nom']." - ".$ligne['IDAttribut'];
 			if(empty($ligne['IDAttribut'])) {
 				$classe[] = $ligne['Nom'] . ' ' . $ligne['Prenom'];
 				//echo " el: ".$ligne['Nom'] . ' ' . $ligne['Prenom']."<br>";
 			}
 		}
-	
+
 	//print_r($classe);
 	$eleves[$tab_jour[$cnt]] = $classe;
 	$cnt++;
@@ -103,7 +103,7 @@ foreach ($eleves as $jour => $classe) {
 				$objPHPExcel->getActiveSheet()->setCellValue($configurationColExcel[$cntJour].$posCell, iconv("ISO-8859-1", "UTF-8", "$classe[$posNom]"));
 			} else {
 				echo "<td>$classe[$posNom]</td>";
-			}			
+			}
 		}
 		$posNom++;
 		// incrément ligne excel
@@ -115,14 +115,14 @@ foreach ($eleves as $jour => $classe) {
 		echo "</tr>\n";
 	}
 }
-	
+
 if(!$modeHTML) {
 	// générer la feuille excel
 	$writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 	header('Content-type: application/vnd.ms-excel');
 	header("Content-Disposition: attachment;Filename=taches.xls");
-	$writer->save('php://output'); 
-	
+	$writer->save('php://output');
+
 	//$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
 	//header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 	//$objWriter->save("php://output");
@@ -134,5 +134,5 @@ if(!$modeHTML) {
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>
 <?php } ?>

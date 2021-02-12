@@ -1,6 +1,6 @@
 <!-- start footer -->
 <?php
-	$release .= "<br><b><i>2.4.3</i></b>";
+	$release = "<br><b><i>2.4.3</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Textes pour commandes et étiquettes séparés";
 	$release .= "<br>- Possibilité d\'utiliser qu\'un seul champ pour le texte des commandes (sélectionner deux fois la même ligne)";

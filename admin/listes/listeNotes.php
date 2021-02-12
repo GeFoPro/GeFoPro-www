@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 $anneeTri = '%';
@@ -20,7 +20,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 	$noteAuto = 0;
 	$annee = $_POST['anneeNote'];
 	$semestre = $_POST['semestreNote'];
-		
+
 	// création d'une note fictive pour nouvelle année ou nouveau thème (IDTypeNote=0)
 	if(isset($_POST['themeNote'])&& !empty($_POST['themeNote'])) {
 		// utilisation du nouveau thème
@@ -36,20 +36,20 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 	} else {
 		$ponderation = 0;
 	}
-	
+
 	// recherche des élève concernés
 	$requete = "SELECT ele.IDGDN FROM elevesbk ele join eleves els on ele.IDGDN=els.IDGDN where Classe like '".$classeTri."' and IDEntreprise=1";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($modeEvaluation=="theme") {
 		// ajout d'une ligne pour la période/thème vide
-		
-		while ($ligne = mysql_fetch_assoc($resultat)) {
+
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			// test si existant
-			$exist = mysql_query("select 1 from notes where IDEleve=".$ligne['IDGDN']." and NoSemestre=".$semestre." and Annee=".$annee." and IDTypeNote=0 and IDTheme=".$theme."");
-			if (!mysql_fetch_row($exist)) {
+			$exist = mysqli_query($connexionDB,"select 1 from notes where IDEleve=".$ligne['IDGDN']." and NoSemestre=".$semestre." and Annee=".$annee." and IDTypeNote=0 and IDTheme=".$theme."");
+			if (!mysqli_fetch_row($exist)) {
 				$requeteIns = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, IDTheme, Ponderation) values (".$ligne['IDGDN'].", ".$semestre.", ".$annee.", 0, ".$theme.", ".$ponderation.")";
 				//echo $requeteIns."<br>";
-				mysql_query($requeteIns);
+				mysqli_query($connexionDB,$requeteIns);
 			}
 		}
 	} else {
@@ -65,24 +65,24 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 				$compToAdd = $competencesEvaluationOld;
 			}
 		}
-		mysql_data_seek($resultat, 0);
-		while ($ligne = mysql_fetch_assoc($resultat)) {
+		mysqli_data_seek($resultat, 0);
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			foreach ($compToAdd as $key => $value) {
 				// ajout de la note vide en DB
-				$exist = mysql_query("select 1 from notes where IDEleve=".$ligne['IDGDN']." and NoSemestre=".$semestre." and Annee=".$annee." and IDTypeNote=".($key+1)." and IDTheme=".$theme."");
-				if (!mysql_fetch_row($exist)) {
+				$exist = mysqli_query($connexionDB,"select 1 from notes where IDEleve=".$ligne['IDGDN']." and NoSemestre=".$semestre." and Annee=".$annee." and IDTypeNote=".($key+1)." and IDTheme=".$theme."");
+				if (!mysqli_fetch_row($exist)) {
 					$requeteIns = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, IDTheme, Ponderation) values (".$ligne['IDGDN'].", ".$semestre.", ".$annee.", ".($key+1).", ".$theme.", 0)";
 					//echo $requeteIns."<br>";
-					mysql_query($requeteIns);
+					mysqli_query($connexionDB,$requeteIns);
 				}
 			}
 		}
 	}
 }
-	
-	
-	
-	
+
+
+
+
 include("entete.php");
 ?>
 
@@ -115,8 +115,8 @@ function toggle(thisname) {
 	}
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 echo "<FORM id='myForm' ACTION='listeNotes.php'  METHOD='POST'>";
@@ -147,13 +147,13 @@ $optionAnnee = "";
 for($cntA=0;$cntA<5;$cntA++) {
 	$optionAnnee .= "<option value='".($anneeEncours-$cntA)."'";
 	if(($anneeEncours-$cntA)==$anneeTri) {
-		$optionAnnee .= " selected ";	
+		$optionAnnee .= " selected ";
 	}
 	$optionAnnee .= ">".($anneeEncours-$cntA)."/".($anneeEncours-$cntA+1)."</option>";
 }
 
 // construction de la liste des classes
-$optionsClasses = "";	
+$optionsClasses = "";
 foreach ($configurationNTE as $pos => $value) {
 	if(!empty($_POST['classe']) && $_POST['classe']==$pos) {
 		$optionsClasses .= "<option value='$pos' selected='selected'>$value</option>";
@@ -165,9 +165,9 @@ foreach ($configurationNTE as $pos => $value) {
 // construction de la liste déroulante pour ajout Theme
 $requete = "SELECT IDTheme, NomTheme, TypeTheme FROM theme where (TypeTheme=0 and ClasseTheme like '".$classeTri."') order by NomTheme";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $optionThemes = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$optionThemes .= "<option value=".$ligne['IDTheme'].">".$ligne['NomTheme']."</option>";
 }
 
@@ -219,12 +219,12 @@ echo "</tr>";
 $requete = "SELECT * FROM elevesbk ele join eleves els on ele.IDGDN=els.IDGDN join notes no on ele.IDGDN=no.IDEleve join theme th on
 no.IDTheme=th.IDTheme where annee like '".$anneeTri."' and Classe like '".$classeTri."' and IDEntreprise=1 order by Classe desc, Nom, Prenom, annee desc, nosemestre, nomtheme, no.IDTypeNote, no.IDNote";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 $cntNoteTheme = 0;
 $cntTEVide = 0;
 $annee = 0;
-$semestre = 0; 
+$semestre = 0;
 $theme = 0;
 $nomTheme = '';
 $pondTheme = 0;
@@ -261,7 +261,7 @@ function clotureTE() {
 	if($te!=0) {
 		// calcule de la moyenne TE
 		$moyenneTE = sprintf("%01.1f",round($te/$cntTe,1));
-		
+
 		$te = 0;
 		$cntTe = 0;
 	}
@@ -269,7 +269,7 @@ function clotureTE() {
 
 function clotureTheme() {
 	global $theme, $nomTheme, $pondTheme, $notesComp, $cntNoteTheme, $cntNotesComp, $cntTEVide, $affichage, $typeTheme, $compPond, $compAbbr,$modeEvaluation;
-	
+
 	if($theme!=0 && $theme>=10) {	// ne pas afficher les lignes fictives
 		if($affichage==1) {
 			$colorLine = "#C0C0C0";
@@ -277,7 +277,7 @@ function clotureTheme() {
 				$colorLine = "#FAAC58";
 			}
 			//if($moyenneTech==0||$appl==0||$rdmnt==0||$saet==0||$cntTEVide!=0) {
-			if(array_sum($cntNotesComp)==0||$cntTEVide!=0) {	
+			if(array_sum($cntNotesComp)==0||$cntTEVide!=0) {
 				$colorLine = "#FF0000";
 			}
 			// calcule moyenne du thème
@@ -314,7 +314,7 @@ function clotureTheme() {
 		//$cntTEVide = 0;
 		$theme=0;
 	}
-} 
+}
 
 function clotureSemestre() {
 	global $libellePeriode, $remGen, $compAbbr, $cntNotesComp, $moyennesComp, $compEval, $compPond;
@@ -330,7 +330,7 @@ function clotureSemestre() {
 			if($cntNotesComp[$key]!=0) {
 				$moyennesComp[$key] = sprintf("%01.1f",round($moyennesComp[$key]/$cntNotesComp[$key],1));
 				$texteRes .= "<td width='40' align='center'><b>".$value."</b><br>".$moyennesComp[$key]."</td>";
-				$cntNoteTot++; 
+				$cntNoteTot++;
 			} else {
 				if(empty($value)) {
 					$texteRes .= "<td width='40' align='center'></td>";
@@ -338,7 +338,7 @@ function clotureSemestre() {
 					$texteRes .= "<td width='40' align='center'><b>".$value."</b><br>-</td>";
 					$colorLine = "#FF0000";
 				}
-				
+
 			}
 		}
 		/*
@@ -356,7 +356,7 @@ function clotureSemestre() {
 			$texteRes .= "<td width='40' align='center'><b>A</b><br>-</td>";
 			$colorLine = "#FF0000";
 		}
-		if($cntNoteR!=0) {	
+		if($cntNoteR!=0) {
 			$moyenneSemestreR = sprintf("%01.1f",round($moyenneSemestreR/$cntNoteR,1));
 			$texteRes .= "<td width='40' align='center'><b>R</b><br>".$moyenneSemestreR."</td>";
 		} else {
@@ -388,8 +388,8 @@ function clotureSemestre() {
 			// $moyenneSemDix = round($moyenneSemestre*2)/2;
 			$moyenneSemCent = sprintf("%01.2f",round($moyenneSemestre,2));
 			// $moyenneSemCent = sprintf("%01.2f",$moyenneSemestre);
-			
-			echo "<td width='40' align='center' onmouseover=\"Tip('Moyenne bulletin au centième: ".$moyenneSemCent."')\" onmouseout='UnTip()'><b>B<br>".$moyenneSemDix."</b></td>";			
+
+			echo "<td width='40' align='center' onmouseover=\"Tip('Moyenne bulletin au centième: ".$moyenneSemCent."')\" onmouseout='UnTip()'><b>B<br>".$moyenneSemDix."</b></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
@@ -422,18 +422,18 @@ function clotureSemestre() {
 		$moyenneSemestreR = 0;
 		$cntNoteR = 0;
 		$moyenneSemestreS = 0;
-		$cntNoteS = 0;	
+		$cntNoteS = 0;
 		*/
-		$libellePeriode = "";	
+		$libellePeriode = "";
 	}
-		
-		
-	
-	
+
+
+
+
 }
 
-while ($ligne = mysql_fetch_assoc($resultat)) {
-	
+while ($ligne = mysqli_fetch_assoc($resultat)) {
+
 	if($ligne['Annee'] != $annee || $ligne['NoSemestre'] != $semestre || $ligne['IDEleve'] != $idLastEleve) {
 		// nouvelle année
 		// clôture de la ligne des TE si nécessaire
@@ -442,9 +442,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		clotureTheme();
 		// clôturer la période avec le calcul de la moyenne et l'éventuelle remarque sur la période
 		clotureSemestre();
-		
+
 		if($annee!=0 && ($ligne['Annee'] != $annee || $ligne['IDEleve'] != $idLastEleve)) {
-			echo "\n<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#DEDEDE'></td></tr>";	
+			echo "\n<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 		}
 		$annee = $ligne['Annee'];
 		$semestre = $ligne['NoSemestre'];
@@ -459,14 +459,14 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 				$compPond = $competencesPonderationOld;
 			}
 		}
-		
+
 		switch($ligne['NoSemestre']) {
 			case 1: $libellePeriode = "<i><b>".$annee."/".($annee+1)."</b><br> 1er semestre</i>";
 					break;
 			case 2: $libellePeriode = "<i><b>".$annee."/".($annee+1)."</b><br> 2ème semestre</i>";
 					break;
 		}
-		
+
 		if($ligne['IDEleve'] != $idLastEleve) {
 			$idLastEleve = $ligne['IDEleve'];
 			// ligne d'espacement
@@ -474,7 +474,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			echo "<tr><td colspan='9' bgColor='#DEDEDE'><font size='2' face='Verdana'><b>".$ligne['Nom']." ".$ligne['Prenom']." (".$ligne['Classe'].")</b> <a href='../detail/notesEleve.php?nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&idEleve=".$ligne['IDEleve']."' onmouseover=\"Tip('Vers ajout/modification des notes')\" onmouseout='UnTip()'></font><img src='/iconsFam/external.png'></a></td></tr>";
 		}
 	}
-	
+
 	if($ligne['IDTheme']>=10 && $ligne['IDTheme']!=$theme) {
 		// clôture de la ligne des TE si nécessaire
 		clotureTE();
@@ -491,9 +491,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		if($pondTheme==0) {
 			$pondTheme = $ligne['PonderationTheme'];
 		}
-		
 
-		
+
+
 	}
 	if($ligne['IDTypeNote'] > 1) {
 		// clôture de la ligne des TE si nécessaire
@@ -501,7 +501,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	}
 	$idNote = $ligne['IDNote'];
 	switch($ligne['IDTypeNote']) {
-		case 1: 
+		case 1:
 			// TE
 			if(!empty($ligne['Note'])) {
 				$te += $ligne['Note'] * $ligne['Ponderation'];
@@ -513,11 +513,11 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			break;
 		case 2:
 			// Technique
-			
+
 			// calcul et affichage de la moyenne de technique
 			if(!empty($ligne['Note'])) {
 				if($moyenneTE!=0) {
-					//$moyenneTech = sprintf("%01.1f",round(($ligne['Note']*2+$moyenneTE)/3,1));	
+					//$moyenneTech = sprintf("%01.1f",round(($ligne['Note']*2+$moyenneTE)/3,1));
 					$notesComp[$ligne['IDTypeNote']-1] = sprintf("%01.1f",round(($ligne['Note']*$moyenneCompPonderation+$moyenneTE)/($moyenneCompPonderation+1),1));
 				} else {
 					//$moyenneTech = $ligne['Note'];
@@ -532,7 +532,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			}
 			break;
 		case 3:
-			// Application 	
+			// Application
 			if(!empty($ligne['Note'])) {
 				//$appl = $ligne['Note'];
 				//$moyenneSemestreA += $appl * $pondTheme;
@@ -542,7 +542,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 				$cntNotesComp[$ligne['IDTypeNote']-1] += $pondTheme;
 				//$cntNoteTheme++;
 			}
-			break;	
+			break;
 		case 4:
 			// Rendement
 			if(!empty($ligne['Note'])) {
@@ -556,7 +556,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			}
 			break;
 		case 5:
-			// Savoir-être 	
+			// Savoir-être
 			if(!empty($ligne['Note'])) {
 				//$saet = $ligne['Note'];
 				//$moyenneSemestreS += $saet * $pondTheme;
@@ -566,14 +566,14 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 				$cntNotesComp[$ligne['IDTypeNote']-1] += $pondTheme;
 				//$cntNoteTheme++;
 			}
-			break;	
+			break;
 		case 6:
 			// Remarque générale
-			$remGen = $ligne['RemarqueNote'];	
+			$remGen = $ligne['RemarqueNote'];
 			break;
 		case 0:
 			// ligne vide pour ajout theme
-			break;	
+			break;
 		default:
 			// inconnu
 			echo "<tr block$annee$semestre$theme='1' ><td width='15'></td><td width='250'>Inconnu</td><td width='40'></td><td width='40'><b>".$ligne['Note']."</b></td><td colspan='4' width='620'>".$ligne['RemarqueNote']."</td><td width='40'></td></tr>";
@@ -590,7 +590,7 @@ clotureSemestre();
 // aucun enregistrement: afficher la situation
 if ($cnt==0) {
 	echo "<tr><td width='1020' valign='bottom' bgColor='#DEDEDE'></td></tr><tr><td width='1020' align='center'><i>Aucun enregistrement</i></td></tr>";
-} 
+}
 // ligne d'ajout
 
 
@@ -612,7 +612,7 @@ echo "</table><input type='submit' name='ajoutNote' value='Ajouter'></input>";
 
 ?>
 </table></div><br>
-<?
+<?php
 if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])) {
 	// ouvrir le thème précédemment ouvert
 	echo "<script>toggle(\"block".$_POST['idBlock']."\");</script>";
@@ -624,5 +624,4 @@ if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])) {
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
-
+<?php include("../../piedPage.php"); ?>

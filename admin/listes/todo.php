@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 if(isset($_POST['ajoutTodo'])) {
@@ -16,35 +16,35 @@ if(isset($_POST['ajoutTodo'])) {
 		$delai = date("Y-m-d",strtotime($_POST['Delai']));
 		$requete = "INSERT INTO todo (dateCreation, Libelle, Delai, IDProf, IDStatus) values (\"$date\", \"$libelle\", \"$delai\", $IDProf, 1)";
 	}
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 }
 if(isset($_GET['action'])) {
 	// effacement d'une ligne
 	if($_GET['action'] == "delete" && isset($_GET['IDTodo'])) {
 		$requete = "DELETE FROM todo where IDTodo=$_GET[IDTodo]";
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 
 	// prise en charge
 	if($_GET['action'] == "charge" && isset($_GET['IDTodo'])) {
 		// recherche de l'id prof
 		$requete = "select IDProf from prof where userid = '".$_SESSION['user_id']."'";
-		$resultat =  mysql_query($requete);
-		$ligne = mysql_fetch_assoc($resultat);
+		$resultat =  mysqli_query($connexionDB,$requete);
+		$ligne = mysqli_fetch_assoc($resultat);
 		$requete = "update todo set IDStatus=2, IDProf=".$ligne['IDProf']." where IDTodo=".$_GET['IDTodo'];
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 
 	// refuser
 	if($_GET['action'] == "annule" && isset($_GET['IDTodo'])) {
 		$requete = "update todo set IDStatus=4 where IDTodo=".$_GET['IDTodo'];
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 
 	// terminer
 	if($_GET['action'] == "accept" && isset($_GET['IDTodo'])) {
 		$requete = "update todo set IDStatus=3 where IDTodo=".$_GET['IDTodo'];
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 }
 $tri = "1,2";
@@ -70,8 +70,8 @@ function toggle(thisname) {
 	}
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 echo "<FORM id='myForm' ACTION='todo.php'  METHOD='POST'>";
@@ -95,9 +95,9 @@ echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='100'>Date</th><th width='470'>Texte</th><th width='100' align='center'>Délai</th><th width='100' align='center'>Responsable</th><th width='100' align='center'>Status</th><th></th></tr>";
 // recherche des todos
 $requete = "SELECT * FROM todo tod left outer join prof pr on tod.IDProf=pr.IDProf join status st on tod.IDStatus=st.IDStatus where tod.IDStatus in (".$tri.") order by tod.IDStatus, dateCreation desc";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	if($ligne['delai']==0) {
 		$delaistr = "Aucun";
 	} else {
@@ -116,22 +116,22 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	} else {
 		echo "<img src='/iconsFam/empty.png' align='absmiddle'> ";
 		echo "<img src='/iconsFam/empty.png' align='absmiddle'> ";
-	} 
+	}
 	if($ligne['IDStatus']==1 || $ligne['IDStatus']==3 ||  $ligne['IDStatus']==4) {
 		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a>";
 	}
-	
+
 	echo "</td></tr>";
 	$cnt++;
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='6' align='center'><i>Aucun enregistrement</i></td></tr>";
-} 
+}
 // ligne d'ajout
 $requete = "SELECT * FROM prof";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $optionProf = "<option value=''></option>";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$optionProf .= "<option value=".$ligne['IDProf'].">".$ligne['Nom']."</option>";
 }
 
@@ -152,4 +152,4 @@ echo "</table></div><br><br>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

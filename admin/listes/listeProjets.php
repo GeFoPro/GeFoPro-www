@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 $filtre = "1";
@@ -36,7 +36,7 @@ if(isset($_POST['ajoutProjet'])) {
 	// ajout d'un attribut
     $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme) values (\"$projet\",0,1)";
 	//echo $requete;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 	$filtre = 11;
 	$anneeTri = '%';
 }
@@ -74,17 +74,17 @@ if(isset($_POST['actionProjet'])) {
 		if(in_array($eleve,$configurationATE)) {
 			// si classe entière
 			$requeteEl = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$eleve."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
-			$resultatEl =  mysql_query($requeteEl);
-			while ($ligneEl = mysql_fetch_assoc($resultatEl)) {
+			$resultatEl =  mysqli_query($connexionDB,$requeteEl);
+			while ($ligneEl = mysqli_fetch_assoc($resultatEl)) {
 				$requete = "insert into projets (IDTheme, IDEleve, IDTypeProjet, IDEtatProjet) values ($theme, $ligneEl[IDGDN], $type, 0)";
-				$resultat =  mysql_query($requete);
+				$resultat =  mysqli_query($connexionDB,$requete);
 			}
 		} else {
 			//$idType
 			//echo "theme ".$theme.", eleve ".$eleve.", type ".$type;
 			$requete = "insert into projets (IDTheme, IDEleve, IDTypeProjet, IDEtatProjet) values ($theme, $eleve, $type, 0)";
 			//echo $requete;
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 		}
 	} else if($_POST['actionProjet']=='start') {
 		$projet = $_POST['projet'];
@@ -93,12 +93,12 @@ if(isset($_POST['actionProjet'])) {
 		// mise à jour du projet
 		$requete = "update projets set IDEtatProjet=1 where IDProjet=".$projet;
 		//echo $requete;
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 		// ajout d'une ligne dans le suivi pour début de projet
 		//$requete = "insert into suiviprojet (IDProjet, DateSaisie, RemarqueSuivi) values (".$projet.", \"".date('Y-m-d')."\", \"Début de projet\")";
 		$requete = "insert into remarquesuivi (IDEleve, IDTheme, DateSaisie, Remarque, TypeRemarque) values (".$eleve.", ".$theme.",\"".date('Y-m-d')."\", \"Début de projet\",1)";
 		//echo $requete;
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='stop') {
 		$projet = $_POST['projet'];
 		$eleve = $_POST['eleve'];
@@ -106,37 +106,37 @@ if(isset($_POST['actionProjet'])) {
 		// mise à jour du projet
 		$requete = "update projets set IDEtatProjet=2 where IDProjet=".$projet;
 		//echo $requete;
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 		// ajout d'une ligne dans le suivi pour finir de projet
 		//$requete = "insert into suiviprojet (IDProjet, DateSaisie, RemarqueSuivi) values (".$projet.", \"".date('Y-m-d')."\", \"Fin de projet\")";
 		$requete = "insert into remarquesuivi (IDEleve, IDTheme, DateSaisie, Remarque, TypeRemarque) values (".$eleve.", ".$theme.",\"".date('Y-m-d')."\", \"Fin de projet\",1)";
 		//echo $requete;
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='repeat') {
 		$theme = $_POST['theme'];
 		// mise à jour du projet
 		$requete = "update projets set IDEtatProjet=4 where IDTheme=".$theme;
 		//echo $requete;
-    	$resultat =  mysql_query($requete);
+    	$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='end') {
 		$theme = $_POST['theme'];
 		// mise à jour du projet
 		$requete = "update projets set IDEtatProjet=2 where IDTheme=".$theme;
 		//echo $requete;
-    	$resultat =  mysql_query($requete);
+    	$resultat =  mysqli_query($connexionDB,$requete);
 	}
 }
 if(isset($_GET['IDTheme'])) {
 	// suppression d'un theme
 	$requete = "DELETE FROM theme where IDTheme=".$_GET['IDTheme'];
 	//echo $requete;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 }
 if(isset($_GET['IDProjet'])) {
 	// suppression d'un projet
 	$requete = "DELETE FROM projets where IDProjet=".$_GET['IDProjet'];
 	//echo $requete;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 }
 
 
@@ -192,8 +192,8 @@ function submitUpdateProjID(projet,theme, eleve,action) {
 	document.getElementById('myForm').submit();
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 echo "<FORM id='myForm' ACTION='listeProjets.php'  METHOD='POST'>";
 echo "<input type='hidden' name='actionProjet' value=''>";
@@ -212,14 +212,14 @@ $listeSCT = "<option value='0'></option>";
 $requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $lastClasse = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	//if($ligne['IDAttribut']!=13) {
 	if($lastClasse!=$ligne['Classe']) {
 		// ajout d'une ligne classe
 		$listeSCT .= "<option value='".$ligne['Classe']."'>".$ligne['Classe']."</option>";
-	}		
+	}
 	$listeSCT .= "<option value='".$ligne['IDGDN']."'>&nbsp;  ".$ligne['Nom']." ".$ligne['Prenom']."</option>";
 	//}
 	$lastClasse = $ligne['Classe'];
@@ -229,8 +229,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 $selectType = "";
 $requete = "SELECT * FROM typeprojet";
 //echo $requete;
-$resultat =  mysql_query($requete);
-while ($ligne = mysql_fetch_assoc($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$selectType .= "<option value='".$ligne['IDTypeProjet']."'>".$ligne['LibelleTypeProjet']."</option>";
 }
 //$selectType .= "</select>";
@@ -238,8 +238,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 // construction de la liste de etats de projet
 $selectEtat = "";
 $requete = "SELECT * FROM etatprojet";
-$resultat =  mysql_query($requete);
-while ($ligne = mysql_fetch_assoc($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$selectEtat .= "<option value='".$ligne['IDEtatProjet']."'";
 	if($ligne['IDEtatProjet']==$filtre) {
 		$selectEtat .= " selected";
@@ -253,7 +253,7 @@ $havingSQL = "";
 	for($cntA=0;$cntA<5;$cntA++) {
 		$optionAnnee .= "<option value='".($annee-$cntA)."'";
 		if(($annee-$cntA)==$anneeTri) {
-			$optionAnnee .= " selected ";	
+			$optionAnnee .= " selected ";
 		}
 		$optionAnnee .= ">".($annee-$cntA)."/".($annee-$cntA+1)."</option>";
 	}
@@ -289,11 +289,11 @@ $requete .= " where typetheme = 1 ".$filtreSQL;
 $requete .= " group by th.IDTheme, pr.IDEleve".$havingSQL;
 $requete .= " order by th.NomTheme, et.IDEtatProjet, ty.IDTypeProjet, DDebut desc";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 $lastID = 0;
 $lastEtat = 0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$idTheme = $ligne['IDTheme'];
 	$idProjet = $ligne['IDProjet'];
 	$idEleve = $ligne['IDEleve'];
@@ -301,10 +301,10 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		// pas encore attribuer, on effectue un toggle avec cette ligne et la ligne d'ajout
 	//	echo "<tr newattrib$idTheme='1'>";
 	//} else {
-		
+
 	//}
 	if($lastID!=$ligne['IDTheme']) {
-		// si nouveau thème 
+		// si nouveau thème
 		echo "<tr bgColor='#DEDEDE'>";
 		echo "<td><a href='listeProjets.php?theme=$ligne[IDTheme]'><b>".$ligne['NomTheme']."</b></a></td><td>";
 		if($ligne['IDEtatProjet']==0||$ligne['IDEtatProjet']==1||$ligne['IDEtatProjet']==4) {
@@ -340,9 +340,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	} else {
 		echo "<tr>";
 	}
-	
-	
-	
+
+
+
 	if(!empty($ligne['Nom'])) {
 		// première colonne vide
 		echo "<td></td><td>";
@@ -352,8 +352,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		$celNote = "";
 		//$requeteF = "SELECT count(*) as tot from suiviprojet where IDProjet=".$ligne['IDProjet'];
 		$requeteF = "SELECT count(*) as tot from remarquesuivi where IDTheme=".$ligne['IDTheme']." and IDEleve=".$ligne['IDEleve'];
-		$resultatF =  mysql_query($requeteF);
-		$ligneF = mysql_fetch_assoc($resultatF);
+		$resultatF =  mysqli_query($connexionDB,$requeteF);
+		$ligneF = mysqli_fetch_assoc($resultatF);
 		if($ligneF['tot']>2) {
 			$celSuivi = "<td align='center'><img src='/iconsFam/bullet_green.png' align='absmiddle'></td>";
 			$vide = 0;
@@ -364,8 +364,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 			$celSuivi = "<td align='center'><img src='/iconsFam/bullet_red.png' align='absmiddle'></td>";
 		}
 		$requeteF = "SELECT * from notes where IDTheme=".$ligne['IDTheme']." and IDTypeNote<>0 and IDEleve=".$ligne['IDEleve'];
-		$resultatF =  mysql_query($requeteF);
-		if(mysql_num_rows($resultatF)>0) {
+		$resultatF =  mysqli_query($connexionDB,$requeteF);
+		if(mysqli_num_rows($resultatF)>0) {
 			$celNote = "<td align='center'><img src='/iconsFam/bullet_green.png' align='absmiddle'></td>";
 			$vide = 0;
 		} else {
@@ -383,15 +383,15 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		//	$requeteF = "SELECT min(DateSaisie) min, max(DateSaisie) max from remarquesuivi where IDTheme=".$ligne['IDTheme']." and IDEleve=".$ligne['IDEleve'];
 		//}
 		//echo $requeteF;
-		//$resultatF =  mysql_query($requeteF);
-		//$ligneF = mysql_fetch_assoc($resultatF);
+		//$resultatF =  mysqli_query($connexionDB,$requeteF);
+		//$ligneF = mysqli_fetch_assoc($resultatF);
 		if(!empty($ligne['DebutProjet'])) {
 			echo date('d.m.Y', strtotime($ligne['DebutProjet']));
 		//} else if($ligneF['min']!=0){
 		} else if($ligne['DDebut']){
 			//if($ligneF['min']!=$ligne['DDebut']) {
 			//	echo "<font color='red'>".date('d.m.Y', strtotime($ligneF['min']))."</font><br>";
-			//} 
+			//}
 			echo date('d.m.Y', strtotime($ligne['DDebut']));
 		}
 		echo "</td><td>";
@@ -407,7 +407,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		echo "</td><td>".$ligne['LibelleTypeProjet']."</td><td>";
 		if(($ligne['IDEtatProjet']!=4 && $ligne['IDEtatProjet']!=2) || ($lastID==$ligne['IDTheme']&&$lastEtat!=$ligne['IDEtatProjet'])) {
 			echo $ligne['LibelleEtatProjet'];
-		} 
+		}
 		echo "</td>";
 		echo $celSuivi;
 		echo $celNote;
@@ -426,8 +426,8 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		//}
 		echo "</td></tr>";
 	}
-	
-	
+
+
 	if($lastID==$ligne['IDTheme']&&$lastEtat!=$ligne['IDEtatProjet']) {
 		// si état différent dans le même thème, on réinitialise le dernier état afin que le prochain soit affiché
 		$lastEtat = 0;
@@ -439,7 +439,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='10' align='center'><i>Aucun enregistrement</i></td></tr>";
-} 
+}
 // ligne d'ajout
 
 echo "<tr><td colspan='10' bgColor='#5C5C5C'></td></tr>";
@@ -457,4 +457,4 @@ echo "</table></div><br>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

@@ -5,11 +5,12 @@
 <title><?=$app_section?> - Gestion atelier</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link href="/<?=$app_section?>/default.css" rel="stylesheet" type="text/css" />
-<link rel="icon" href='/<?=$app_section."/".Logo?>' type="image/x-icon" />
-<link rel="shortcut icon" href='/<?=$app_section."/".Logo?>' type="image/x-icon" />
+<link href="<?=$_SESSION['home']?>default.css" rel="stylesheet" type="text/css" />
+<link rel="icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
+<link rel="shortcut icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
 
 <script>
+// iso-8859-1
 var toggle_ctrl;
 function readKey(event) {
 	var x = event.charCode || event.keyCode;  // Get the Unicode value
@@ -46,9 +47,9 @@ function readKey(event) {
 		<table border='0' width="100%"><tr><td>
 		<h1><?=$app_section?> - Gestion atelier</h1>
 		</td>
-		<td align="right"><a href='/<?=$app_section?>/comp/compList.php'>Gestion du consommable et équipement</a>
-		<br><a href='/<?=$app_section?>/doc/dossiers.php'>Gestion des documents</a>
-		<br><a href='/<?=$app_section?>/admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
+		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
+		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
+		<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
 		<?php if(!empty($teamsURL)) { ?>
 			<br><a href='<?=$teamsURL?>' target='teams'>Teams atelier</a>
 		<?php } ?>
@@ -59,20 +60,20 @@ function readKey(event) {
 
 		<ul>
 			<?php if(hasAdminRigth()) { ?>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/horaire.php">Horaires</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/atelier.php?modeHTML">Elèves</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/listeCoursCIE.php">CIE</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/listeProjets.php">Projets</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/journaux.php">Suivis</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/listeNotes.php">Notes</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/taches.php?modeHTML">Tâches</a></li>
-			<li class="current_page_item"><a href="/<?=$app_section?>/admin/listes/todo.php">Todo</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/horaire.php">Horaires</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">Elèves</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeCoursCIE.php">CIE</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeProjets.php">Projets</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php">Suivis</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeNotes.php">Notes</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML">Tâches</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/todo.php">Todo</a></li>
 			<?php  } ?>
-			<li class="last"><a href="/<?=$app_section?>/index.php?logout=out">Déconnecter</a></li>
-			<?
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
+			<?php
 			if(!empty($modeAff) && $modeAff==$attribCarnet) {
-				echo "<li class='last'>&nbsp;</li><li class='context'><a href='/".$app_section."/admin/listes/atelier.php?modeHTML=&modeAff=100&reset=Effacer'>Effacer carnets</a></li>";
-				echo "<li class='last'>&nbsp;</li><li class='context'><a href='/".$app_section."/admin/listes/atelier.php?modeHTML=&modeAff=100&resetAndSet=Effacer'>Effacer + oublis</a></li>";
+				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&reset=Effacer'>Effacer carnets</a></li>";
+				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&resetAndSet=Effacer'>Effacer + oublis</a></li>";
 			} ?>
 		</ul>
 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 /* PDF */
@@ -10,26 +10,21 @@ if(isset($_GET['nom'])) {
 	$prenom = $_GET['prenom'];
 	$IDEleve = $_GET['IDEleve'];
 	$IDTheme = $_GET['IDTheme'];
-	$noSemaine = $_GET['noSemaine'];
+	$noSemaine = (isset($_GET['noSemaine'])?$_GET['noSemaine']:date('W'));
 	$annee = $_GET['annee'];
-	$tri = $_GET['tri'];
-	$only = $_GET['only'];
+	$tri = (isset($_GET['tri'])?$_GET['tri']:1);
+	$only = (isset($_GET['only'])?$_GET['only']:"");
 } else if(isset($_POST['nom'])) {
 	$nom = $_POST['nom'];
 	$prenom = $_POST['prenom'];
 	$IDEleve = $_POST['IDEleve'];
 	$IDTheme = $_POST['IDTheme'];
-	$noSemaine = $_POST['noSemaine'];
+	$noSemaine = (isset($_POST['noSemaine'])?$_POST['noSemaine']:date('W'));
 	$annee = $_POST['annee'];
-	$tri = $_POST['tri'];
-	$only = $_POST['only'];
+	$tri = (isset($_POST['tri'])?$_POST['tri']:1);
+	$only = (isset($_POST['only'])?$_POST['only']:"");
 }
-if(empty($noSemaine)) {
-	$noSemaine = date('W');
-}
-if(empty($tri)&&tri!=0) {
-	$tri=1; // pas défaut tri sur le semestre
-}
+
 
 $dateCalc=mktime(0,0,0,1,4,$annee);
 $jour_semaine=date("N",$dateCalc);
@@ -51,8 +46,8 @@ if(empty($IDTheme)) {
 		$nomThemeTitre = "CPG";
 	} else {
 		$requeteH = "SELECT NomTheme from theme where IDTheme=".$IDTheme;
-		$resultat =  mysql_query($requeteH);
-		$ligne = mysql_fetch_assoc($resultat);
+		$resultat =  mysqli_query($connexionDB,$requeteH);
+		$ligne = mysqli_fetch_assoc($resultat);
 		$nomThemeTitre = $ligne['NomTheme'];
 	}
 }
@@ -94,7 +89,7 @@ function Header()
 		$this->SetXY(130,23.5);
 		$this->Write(0,"Toutes périodes confondues");
 	}
-   
+
 
     $this->SetFont("Arial","B",8);
 	//$this->SetXY(20,30);
@@ -103,7 +98,7 @@ function Header()
 		$this->SetXY(20,35);
 		$this->Write(0,"Date");
 		$this->SetXY(40,35);
-		$this->Write(0,"Auteur");	
+		$this->Write(0,"Auteur");
 		$this->SetXY(60,35);
 		$this->Write(0,"Remarques");
 		$this->SetDrawColor(183);
@@ -132,9 +127,9 @@ $PDF->AddPage();
 	$PDF->SetDrawColor(183); // Couleur du fond
 	$PDF->SetFillColor(221); // Couleur des filets
 
-	
+
 	//echo $requete;
-	//$resultat =  mysql_query($requete);
+	//$resultat =  mysqli_query($connexionDB,$requete);
 	$requete = $_SESSION['last_request'];
 	//echo $requete;
 	//if($IDTheme==2) {
@@ -142,9 +137,9 @@ $PDF->AddPage();
 	//} else {
 	//	$requete .= " order by DateSaisie";
 	//}
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	$lastTheme = -1;
-	while ($ligne = mysql_fetch_assoc($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		//$idJournal = $ligne['IDJournal'];
 		if($lastTheme!=$ligne['IDTheme']) {
 			//$posLigne = $posLigne+2;
@@ -165,19 +160,19 @@ $PDF->AddPage();
 			$PDF->SetXY($posCol,$posLigne-2.5);
 			$PDF->Cell(177,4,$nomTheme,1,1,'L',1);
 			//$PDF->Write(0,$nomTheme);
-			
-			
+
+
 			$posLigne += 5;
 			$PDF->SetFont("Arial","",8);
 		}
-		
+
 		$PDF->SetTextColor(0,0,0);
 		$date = strtotime($ligne['DateSaisie']);
 		$PDF->SetXY($posCol,$posLigne);
 		$PDF->Write(0,date('d.m.Y', $date));
 		$PDF->SetXY($posCol+20,$posLigne);
 		$PDF->Write(0,$ligne['abbr']);
-		
+
 		$PDF->SetXY($posCol+40,$posLigne);
 		// remplacer les caractère wiki
 		$rem = $ligne['Remarque'];
@@ -211,7 +206,7 @@ $PDF->AddPage();
 					$PDF->SetFont("Arial","",8);
 				}
 			}
-			
+
 			$tok = preg_replace('/\* (.*?)/', chr(127).' $1', $tok,1,$count);
 			if($count!=0) {
 				$cntBullet++;
@@ -220,12 +215,12 @@ $PDF->AddPage();
 			if($count!=0) {
 				$cntBullet++;
 			}
-			
+
 			$debut=0;
 			while(strlen($tok) > $debut) {
 				$fin = 98;
 				$txt = substr($tok,$debut,$fin);
-				if(strlen($txt)==$fin) {	
+				if(strlen($txt)==$fin) {
 					$fin = strrpos($txt," ");
 				}
 				$PDF->Write(0,substr($tok,$debut,$fin));
@@ -245,12 +240,12 @@ $PDF->AddPage();
 			$PDF->SetXY($posCol+40,$posLigne);
 			// nouvelle ligne
 			$tok = strtok("\r\n");
-			
+
 		}
 		if($found) {
 			$posLigne -= 3.5;
 		}
-		
+
 		$PDF->Line($posCol,$posLigne+2.5,$posCol+177,$posLigne+2.5);
 
 		$posLigne += 5;
@@ -259,7 +254,7 @@ $PDF->AddPage();
 			$posLigne = 40;
 		}
 	}
-	
+
 $PDF->Output('suivi.pdf','I');
 
 ?>

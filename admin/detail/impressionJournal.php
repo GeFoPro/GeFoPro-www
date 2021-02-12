@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 if(hasAdminRigth()) {
@@ -11,7 +11,7 @@ if(hasAdminRigth()) {
 		$prenom = $_POST['prenom'];
 		$IDEleve = $_POST['IDEleve'];
 	}
-	
+
 } else {
 	// tentative de recherche par userid
 	$requete = "select * from eleves el join elevesbk bk on el.IDGDN=bk.IDGDN where Userid='".$_SESSION['user_login']."'";
@@ -43,7 +43,7 @@ include("entete.php");
 <div id="page">
 <?
 include($app_section."/userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 
 echo "<FORM id='myForm' ACTION='impressionJournalPDF.php'  METHOD='POST'>";
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
@@ -68,7 +68,7 @@ if(isset($listeId)&&!empty($listeId)) {
 	}
 }
 echo "</h2></td><td width='300'></td></tr></table><br>";
-// si IDTheme pas imposé, prendre celui en cours
+// si IDTheme pas imposï¿½, prendre celui en cours
 if($IDTheme==0) {
 	// recherche du theme en cours selon journal de l'apprenti
 	$requete = "SELECT jo.IDTheme from journal as jo join theme as th on jo.IDTheme=th.IDTheme  where IDEleve=".$IDEleve." and TypeTheme < 2 order by DateJournal desc limit 1";
@@ -78,7 +78,7 @@ if($IDTheme==0) {
 	$IDTheme = $ligne[0];
 	//echo "Actu: ".$IDTheme;
 }
-// recherche des themes à afficher
+// recherche des themes ï¿½ afficher
 $requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme where (pr.IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) group by th.IDTheme order by TypeTheme, NomTheme";
 //echo $requete;
 $resultat =  mysql_query($requete);
@@ -95,7 +95,7 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 	$option .= $ligne['NomTheme']."</option>";
 }
 
-// Rechercher l'année correspondant au thème choisi (IDTheme transmis)
+// Rechercher l'annï¿½e correspondant au thï¿½me choisi (IDTheme transmis)
 
 $requete = "SELECT min(DateJournal) as min, max(DateJournal) as max FROM journal jou where IDEleve = $IDEleve and jou.IDTheme = $IDTheme";
 $resultat =  mysql_query($requete);
@@ -108,13 +108,13 @@ if(!empty($resultat)) {
 	$min=0;
 }
 
-	
-// définition de l'annee et mois de la date max
+
+// dï¿½finition de l'annee et mois de la date max
 if($max!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisAct = date('m',strtotime($max));
 	$anneeAct = date('Y',strtotime($max));
-	//echo "date: ".$max.", mois: ".$moisAct.", année: ".$anneeAct;
+	//echo "date: ".$max.", mois: ".$moisAct.", annï¿½e: ".$anneeAct;
 	if($moisAct<8) {
 		if(empty($annee)) {
 			$annee = $anneeAct-1;
@@ -131,39 +131,39 @@ if($max!=0) {
 } else {
 	$anneeMax=date('Y');
 }
-	
-// définition de l'annee et mois min
+
+// dï¿½finition de l'annee et mois min
 if($min!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisActMin = date('m',strtotime($min));
 	$anneeActMin = date('Y',strtotime($min));
-	//echo "date: ".$min.", mois: ".$moisActMin.", année: ".$anneeActMin;
+	//echo "date: ".$min.", mois: ".$moisActMin.", annï¿½e: ".$anneeActMin;
 	if($moisActMin<8) {
 		$anneeMin = $anneeActMin-1;
 	} else {
 		$anneeMin = $anneeActMin;
 	}
-	
+
 } else {
 	$anneeMin = date('Y') - 5;
 }
 
 
 
-// construction de la liste d'années
+// construction de la liste d'annï¿½es
 $optionAnneeEval = "<select name='annee'>";
 //$mois = date('m');
 //$annee = date('Y');
 //if($mois<8) {
 //	$annee = $annee-1;
-//}	
-$anneeToday = date('Y');	
+//}
+$anneeToday = date('Y');
 for($cntA=0;$cntA<5;$cntA++) {
 	//echo $annee."/".$anneeMin."/".$anneeMax."//".($anneeToday-$cntA)."<br>";
 	if($anneeMin<=($anneeToday-$cntA)&&$anneeMax>=($anneeToday-$cntA)) {
 		$optionAnneeEval .= "<option value='".($anneeToday-$cntA)."'";
 		if(($anneeToday-$cntA)==$annee) {
-			$optionAnneeEval .= " selected ";	
+			$optionAnneeEval .= " selected ";
 		}
 		$optionAnneeEval .= ">".($anneeToday-$cntA)."/".($anneeToday-$cntA+1)."</option>";
 	}
@@ -174,10 +174,10 @@ echo "<br><div id='corners'>";
 echo "<div id='legend'>Impression d'un journal</div>";
 echo "<br><table>";
 echo "<tr><td width='150' align='right'><b>Theme/Projet:</b></td><td><select name='IDTheme' onChange='document.getElementById(\"myForm\").action=\"impressionJournal.php\";document.getElementById(\"myForm\").submit();'>".$option."</select></td></tr>";
-echo "<tr><td width='150' align='right'><b>Année:</b></td><td>".$optionAnneeEval."</td></tr>";
+echo "<tr><td width='150' align='right'><b>Annï¿½e:</b></td><td>".$optionAnneeEval."</td></tr>";
 
 
-echo "<tr><td></td><td><input type='submit' name='envoyer' value='Générer'></td></tr>";
+echo "<tr><td></td><td><input type='submit' name='envoyer' value='Gï¿½nï¿½rer'></td></tr>";
 echo "</table></div><br>";
 ?>
 

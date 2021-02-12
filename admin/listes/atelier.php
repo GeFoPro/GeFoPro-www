@@ -105,8 +105,8 @@ if(!$modeHTML) {
 		}
 	}
 	</script>
-	<?
-	include($app_section."/userInfo.php");
+	<?php
+	include("../../userInfo.php");
 
 	if(isset($_SESSION['user_attributs'])) {
 		print_r($_SESSION['user_attributs']);
@@ -143,7 +143,7 @@ function nextEntry($connexion, $data) {
 			return null;
 		}
 	} else {
-		return mysql_fetch_row($data);
+		return mysqli_fetch_row($data);
 	}
 }
 
@@ -217,16 +217,16 @@ if(!$modeHTML) {
 if(!empty($IDEleve) && $modeAff!=0) {
 	$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $IDEleve and IDAttribut = $modeAff";
 	//echo $requete."<br>";
-	$resultat =  mysql_query($requete);
-	$content = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$content = mysqli_fetch_assoc($resultat);
 	if($content!=null) {
 		// un enregistrement existe -> on le supprime
 		$requete = "DELETE from $tableAttribEleves where IDEleve=$IDEleve and IDAttribut=$modeAff";
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 	} else {
 		// aucun enregistrement -> on l'ajoute
 		$requete = "INSERT INTO $tableAttribEleves (IDEleve, IDAttribut) values ($IDEleve, $modeAff)";
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 	//echo $requete."<br>";
 
@@ -234,7 +234,7 @@ if(!empty($IDEleve) && $modeAff!=0) {
 if(!empty($_GET['reset']) && $modeAff!=0) {
 	// effacer l'attribut pour tous les élèves
 	$requete = "DELETE from $tableAttribEleves where IDAttribut=$modeAff";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
@@ -246,16 +246,16 @@ if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
 	}
 	$requeteNew .= ") and el.IDGDN not in (SELECT IDEleve from $tableAttribEleves where IDAttribut=100)";
 	//echo $requeteNew."<br>";
-	$resultat = mysql_query($requeteNew);
+	$resultat = mysqli_query($connexionDB,$requeteNew);
 	$cntModif=0;
-	while ($ligne = mysql_fetch_assoc($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		$requeteUpd = "INSERT INTO $tableAttribEleves (IDEleve, IDAttribut, Remarque, Date) values ($ligne[IDEleve], 103, \"Ajout automatique\", \"".date("Y-m-d")."\")";
-		mysql_query($requeteUpd);
+		mysqli_query($connexionDB,$requeteUpd);
 		$cntModif++;
 	}
 	// effacer l'attribut pour tous les élèves
 	$requete = "DELETE from $tableAttribEleves where IDAttribut=$modeAff";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 // construction de la liste des classe si 'ancien' à été choisi
@@ -265,12 +265,12 @@ if(isset($classe)&&$classe==100) {
 		$requeteCl .= ",'".$value."'";
 	}
 	$requeteCl .= ") order by Classe";
-		echo $requete."<br>";
-	$resultat =  mysql_query($requeteCl);
+		//echo $requete."<br>";
+	$resultat =  mysqli_query($connexionDB,$requeteCl);
 	// construction de la nouvelle configuration
 	$cnt=1;
 	unset($configurationATE);
-	while ($ligne = mysql_fetch_assoc($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		$configurationATE[] = $ligne['Classe'];
 		$cnt++;
 	}
@@ -280,15 +280,18 @@ if(isset($classe)&&$classe==100) {
 // construction de la liste des classe qui commencent par l'abbreviation de la section (ELT, AUT, etc.)
 if(isset($classe)&&$classe==101) {
 	$requeteCl = "select distinct Classe from elevesbk where Classe like '".$app_section."%' order by Classe desc";
+	//$requeteCl = "select distinct Classe from elevesbk where Classe like 'ELT%' order by Classe desc";
+	//echo $requeteCl;
 
-		//echo $requete."<br>";
-	$resultat =  mysql_query($requeteCl);
-	// construction de la nouvelle configuration
-	$cnt=1;
-	unset($configurationATE);
-	while ($ligne = mysql_fetch_assoc($resultat)) {
-		$configurationATE[] = $ligne['Classe'];
-		$cnt++;
+	$resultat =  mysqli_query($connexionDB,$requeteCl);
+	if(mysqli_num_rows ($resultat)!=0) {
+		// construction de la nouvelle configuration
+		$cnt=1;
+		unset($configurationATE);
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
+			$configurationATE[] = $ligne['Classe'];
+			$cnt++;
+		}
 	}
 
 }
@@ -319,7 +322,7 @@ foreach ($configurationATE as $pos => $value) {
 		//} else {
 			$requete = "SELECT * FROM $tableElevesBK where Classe like '$value' order by Nom";
 				//echo $requete."<br>";
-			$stmt =  mysql_query($requete);
+			$stmt =  mysqli_query($connexionDB,$requete);
 		//}
 		if(!$modeHTML) {
 			$objPHPExcel->getActiveSheet()->setCellValue("A".$cntCell, iconv("ISO-8859-1", "UTF-8", "$value"));
@@ -333,7 +336,7 @@ foreach ($configurationATE as $pos => $value) {
 		}
 		$emailGroup = "";
 		$emailGroupOutlook = "";
-		while ($data = mysql_fetch_assoc($stmt)) {
+		while ($data = mysqli_fetch_assoc($stmt)) {
 		//while (($data = nextEntry($connexion,$stmt))!=null){
 			$troisplusun = false;
 
@@ -351,9 +354,9 @@ foreach ($configurationATE as $pos => $value) {
 
 			$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle where el.IDGDN = $idGDN";
 	//echo $requete."<br>";
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 			if($resultat!=null) {
-				$ligne = mysql_fetch_assoc($resultat);
+				$ligne = mysqli_fetch_assoc($resultat);
 			}
 			// ajout dans liste éleves si internes
 			//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
@@ -402,8 +405,9 @@ foreach ($configurationATE as $pos => $value) {
 
 					$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribConge,$attribTel) and Date = \"".date("Y-m-d")."\"";
 		//echo $requete."<br>";
-					$resultat =  mysql_query($requete);
-					$ico = mysql_fetch_assoc($resultat);
+					$resultat =  mysqli_query($connexionDB,$requete);
+
+					$ico = mysqli_fetch_assoc($resultat);
 					if($ico!=null) {
 						echo " bgcolor='#F8E0E0' onmouseover=\"Tip('";
 						if($ico['IDAttribut']==$attribTel) {
@@ -415,8 +419,8 @@ foreach ($configurationATE as $pos => $value) {
 					}
 					$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribConge and Date > \"".date("Y-m-d")."\"";
 		//echo $requete."<br>";
-					$resultat =  mysql_query($requete);
-					$ico = mysql_fetch_assoc($resultat);
+					$resultat =  mysqli_query($connexionDB,$requete);
+					$ico = mysqli_fetch_assoc($resultat);
 					if($ico!=null) {
 						echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 					}
@@ -430,8 +434,8 @@ foreach ($configurationATE as $pos => $value) {
 						// mode Normal
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribFem";
 		//echo $requete."<br>";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/user_female.png'>";
 						} else {
@@ -443,17 +447,17 @@ foreach ($configurationATE as $pos => $value) {
 							$cntIcon++;
 						} else {
 							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
-							$resultat =  mysql_query($requete);
-							$ico = mysql_fetch_assoc($resultat);
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
 							if($ico!=null) {
 								echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('En stage')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							}
 						}
-						
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribtroisplusun, $attribMPT, $attribMPTtrois, $attribfuturtrois)";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null || $troisplusun) {
 							if($ico['IDAttribut']==$attribtroisplusun || $troisplusun) {
 								echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('3+1')\" onmouseout='UnTip()'>";
@@ -478,8 +482,8 @@ foreach ($configurationATE as $pos => $value) {
 						}
 
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribResp";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Délégué de classe')\" onmouseout='UnTip()'>";
 							$cntIcon++;
@@ -490,8 +494,8 @@ foreach ($configurationATE as $pos => $value) {
 						}
 
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribANG, $attribALL,$attribMAT)";
-						$resultat =  mysql_query($requete);
-						while(($ico = mysql_fetch_assoc($resultat))!=null) {
+						$resultat =  mysqli_query($connexionDB,$requete);
+						while(($ico = mysqli_fetch_assoc($resultat))!=null) {
 							//if($ico!=null) {
 							if($ico['IDAttribut']==$attribANG) {
 								echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('Anglais')\" onmouseout='UnTip()'>";
@@ -510,8 +514,8 @@ foreach ($configurationATE as $pos => $value) {
 						}
 
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribHOR";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('Horaire bloqué')\" onmouseout='UnTip()'>";
 							$cntIcon++;
@@ -522,8 +526,8 @@ foreach ($configurationATE as $pos => $value) {
 						}
 
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribDual";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('Hors liste tâches')\" onmouseout='UnTip()'>";
 						}
@@ -532,8 +536,8 @@ foreach ($configurationATE as $pos => $value) {
 						// mode carnet
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribCarnet";
 		//echo $requete."<br>";
-						$resultat =  mysql_query($requete);
-						$ico = mysql_fetch_assoc($resultat);
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/tick.png'>";
 						} else {
@@ -621,6 +625,6 @@ if(!$modeHTML) {
 <?php } // has admin right?>
 
 </div> <!-- page -->
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>
 <!-- end page -->
 <?php  // fin modeHTML?>
