@@ -1408,6 +1408,7 @@ $requeteTri = "";
 		}
 		$requeteTri .= ")";
 	}
+	$showtableSuivi = false;
 	if(hasAdminRigth()) {
 		//$requeteTri = "(DateSaisie between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
 		echo "<div id='corners'>";
@@ -1462,7 +1463,7 @@ $requeteTri = "";
 	//$requeteRem .= " order by DateSaisie";
 	//echo $requeteRem;
 	$noEntrySuivi = false;
-	$showtableSuivi = false;
+
 	$resultatRem =  mysqli_query($connexionDB,$requeteRem." order by DateSaisie");
 	if(!empty($resultatRem)&&mysqli_num_rows($resultatRem)>0) {
 		if(!hasAdminRigth()) {

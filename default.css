@@ -7,7 +7,7 @@ Released for free under a Creative Commons Attribution 2.5 License
 body {
 	margin-top: 50px;
 	padding: 0;
-	background: #e6e6e6; /* url(images/img01.jpg) repeat-x left top;*/
+	background: #f3f2f1; /* url(images/img01.jpg) repeat-x left top;*/
 	font-size: 12px;
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: justify;
@@ -175,7 +175,7 @@ input:focus, textarea:focus, select:focus {
 	color: #FFFFFF;
 }
 
-#menu a:hover { 
+#menu a:hover {
 	color: #FFFFFF;
 }
 
@@ -209,7 +209,7 @@ input:focus, textarea:focus, select:focus {
 
 #logo h1 a {
 	text-decoration: none;
-	color: #BA9F5A; 
+	color: #BA9F5A;
 }
 
 #logo h1 a:hover { text-decoration: underline; }
@@ -236,7 +236,7 @@ input:focus, textarea:focus, select:focus {
 	margin: 0 auto;
 	padding: 20px 20px;
 	min-height: 500px;
-	
+
 }
 
 /* Content */
@@ -261,7 +261,7 @@ input:focus, textarea:focus, select:focus {
 	text-transform: uppercase;
 	font-size: 16px;
 	font-weight: bold;
-	color: #28313A; 
+	color: #28313A;
 }
 
 .post .entry {
@@ -276,7 +276,7 @@ input:focus, textarea:focus, select:focus {
 	margin: 0;
 	padding-top: 15px;
 	line-height: normal;
-	color: #28313A; 
+	color: #28313A;
 }
 
 .post .meta .byline {
@@ -334,7 +334,7 @@ input:focus, textarea:focus, select:focus {
 	text-transform: uppercase;
 	font-size: 16px;
 	font-weight: bold;
-	color: #28313A; 
+	color: #28313A;
 }
 
 /* Search */
@@ -395,12 +395,13 @@ input:focus, textarea:focus, select:focus {
 
 #footer {
 	width:auto;
-	margin-left: 1180px;
+	/* margin-left: 1180px;
 	position: fixed;
-    bottom: 0;
+  bottom: 0;
 	margin-bottom:0px;
-	padding:0px;
-	padding-bottom: 0px;
+	padding:0px; */
+	margin-bottom:-50px;
+	margin-left: 900px;
 }
 
 html>body #footer {
@@ -515,7 +516,7 @@ html>body #footer {
 	margin: 0px auto;
 	background-color: #f5f5f5;
 	border:1px solid #3b3b3b;
-	
+
 	padding: 10px;
 
 	/* Border Radius Style */
@@ -540,7 +541,7 @@ html>body #footer {
 	display: table;
     background-color: #3b3b3b;
 	border:1px solid #3b3b3b;
-	
+
 	/* Border Radius Style */
 	border-radius: 5px;
 
@@ -550,7 +551,7 @@ html>body #footer {
 
 #userinfo {
 	font-size: 10px;
-	
+
     padding:1px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -559,22 +560,22 @@ html>body #footer {
     margin-right: 20px;
 	width: fit-content;
 	display: table;
-	
+
     background-color: #F8F8FF;
 	border:1px solid #C0C0C0;
-	
+
 		/* Border Radius Style */
 	border-radius: 5px;
 
 	/* Mozilla Firefox Extension */
 	-moz-border-radius: 5px;
-	
-	
+
+
 }
 
 #criteres {
 	font-size: 12px;
-	
+
     padding:1px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -585,7 +586,7 @@ html>body #footer {
 	display: table;
     background-color: #F8F8FF;
 	border:1px solid #C0C0C0;
-	
+
 		/* Border Radius Style */
 	border-radius: 5px;
 	/* Mozilla Firefox Extension */
@@ -603,7 +604,7 @@ html>body #footer {
   line-height: 1.5em;
   margin-right: 7px;
   text-align: center;
-  width: 1.5em; 
+  width: 1.5em;
 }
 #circleredsel {
 	font-size: 10px;
@@ -617,7 +618,7 @@ html>body #footer {
   line-height: 1.5em;
   margin-right: 7px;
   text-align: center;
-  width: 1.5em; 
+  width: 1.5em;
 }
 
 #circle {
@@ -631,7 +632,7 @@ html>body #footer {
   line-height: 1.5em;
   margin-right: 7px;
   text-align: center;
-  width: 1.5em 
+  width: 1.5em
 }
 
 #circlesel {
@@ -645,7 +646,7 @@ html>body #footer {
   line-height: 1.5em;
   margin-right: 7px;
   text-align: center;
-  width: 1.5em; 
+  width: 1.5em;
 }
 
 #compImg {
@@ -712,7 +713,7 @@ html>body #footer {
 	-moz-border-radius: 5px;
 	position: absolute;
 	/*box-shadow: 5px 5px 10px lightgrey;*/
-    -webkit-animation: cssAnimation 2s forwards; 
+    -webkit-animation: cssAnimation 2s forwards;
     animation: cssAnimation 2s forwards;
 }
 @keyframes cssAnimation {
@@ -725,5 +726,3 @@ html>body #footer {
     90%  {opacity: 1;}
     100% {opacity: 0;}
 }
-
-

@@ -348,7 +348,7 @@ echo "<tr newHistorique='1' style='display:none' ><td valign='top'><input name='
 echo "<td valign='top'><select name='IDAttribRem'>".$option."</select></td>";
 echo "<td valign='top'><textarea name='RemarqueRem' COLS=60 ROWS=2></textarea></td>";
 echo "<td valign='top' width='70'><input type='submit' name='ajoutRemarque' value='Ajouter'></input></td></tr>";
-echo "</table><br>";
+echo "</table><br></div>";
 } // si ID pas vide
 ?>
 </div> <!-- post -->

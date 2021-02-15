@@ -391,7 +391,7 @@ for($jour=1;$jour<=5;$jour++) {
 
 echo $pageOut;
 ?>
-</table><div><br>
+</table><br>
 <?php
 // construction du récapitulatif par prof
 $span = $cntProfs+1;
@@ -420,7 +420,7 @@ foreach ($profs as $pos => $value) {
 	$strTime = floor($time/60).'h'.sprintf("%02d",($time%60));
 	echo "<td align='center'>=</td><td align='right'><b>$strTime</b></td></tr>";
 }
-echo "</table>";
+echo "</table></div>";
 
 
 ?>
