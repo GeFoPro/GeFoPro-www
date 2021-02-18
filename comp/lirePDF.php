@@ -21,8 +21,8 @@ if(!isset($login)) {
 }
 
 
-$result=mysql_query("SELECT datasheet FROM composant WHERE IDComposant=$IDComp");
-$pdfdata=mysql_fetch_array($result);
+$result=mysqli_query($connexionDB,"SELECT datasheet FROM composant WHERE IDComposant=$IDComp");
+$pdfdata=mysqli_fetch_array($result);
 if(!empty($pdfdata['datasheet'])) {
 	header('Content-type: application/pdf');
 	echo $pdfdata['datasheet'];
@@ -31,4 +31,3 @@ if(!empty($pdfdata['datasheet'])) {
 }
 
 ?>
-

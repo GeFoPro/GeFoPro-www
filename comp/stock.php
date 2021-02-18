@@ -1,4 +1,4 @@
-<?
+<?php
 if($action!="Nouveau") {
 ?>
 
@@ -7,23 +7,23 @@ if($action!="Nouveau") {
 <table border='0' id="hor-minimalist-b" width='100%'><tr><th>Emplacement</th><th align='center'>Tirroir/étagère -<br>Boîte/rangement</th><th align='center'>Emplacement<br>RFID</th><th align='center'>Quantité<br>actuelle</th><th align='center'>Quantité<br>prêtée</th><th align='center'>Quantité<br>minimale</th><th align='center'>Quantité<br>commande</th><th></th></tr>
 <!--tr><td colspan='6'>&nbsp;</td></tr -->
 <!--tr><td colspan='2'><b>Stock</b> (Emplacement)</td><td><b>Quantité</b></td><td colspan='3'></td></tr-->
-<?
+<?php
 $requete = "SELECT * FROM $tableStockage stg
 join $tableStock st on stg.IDStock=st.IDStock
 where IDComposant=$IDComp";
-  $resultat =  mysql_query($requete);
+  $resultat =  mysqli_query($connexionDB,$requete);
   //si une seule ligne, on regarde si un inventaire existe pour compter le nombre et utiliser l'info pour la ligne de stock
   $numbInv = 0;
-  if(mysql_num_rows($resultat)==1) {
+  if(mysqli_num_rows($resultat)==1) {
     $requeteInv = "select * from inventaire where IDComposant=$IDComp";
-    $resultatInv =  mysql_query($requeteInv);
-    $numbInv = mysql_num_rows($resultatInv);
+    $resultatInv =  mysqli_query($connexionDB,$requeteInv);
+    $numbInv = mysqli_num_rows($resultatInv);
   }
-    while ($footLigne = mysql_fetch_assoc($resultat)) {
+    while ($footLigne = mysqli_fetch_assoc($resultat)) {
     // recherche des prêts
     $requetePre = "select * from emprunt emp left join inventaire inv on emp.IDInventaire=inv.IDInventaire where (IDStockage=$footLigne[IDStockage] OR IDComposant=$IDComp) and DateRetour is null";
-    $resultatPre =  mysql_query($requetePre);
-    $numbPre = mysql_num_rows($resultatPre);
+    $resultatPre =  mysqli_query($connexionDB,$requetePre);
+    $numbPre = mysqli_num_rows($resultatPre);
 	  echo "<tr><td onClick='location.href=\"listePrets.php?IDStockage=".$footLigne['IDStockage']."\"'>$footLigne[Emplacement]</td>";
 	  echo "<td align='center'>";
 	  if(hasStockRight()) {
@@ -76,11 +76,11 @@ where IDComposant=$IDComp";
   <tr newStock='1'><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td align='right'><img src='/iconsFam/add.png' onmouseover="Tip('Ajouter un emplacement')" onmouseout='UnTip()' onclick='toggle("newStock");' align='absmiddle'></td></tr>
   <tr newStock='1' style='display:none'><td><select name='IDStockNew'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes stock */
   $requete = "SELECT * FROM $tableStock order by Emplacement";
-  $resultat =  mysql_query($requete);
-    while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($listeLigne = mysqli_fetch_array($resultat)) {
       echo "<option value='$listeLigne[0]'>";
       echo "$listeLigne[1] </option>";
     }
@@ -94,13 +94,13 @@ where IDComposant=$IDComp";
   </span>
   <td align='center'><input type='text' name='IDTagNew' value='' size="8" style='text-align: right'></td>
   <td align='center'>
-  <? if($numbInv==0) { ?>
+  <?php if($numbInv==0) { ?>
     <input type='text' name='QuantiteNew' value='' size="4" style='text-align: right'>
-  <? } ?> </td>
+  <?php } ?> </td>
   <td></td>
   <td align='center'><input type='text' name='QuantiteMinNew' value='' size="4" style='text-align: right'></td>
   <td align='center'><input type='text' name='QuantiteCommNew' value='' size="4" style='text-align: right'></td>
   <td align='right'><input type="submit" name="actionStock" value="Ajouter"></tr>
- <? } ?>
+ <?php } ?>
   </table></div>
-<? } ?>
+<?php } ?>

@@ -139,7 +139,7 @@ if(isset($_GET['logout'])) {
   </table>
 <script language="javascript">document.getElementsByName("login")[0].focus();</script>
 </form>
-</div>
+</div></div>
 
 
 <?php include("piedPage.php"); ?>

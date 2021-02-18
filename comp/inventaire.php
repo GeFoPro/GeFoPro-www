@@ -1,4 +1,4 @@
-<?
+<?php
 if($action!="Nouveau") {
 ?>
 <script>
@@ -27,12 +27,12 @@ function limitEvent(e) {
 <div id='legend'>Inventaire</div>
 <table border='0' id="hor-minimalist-b" width='100%'><tr><th width='100'>N° inventaire</th><th width='100' align='left'>N° de serie</th><th width='50' align='center'>Année</th><th width='100' align='center'>RFID</th><th width='300'>Remarque</th><th align='left' width='150'>Utilisé par</th><th width='20'></th></tr>
 
-<?
+<?php
 $requete = "SELECT inv.IDInventaire, NoInventaire, NoSerie, Annee, IDTag, RemarqueInv, Userid, IDEmprunt, DateEmprunt FROM inventaire inv left join emprunt emp on inv.IDInventaire=emp.IDInventaire and DateRetour is null where IDComposant=$IDComp order by NoInventaire";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 if($resultat!=null && !empty($resultat)) {
-	while ($footLigne = mysql_fetch_assoc($resultat)) {
+	while ($footLigne = mysqli_fetch_assoc($resultat)) {
 		$idinvtog = $footLigne['IDInventaire'];
 		echo "<tr><td>".$footLigne['NoInventaire']."</td>";
 		echo "<td align='left'>";
@@ -64,20 +64,20 @@ if($resultat!=null && !empty($resultat)) {
 		$usebyTxt = "";
 		if(!empty($footLigne['Userid'])) {
 
-			mysql_select_db(DBAdmin);
+			mysqli_select_db($connexionDB,DBAdmin);
 			$requete = "SELECT * FROM elevesbk bk join eleves el on bk.IDGDN=el.IDGDN where Userid='".$footLigne['Userid']."'";
 			//echo $requete;
-			$resultatUser =  mysql_query($requete);
-			if($resultatUser!=null && !empty($resultatUser) && mysql_num_rows($resultatUser)==1) {
-				$user = mysql_fetch_assoc($resultatUser);
+			$resultatUser =  mysqli_query($connexionDB,$requete);
+			if($resultatUser!=null && !empty($resultatUser) && mysqli_num_rows($resultatUser)==1) {
+				$user = mysqli_fetch_assoc($resultatUser);
 				$usebyTxt = $user['Nom']." ".$user['Prenom'];
 			} else {
 				// on essai avec la table des profs
 				$requete = "SELECT * FROM prof where userid='".$footLigne['Userid']."'";
 				//echo $requete;
-				$resultatUser =  mysql_query($requete);
-				if($resultatUser!=null && !empty($resultatUser) && mysql_num_rows($resultatUser)==1) {
-					$user = mysql_fetch_assoc($resultatUser);
+				$resultatUser =  mysqli_query($connexionDB,$requete);
+				if($resultatUser!=null && !empty($resultatUser) && mysqli_num_rows($resultatUser)==1) {
+					$user = mysqli_fetch_assoc($resultatUser);
 					$usebyTxt = $user['abbr'];
 				} else {
 					$usebyTxt = $footLigne['Userid'];
@@ -98,7 +98,7 @@ if($resultat!=null && !empty($resultat)) {
 		echo "</td><td></td></tr>";
 	}
 }
-mysql_select_db(DBComp);
+mysqli_select_db($connexionDB,DBComp);
 if(hasStockRight()) {
   ?>
   <tr newInv='1'><td colspan='7' bgColor='#5C5C5C'></td></tr>
@@ -110,6 +110,6 @@ if(hasStockRight()) {
 	<td align='left'><input type='text' name='IDTagInvNew' value='' size="8" style='text-align: left'></td>
   <td align='left'><input type='text' name='RemarqueInvNew' value='' size="40" style='text-align: left'></td>
   <td align='right' colspan='2'><input type="submit" name="actionInv" value="Ajouter"></td></tr>
- <? } ?>
+ <?php } ?>
   </table></div>
-<? } ?>
+<?php } ?>

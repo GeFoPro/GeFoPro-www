@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 
 /* PDF */
@@ -21,8 +21,8 @@ function getFieldToPrint($value, $ligne, $pos) {
 /* requete */
 $requete = "SELECT * FROM composant comp left outer join genre ge on comp.IDGenre=ge.IDGenre left outer join type ty on comp.IDType=ty.IDType left outer join boitier bo on comp.IDBoitier=bo.IDBoitier where Imprimer<>0";
 //$requete = "SELECT * FROM composant where Imprimer=3";
-$resultat =  mysql_query($requete);
-//$num_rows = mysql_num_rows($resultat);
+$resultat =  mysqli_query($connexionDB,$requete);
+//$num_rows = mysqli_num_rows($resultat);
 
 
 /* posistion initial */
@@ -38,10 +38,10 @@ $PDF = new FPDF();
 $PDF->AddPage();
 //$PDF->SetFont("Arial","B",12);
 //$PDF->Write(0,$num_rows);
-while ($ligne = mysql_fetch_assoc($resultat) ) {
-	
+while ($ligne = mysqli_fetch_assoc($resultat) ) {
+
 	/* recherche des champs à afficher */
-	
+
 	/* créer l'étiquette */
 	//$PDF->Image("images/etiquettes/fusible.jpg", $posCol+1, $posLigne+1,$tailleImage,$tailleImage);
 	$PDF->SetFont("Arial","B",12);
@@ -63,7 +63,7 @@ while ($ligne = mysql_fetch_assoc($resultat) ) {
 	}
 }
 // effacer les cases à cocher
-//$requete = "UPDATE $tableComp set Imprimer=0";
-//$resultat =  mysql_query($requete);
+$requete = "UPDATE $tableComp set Imprimer=0";
+$resultat =  mysqli_query($connexionDB,$requete);
 $PDF->Output();
 ?>

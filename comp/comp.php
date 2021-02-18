@@ -69,10 +69,12 @@ function updateImg() {
 			if(valideImg==2) {
 				displayImg=2;
 			}
-			urlImg = '/<?=$app_section?>/images/boitiers/' + boitier.options[boitier.selectedIndex].text + '.jpg';
+			urlImg = '<?=$_SESSION['home']?>images/boitiers/' + boitier.options[boitier.selectedIndex].text + '.jpg';
+			alert(urlImg);
 		} else {
 			displayImg=1;
-			urlImg = '/<?=$app_section?>/images/boitiers/' + boitier.options[boitier.selectedIndex].text + '.gif';
+			urlImg = '<?=$_SESSION['home']?>images/boitiers/' + boitier.options[boitier.selectedIndex].text + '.gif';
+			alert(urlImg);
 		}
 		//alert(urlImg);
 		setImgBoitier(urlImg,true);
@@ -86,7 +88,7 @@ function resetImg() {
 	//alert("in reset");
 	if(displayImg==2) {
 		valideImg = 0;
-		setImgBoitier("/<?=$app_section?>/images/spacer.gif", false);
+		setImgBoitier("<?=$_SESSION['home']?>images/spacer.gif", false);
 	} else {
 		valideImg = 1;
 		//displayImg = 1;
@@ -121,21 +123,21 @@ function imageAppear(path, img1, img2, img3) {
 	var image = null;
 	//alert(path);
 	if(img1!='') {
-		image = path+img1+".PNG";
+		image = path+img1+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
 		}
 	}
 	if(image == null && img2!='') {
-		image = path+img2+".PNG";
+		image = path+img2+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
 		}
 	}
 	if(image == null && img3!='') {
-		image = path+img3+".PNG";
+		image = path+img3+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
@@ -158,8 +160,8 @@ function imageAppear(path, img1, img2, img3) {
 	}
 }
 </SCRIPT>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 function addMessage($newMessage) {
   $mess =  $_SESSION['message'];
   if(!empty($mess))
@@ -281,7 +283,7 @@ if(isset($_GET['AnneeNew'])) {
 	$AnneeNew = $_GET['AnneeNew'];
 }
 if(isset($_GET['IDTagInvNew'])) {
-	$IDTageInvNew = $_GET['IDTagInvNew'];
+	$IDTagInvNew = $_GET['IDTagInvNew'];
 }
 if(isset($_GET['RemarqueInvNew'])) {
 	$RemarqueInvNew = $_GET['RemarqueInvNew'];
@@ -325,11 +327,11 @@ if(isset($_GET['printC2'])) {
 if(isset($_POST['actionData'])) {
 	$data = file_get_contents($_FILES['datasheet']['tmp_name']);
 	$IDComp = $_POST['IDComposant'];
-	$requete = "UPDATE $tableComp set datasheet = '".mysql_real_escape_string($data)."' where IDComposant=$IDComp";
-	$resultat = mysql_query($requete);
+	$requete = "UPDATE $tableComp set datasheet = '".mysqli_real_escape_string($connexionDB,$data)."' where IDComposant=$IDComp";
+	$resultat = mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Datasheet ajoutée");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible d'ajouter la datasheet</font>");
 	}
@@ -392,10 +394,10 @@ if(isset($_POST['actionDataImg'])) {
 		}
 	}
 	//$requete = "UPDATE $tableComp set image = '".."' where IDComposant=$IDComp";
-	//$resultat = mysql_query($requete);
+	//$resultat = mysqli_query($connexionDB,$requete);
 	//if($resultat) {
 	//	addMEssage("Image ajoutée");
-	//	mysql_query('COMMIT');
+	//	mysqli_query($connexionDB,'COMMIT');
 	//} else {
 	//	addMEssage("<font color=red>Impossible d'ajouter l'image</font>");
 	//}
@@ -403,15 +405,15 @@ if(isset($_POST['actionDataImg'])) {
 /* Action nouveau schema */
 if(!empty($SchemaNew)) {
     $requete = "select max(IDSchema) from $tableRefSchema";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $IDSchema = $line[0]+1;
     $requete = <<<REQ
 INSERT INTO $tableRefSchema
 (IDSchema, ReferenceSchema) values
 ($IDSchema, "$SchemaNew")
 REQ;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Nouveau schéma ajouté");
 	} else {
@@ -423,8 +425,8 @@ REQ;
 if(isset($action)) {
   if($action=="Nouveau" || $action=="Copier") {
     $requete = "select max(IDComposant) from $tableComp";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $IDComp = $line[0]+1;
   }
   if($action=="Ajouter" || $action=="Copier") {
@@ -437,20 +439,20 @@ INSERT INTO $tableComp
 ($IDComp, "$Description", "$Valeur", "$Caracteristiques")
 REQ;
 	//echo $requete;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
 	addMEssage("Composant ajouté");
-	mysql_query('COMMIT');
+	mysqli_query($connexionDB,'COMMIT');
     } else {
 	addMEssage("<font color=red>Impossible d'ajouter le composant </font>");
     }
   }
   if($action=="Supprimer") {
     $requete = "DELETE FROM $tableComp where IDComposant=$IDComp";
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
 	addMEssage("Composant supprimé");
-	mysql_query('COMMIT');
+	mysqli_query($connexionDB,'COMMIT');
 	 $IDComp = "";
     } else {
 	addMEssage("<font color=red>Impossible de supprimer le composant</font>");
@@ -473,10 +475,10 @@ PosLigneC1 = $posPrintC1,
 PosLigneC2 = $posPrintC2
 where IDComposant=$IDComp
 REQ;
-  $resultat =  mysql_query($requete);
+  $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
 	addMessage("Composant mis à jour");
-	mysql_query('COMMIT');
+	mysqli_query($connexionDB,'COMMIT');
     } else {
 	addMEssage("<font color=red>Impossible de mettre à jour le composant </font>");
     }
@@ -500,15 +502,15 @@ REQ;
 	$imgnom = $_GET['ImgNom'];
 	$requete = "update $tableComp set image='".$imgnom."' where IDComposant=".$IDComp;
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-    mysql_query('COMMIT');
+	$resultat =  mysqli_query($connexionDB,$requete);
+    mysqli_query($connexionDB,'COMMIT');
 	addMEssage("Image associée");
   }
   if($action=="RemImage") {
 	$requete = "update $tableComp set image='' where IDComposant=".$IDComp;
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-    mysql_query('COMMIT');
+	$resultat =  mysqli_query($connexionDB,$requete);
+    mysqli_query($connexionDB,'COMMIT');
 	// tenter d'effacer le fichier propre
 
 	addMEssage("Image désassociée");
@@ -529,8 +531,8 @@ if(isset($actionFourn)) {
     /* recherche max */
     //echo "Ajouter Fournisseur";
     $requete = "select max(IDCommande) from $tableCommande";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $newId = $line[0]+1;
     //echo "$newId";
     $requete = <<<REQ
@@ -539,8 +541,8 @@ INSERT INTO $tableCommande
 ($newId, $IDComp, $IDFournisseurNew, $IDFAbriquantNew, "$noArticleNew", $prixNew)
 REQ;
 //echo "$requete";
-    $resultat =  mysql_query($requete);
-    mysql_query('COMMIT');
+    $resultat =  mysqli_query($connexionDB,$requete);
+    mysqli_query($connexionDB,'COMMIT');
 	addMEssage("Fournisseur ajouté");
 
   }
@@ -549,20 +551,20 @@ REQ;
 	$field = $_GET['updateField'];
 	$requete = "UPDATE $tableCommande set ".$field."=\"".$noArticleUpd."\" where IDCommande=$IDCommande";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Fournisseur modifié");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le fournisseur</font>");
 	}
   }
   if($actionFourn=="Supprimer") {
 	$requete = "DELETE FROM $tableCommande where IDCommande=$IDCommande";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Fournisseur supprimé");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le fournisseur</font>");
 	}
@@ -576,8 +578,8 @@ if(isset($actionFoot)) {
   if($actionFoot=="AjouterNouveau") {
     /* recherche max */
     $requete = "select max(IDReference) from $tableReference";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $newId = $line[0]+1;
     $requete = <<<REQ
 INSERT INTO $tableReference
@@ -585,7 +587,7 @@ INSERT INTO $tableReference
 ($newId, "$ReferenceNew")
 REQ;
 //echo "$requete";
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Nouveau Footprint ajouté");
 		$actionFoot="Ajouter";
@@ -597,8 +599,8 @@ REQ;
   if($actionFoot=="Ajouter") {
     /* recherche max */
     $requete = "select max(IDFootprint) from $tableFootprint";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $newId = $line[0]+1;
     $requete = <<<REQ
 INSERT INTO $tableFootprint
@@ -606,10 +608,10 @@ INSERT INTO $tableFootprint
 ($newId, $IDComp, 1, $IDReferenceNew)
 REQ;
 //echo "$requete";
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Footprint ajouté");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible d'ajouter le footprint </font>");
 	}
@@ -617,10 +619,10 @@ REQ;
 
   if($actionFoot=="Supprimer") {
 	$requete = "DELETE FROM $tableFootprint where IDFootprint=$IDFootprint";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Footprint supprimé");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le footprint</font>");
 	}
@@ -638,10 +640,10 @@ if(isset($actionInv)) {
 		}
 		$requete = "INSERT INTO inventaire (IDComposant, NoInventaire, NoSerie, Annee, IDTag, RemarqueInv) values (".$IDComp.", \"".$NoInventaireNew."\", \"".$NoSerieNew."\", ".$AnneeNew.", ".$IDTagSQL.", \"".$RemarqueInvNew."\")";
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
 			addMEssage("Appareil ajouté");
-			mysql_query('COMMIT');
+			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible d'ajouter l'appareil</font>");
 		}
@@ -659,10 +661,10 @@ if(isset($actionInv)) {
 			}
 		}
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
 			addMEssage("Inventaire modifié");
-			mysql_query('COMMIT');
+			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible de modifier l'inventaire</font>");
 		}
@@ -688,10 +690,10 @@ if(isset($actionEmp)) {
 		}
 
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
 			addMEssage("Emprunt modifié");
-			mysql_query('COMMIT');
+			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible de modifier l'emprunt</font>");
 		}
@@ -704,8 +706,8 @@ if(isset($actionStock)) {
   if($actionStock=="Ajouter") {
     /* recherche max */
     $requete = "select max(IDStockage) from $tableStockage";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
 		if($IDTag == 'null' || empty($IDTag)) {
 			$IDTagSQL = "null";
 		} else {
@@ -718,10 +720,10 @@ INSERT INTO $tableStockage
 ($newId, $IDComp, $IDStockNew, "$EmplacementNew", $Quantite, $QuantiteMin, $QuantiteComm, $IDTagSQL)
 REQ;
 	//echo $requete;
-    $resultat =  mysql_query($requete);
+    $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
 	addMEssage("Emplacement ajouté");
-	mysql_query('COMMIT');
+	mysqli_query($connexionDB,'COMMIT');
     } else {
 	addMEssage("<font color=red>Impossible d'ajouter l'emplacement</font>");
     }
@@ -730,10 +732,10 @@ REQ;
 
   if($actionStock=="Supprimer") {
 	$requete = "DELETE FROM $tableStockage where IDStockage=$IDStockage";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Emplacement supprimé");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer l'emplacement</font>");
 	}
@@ -752,10 +754,10 @@ REQ;
 		}
 	}
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
 		addMEssage("Stock modifié");
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de modifier le stock</font>");
 	}
@@ -798,8 +800,8 @@ left outer join $tableBoitier bo on comp.IDBoitier=bo.IDBoitier
 left outer join $tableRefSchema sch on comp.IDSchema=sch.IDSchema
 where IDComposant=$IDComp
 REQ;
-  $resultat =  mysql_query($requete);
-  $ligne = mysql_fetch_assoc($resultat);
+  $resultat =  mysqli_query($connexionDB,$requete);
+  $ligne = mysqli_fetch_assoc($resultat);
 	if(isset($IDGenre)) {
 		$IDGenreSel = $IDGenre;
 		$IDTypeSel = $IDType;
@@ -893,7 +895,7 @@ REQ;
 	}
 }
 ?>
-<FORM ACTION="<? echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
+<FORM ACTION="<?php echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
 <div class='post'>
 <div align='center' width='100%' id='hideMe'><font size="2" color="green" align='center'><i><?=getMessage()?></i></font></div>
 <!--br><h2>Détail de l'article</h2-->
@@ -904,37 +906,39 @@ REQ;
 <table border='0' align="center" width='100%'>
 <tr>
 <td colspan="2"></td>
-<? if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Commandes</font></td><td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
-<?
-$imgpathURL = "/".$app_section."/images/articles/";
+<?php if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Commandes</font></td><td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
+<?php
+$imgpathURL = "".$_SESSION['home']."images/articles/";
 $imgpath = "../images/articles/";
 $imgFound = false;
 $descFound = false;
-$tryImg = $ligne['image'].'.PNG';
-if (!empty($ligne['image'])&&is_file($imgpath.$tryImg)) {
-	$imgpathURL .= $tryImg;
-	$imgFound = true;
-}
-$tryImg = preg_replace('/\W+/', '_', $ligne['Description']).'.PNG';
-if(!$imgFound&&is_file($imgpath.$tryImg)) {
-	$imgpathURL .= $tryImg;
-	$imgFound = true;
-	$descFound = true;
-}
-$tryImg = $ligne['LibelleBoitier'].'.PNG';
-if(!$imgFound&&is_file($imgpath.$tryImg)) {
-	$imgpathURL .= $tryImg;
-	$imgFound = true;
-}
-$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.'0.PNG';
-if(!$imgFound&&is_file($imgpath.$tryImg)) {
-	$imgpathURL .= $tryImg;
-	$imgFound = true;
-}
-if($action=="Nouveau") {
-	echo "<td rowspan='4 valign='top'>&nbsp;";
-} else {
-	echo "<td rowspan='7' valign='top'>&nbsp;";
+if($action!="Nouveau" && !empty($IDComp)) {
+	$tryImg = $ligne['image'].'.png';
+	if (!empty($ligne['image'])&&is_file($imgpath.$tryImg)) {
+		$imgpathURL .= $tryImg;
+		$imgFound = true;
+	}
+	$tryImg = preg_replace('/\W+/', '_', $ligne['Description']).'.png';
+	if(!$imgFound&&is_file($imgpath.$tryImg)) {
+		$imgpathURL .= $tryImg;
+		$imgFound = true;
+		$descFound = true;
+	}
+	$tryImg = $ligne['LibelleBoitier'].'.png';
+	if(!$imgFound&&is_file($imgpath.$tryImg)) {
+		$imgpathURL .= $tryImg;
+		$imgFound = true;
+	}
+	$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.'0.png';
+	if(!$imgFound&&is_file($imgpath.$tryImg)) {
+		$imgpathURL .= $tryImg;
+		$imgFound = true;
+	}
+	if($action=="Nouveau") {
+		echo "<td rowspan='4 valign='top'>&nbsp;";
+	} else {
+		echo "<td rowspan='7' valign='top'>&nbsp;";
+	}
 }
 if($imgFound) {
 	//echo "<img src='".$imgpathURL."' style='width:auto; max-height:150px; max-width:240px;'>";
@@ -947,39 +951,41 @@ if($imgFound) {
 	}
 } else {
 	// affichage des variantes si existantes
-	if(hasStockRight()) {
+	if(hasStockRight() && !empty($IDComp)) {
 		$cntImg = 1;
-		$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.'1.PNG';
+		$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.'1.png';
 		while(is_file($imgpath.$tryImg)) {
 			echo "<a href='comp.php?action=SetImage&ImgNom=".$ligne['IDGenre'].'_'.$ligne['IDType'].'_'.$cntImg."&IDComposant=$IDComp'><img src='".$imgpathURL.$tryImg."' id='compImgList'></a><br>";
 			$cntImg++;
-			$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.$cntImg.'.PNG';
+			$tryImg = $ligne['IDGenre'].'_'.$ligne['IDType'].'_'.$cntImg.'.png';
 		}
 	}
 
 }
 echo "</td></tr>";
-$IDUnique = htmlspecialchars($ligne['Description']);
+
 ?>
-<? if(!empty($IDComp)) { ?>
+<?php if(!empty($IDComp) ) {
+	$IDUnique = htmlspecialchars($ligne['Description']);
+	?>
 <tr><td width='100'>Identifiant:</td><td width='490'><input type="texte" name="Description" value="<?= htmlspecialchars($ligne['Description']) ?>" size="30"></td>
-<? if($action!="Nouveau") echo "<td align='right' width='40'><input type='radio' name='printC1' value='1' $selectedC11></td><td align='left' width='40'><input type='radio' name='printC2' value='1' $selectedC12></td><td align='right' width='40'><input type='radio' name='print1' value='1' $selected11></td><td align='left' width='40'><input type='radio' name='print2' value='1' $selected12></td>"; ?>
+<?php if($action!="Nouveau") echo "<td align='right' width='40'><input type='radio' name='printC1' value='1' $selectedC11></td><td align='left' width='40'><input type='radio' name='printC2' value='1' $selectedC12></td><td align='right' width='40'><input type='radio' name='print1' value='1' $selected11></td><td align='left' width='40'><input type='radio' name='print2' value='1' $selected12></td>"; ?>
 </tr>
 <tr><td>Valeur:</td><td><input type="texte" name="Valeur" value="<?= htmlspecialchars($ligne['Valeur']) ?>" size="30"></td>
-<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='2' $selectedC21></td><td align='left'><input type='radio' name='printC2' value='2' $selectedC22></td><td align='right'><input type='radio' name='print1' value='2' $selected21></td><td align='left'><input type='radio' name='print2' value='2' $selected22></td>"; ?>
+<?php if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='2' $selectedC21></td><td align='left'><input type='radio' name='printC2' value='2' $selectedC22></td><td align='right'><input type='radio' name='print1' value='2' $selected21></td><td align='left'><input type='radio' name='print2' value='2' $selected22></td>"; ?>
 </tr>
 <tr><td>Caractéristiques:</td><td><input type="texte" name="Caracteristiques" value="<?= htmlspecialchars($ligne['Caracteristiques']) ?>" size="60"></td>
-<? if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='3' $selectedC31></td><td align='left'><input type='radio' name='printC2' value='3' $selectedC32></td><td align='right'><input type='radio' name='print1' value='3' $selected31></td><td align='left'><input type='radio' name='print2' value='3' $selected32></td>"; ?>
+<?php if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='3' $selectedC31></td><td align='left'><input type='radio' name='printC2' value='3' $selectedC32></td><td align='right'><input type='radio' name='print1' value='3' $selected31></td><td align='left'><input type='radio' name='print2' value='3' $selected32></td>"; ?>
 </tr>
-<?
+<?php
 if($action!="Nouveau") {
 	if($app_section=='ELT') {
 	  /* Boitier */
 	  echo "<tr><td>Boîtier:</td><td ><select id='IDBoitier' name='IDBoitier' onChange='updateImg()'><option></option>";
 
 	  $requete = "SELECT * FROM $tableBoitier order by LibelleBoitier";
-	  $resultat =  mysql_query($requete);
-	  while ($listeLigne = mysql_fetch_array($resultat)) {
+	  $resultat =  mysqli_query($connexionDB,$requete);
+	  while ($listeLigne = mysqli_fetch_array($resultat)) {
 		if($IDBoitierSel==$listeLigne[0]) {
 		  echo "<option value='$listeLigne[0]' selected='selected'>";
 		  $nomBoitier = $listeLigne[1];
@@ -988,7 +994,7 @@ if($action!="Nouveau") {
 		echo "$listeLigne[1] </option>";
 	  }
 	  echo "</select></td>";
-	  //echo "<td colspan='2' rowspan='3'><a id='refBoitier' href='#'><img id='imgBoitier' src='/".$app_section."/images/spacer.gif' onerror='resetImg();' width='100' height='80' ></a><script>updateImg();</script></td>";
+	  //echo "<td colspan='2' rowspan='3'><a id='refBoitier' href='#'><img id='imgBoitier' src='".$_SESSION['home']."images/spacer.gif' onerror='resetImg();' width='100' height='80' ></a><script>updateImg();</script></td>";
 	  //echo "<td colspan='2' rowspan='3'><a id='refBoitier' href='#'><img id='imgBoitier' src='images/spacer.gif' width='100' height='80'></a></td>";
 	  echo "<td align='right'><input type='radio' name='printC1' value='4' $selectedC41></td><td align='left'><input type='radio' name='printC2' value='4' $selectedC42></td><td align='right'><input type='radio' name='print1' value='4' $selected41></td><td align='left'><input type='radio' name='print2' value='4' $selected42></td></tr>";
 	} else {
@@ -1006,8 +1012,8 @@ if($action!="Nouveau") {
   	echo "<option></option>";
   }
   $requete = "SELECT * FROM $tableGenre order by LibelleGenre";
-  $resultat =  mysql_query($requete);
-  while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+  while ($listeLigne = mysqli_fetch_array($resultat)) {
     if($IDGenreSel==$listeLigne[0])
       echo "<option value='$listeLigne[0]' selected='selected'>";
     else
@@ -1020,7 +1026,7 @@ if($action!="Nouveau") {
   <td align='right'><input type='radio' name='print1' value='5' <?=$selected51?>></td><td align='left'><input type='radio' name='print2' value='5' <?=$selected52?>></td>
   </tr>
   <tr><td>Type:</td>
-  <?
+  <?php
   if($app_section=='ELT') {
 	echo "<td>";
   } else {
@@ -1029,8 +1035,8 @@ if($action!="Nouveau") {
   echo "<select name='IDType'>";
   if(isset($IDGenreSel) && !empty($IDGenreSel)) {
   	$requete = "SELECT * FROM $tableType where IDGenre=$IDGenreSel order by LibelleType";
-  	$resultat =  mysql_query($requete);
-  	while ($listeLigne = mysql_fetch_array($resultat)) {
+  	$resultat =  mysqli_query($connexionDB,$requete);
+  	while ($listeLigne = mysqli_fetch_array($resultat)) {
   	  	if($IDTypeSel==$listeLigne[0])
       			echo "<option value='$listeLigne[0]' selected='selected'>";
     		else
@@ -1042,8 +1048,10 @@ if($action!="Nouveau") {
   echo "</td><td align='right'><input type='radio' name='printC1' value='6' $selectedC61></td><td align='left'><input type='radio' name='printC2' value='6' $selectedC62></td><td align='right'><input type='radio' name='print1' value='6' $selected61></td><td align='left'><input type='radio' name='print2' value='6' $selected62></td></tr>";
 }
 include("footComp.php");
-echo "</table></div>";
+}
 
+echo "</table></div>";
+if(!empty($IDComp) ) {
 if($action!="Nouveau") {
   echo "<br><br><div id='corners'>";
   echo "<div id='legend'>Fournisseurs</div>";
@@ -1059,8 +1067,8 @@ where IDComposant=$IDComp order by com.IDCommande,DateReception desc
 FOURN;
 $lastIDCom = 0;
 //echo $requete;
-  $resultat =  mysql_query($requete);
-    while ($fournLigne = mysql_fetch_assoc($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($fournLigne = mysqli_fetch_assoc($resultat)) {
 		if($fournLigne['IDCommande']!=$lastIDCom) {
 			$lastIDCom = $fournLigne['IDCommande'];
 			$link = $fournLigne['LienArticle'];
@@ -1069,8 +1077,10 @@ $lastIDCom = 0;
 			$noArticleSep = $noArticle;
 			$noArticle= str_replace(".","",$noArticle);
 			$noArticle= str_replace("-","",$noArticle);
-
-			$str = number_format($fournLigne[PrixPce], 2, '.', '');
+			$str = "";
+			if(isset($fournLigne['PrixPce'])) {
+				$str = number_format($fournLigne['PrixPce'], 2, '.', '');
+			}
 			//echo $str;
 			eval( "\$link = \"$link\";" );
 			eval( "\$dataSheet = \"$dataSheet\";" );
@@ -1091,8 +1101,8 @@ $lastIDCom = 0;
 			}
 			echo "</td>";
 			echo "<td align='center'>";
-			if(!empty($fournLigne[DateReception])) {
-				echo date("d.m.Y",strtotime($fournLigne[DateReception]));
+			if(isset($fournLigne['DateReception'])) {
+				echo date("d.m.Y",strtotime($fournLigne['DateReception']));
 			}
 			echo "</td><td align='center'>$fournLigne[Nombre]</td>";
 			echo "<td colspan='2' align='right'>";
@@ -1100,7 +1110,7 @@ $lastIDCom = 0;
 				echo "<a href='comp.php?actionFourn=Supprimer&IDCommande=$fournLigne[IDCommande]&IDComposant=$IDComp'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a>";
 			}
 			if(!empty($dataSheet)) {
-				echo "<a href='$dataSheet' target='_datasheet'><img src='/".$app_section."/images/pdf.jpg' width='16' height='16' align='absmiddle' onmouseover=\"Tip('Lien sur datasheet du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
+				echo "<a href='$dataSheet' target='_datasheet'><img src='".$_SESSION['home']."images/pdf.jpg' width='16' height='16' align='absmiddle' onmouseover=\"Tip('Lien sur datasheet du fournisseur')\" onmouseout='UnTip()'></a>&nbsp";
 			}
 			if(hasStockRight() || !empty($dataSheet)) {
 				echo "<br>";
@@ -1126,11 +1136,11 @@ $lastIDCom = 0;
 		<tr newFourni='1' style='display:none'><td><input type='text' name='noArticleNew' value='' size='15'></td>
 		<td><select name='IDFournisseurNew'>
 		<option selected> </option>
-  <?
+  <?php
 		/* Construction listes fournisseurs et fabriquants */
 		$requete = "SELECT * FROM $tableFournisseur  order by NomFournisseur";
-		$resultat =  mysql_query($requete);
-		while ($listeLigne = mysql_fetch_array($resultat)) {
+		$resultat =  mysqli_query($connexionDB,$requete);
+		while ($listeLigne = mysqli_fetch_array($resultat)) {
 			echo "<option value='$listeLigne[0]'>";
 			echo "$listeLigne[1] </option>";
 		}
@@ -1138,29 +1148,29 @@ $lastIDCom = 0;
 		</select></td>
 		<td><select name='IDFAbriquantNew'>
 		<option selected> </option>
-  <?
+  <?php
 		/* Construction listes fournisseurs et fabriquants */
 		$requete = "SELECT * FROM $tableFabriquant order by NomFabriquant";
-		$resultat =  mysql_query($requete);
-		while ($listeLigne = mysql_fetch_array($resultat)) {
+		$resultat =  mysqli_query($connexionDB,$requete);
+		while ($listeLigne = mysqli_fetch_array($resultat)) {
 			echo "<option value='$listeLigne[0]'>";
 			echo "$listeLigne[1] </option>";
 		}
   ?>
 		</select></td><td><input type='text' name='prixNew' style='text-align: right' size='4' value=''></td><td></td><td></td><td colspan='2' align='right'><input type='submit' name='actionFourn' value='Ajouter'></td></tr>
-  <? } ?>
+  <?php } ?>
   </table></div>
-<? } ?>
+<?php } ?>
 
 
-<? include("stock.php");
+<?php include("stock.php");
 include("inventaire.php");
 if($app_section=='ELT') {
 	include("altium.php");
 }
 
 ?>
-<? } /* si IDComp pas vide*/ ?>
+<?php } /* si IDComp pas vide*/ ?>
 <!-- /table -->
 
 <input type="hidden" name="IDComposant" value="<?=$IDComp?>">
@@ -1169,9 +1179,9 @@ if($app_section=='ELT') {
 <a href="compList.php#comp<?=$IDComp?>">Retour liste composants</a -->
 </div> <!-- post -->
 </form>
-<? include("datasheet.php") ?>
-<? include("image.php") ?>
+<?php include("datasheet.php") ?>
+<?php include("image.php") ?>
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

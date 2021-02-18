@@ -56,8 +56,8 @@ function rechercheArticle(num) {
 }
 
 </SCRIPT>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 $critere = "";
 if(isset($_POST['fournisseur'])) {
 	$critere = $_POST['fournisseur'];
@@ -107,7 +107,7 @@ if(isset($_GET['action'])) {
 if("Supprimer"==$action) {
 	$IDCommandeExt = $_GET['IDCommandeExt'];
 	$requete = "delete from $tableCommandeExt where IDCommandeExt = $IDCommandeExt";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if("Ajouter"==$action) {
@@ -119,14 +119,14 @@ if("Ajouter"==$action) {
     /* recherche max */
     //echo "Ajouter Fournisseur";
     $requete = "select max(IDCommandeExt) from $tableCommandeExt";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $newId = $line[0]+1;
 	// recherche commande
 	$requete = "select * from $tableCommande where IDCommande=".$IDCommande;
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-    $line = mysql_fetch_array($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_array($resultat);
 	$prix = $line['PrixPce'];
 	//echo "prix: ".$prix;
 	$IDFourn = $line['IDFournisseur'];
@@ -138,8 +138,8 @@ INSERT INTO $tableCommandeExt
 ($newId, 1, $prix, "$libelle", "$uid", "$nomCom",$IDFourn,"$numArt")
 REQ;
 //echo $requete;
-    $resultat =  mysql_query($requete);
-    mysql_query('COMMIT');
+    $resultat =  mysqli_query($connexionDB,$requete);
+    mysqli_query($connexionDB,'COMMIT');
     // tri sur fournisseur
     $critere = $_GET['IDFournisseur'];
     $_SESSION['fournisseur'] = $critere;
@@ -160,7 +160,7 @@ if(isset($_POST['lineChanged']) && !empty($_POST['lineChanged'])) {
 			} else {
 				$requete = "UPDATE $tableCommandeExt set $toChange = $valueChanged where IDCommandeExt = $lineToChange";
 			}
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 		}
 	}
 }
@@ -205,7 +205,7 @@ if(isset($_POST['ToggleRec']) && !empty($_POST['ToggleRec'])) {
 			}
 		}
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 }
 function getFieldToPrint($value, $ligne, $pos) {
@@ -231,13 +231,16 @@ function getFieldToPrint($value, $ligne, $pos) {
 		case 6: return $ligne['LibelleType'];
 	}
 }
-
+$numArticleNew = "";
+$libelleNew = "";
+$prixPce = "";
 if(isset($_POST['numRecherche']) && !empty($_POST['numRecherche'])) {
 
 	$requete = "select * from $tableCommande as com join $tableComp as comp on com.IDComposant=comp.IDComposant join $tableGenre as ge on comp.IDGenre=ge.IDGenre join $tableType as ty on comp.IDType=ty.IDType where IDFournisseur=".$critere." and replace(NoArticle, ' ','') like '".str_replace(' ', '', $_POST['numRecherche'])."%'";
 	//echo $requete;
-	$resultat =  mysql_query($requete);
-	$line = mysql_fetch_array($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$line = mysqli_fetch_array($resultat);
+
 	if($line!=null) {
 		$numArticleNew = $line['NoArticle'];
 		//$libelleNew = $line['LibelleGenre']." ".$line['Valeur'];
@@ -282,8 +285,8 @@ if(isset($_POST['ajoutCommande']) && !empty($_POST['ajoutCommande'])) {
     /* recherche max */
     //echo "Ajouter Fournisseur";
     $requete = "select max(IDCommandeExt) from $tableCommandeExt";
-    $resultat =  mysql_query($requete);
-    $line = mysql_fetch_row($resultat);
+    $resultat =  mysqli_query($connexionDB,$requete);
+    $line = mysqli_fetch_row($resultat);
     $newId = $line[0]+1;
 
     $requete = <<<REQ
@@ -292,8 +295,8 @@ INSERT INTO $tableCommandeExt
 ($newId, $nbr, $prix, "$libelle", "$uid", "$nomCom",$IDFourn,"$numArt")
 REQ;
 //echo $requete;
-    $resultat =  mysql_query($requete);
-    mysql_query('COMMIT');
+    $resultat =  mysqli_query($connexionDB,$requete);
+    mysqli_query($connexionDB,'COMMIT');
 }
 
 ?>
@@ -306,7 +309,7 @@ REQ;
 
 <div class='post'>
 
-<?
+<?php
 if(empty($IDPageCommande)&&empty($recu)) {
 ?>
 
@@ -316,11 +319,11 @@ if(empty($IDPageCommande)&&empty($recu)) {
 Fournisseur :
 <select name='fournisseur' onChange='submit();'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes fournisseurs et fabriquants */
   $requete = "SELECT * FROM $tableFournisseur order by NomFournisseur";
-  $resultat =  mysql_query($requete);
-    while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($listeLigne = mysqli_fetch_array($resultat)) {
 	if($critere==$listeLigne[0]) {
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	} else {
@@ -333,27 +336,27 @@ Fournisseur :
 </select></td></tr></table><br>
 <div id='corners'>
 <div id='legend'>Liste des articles à commander</div>
-<?
+<?php
 	} else { // fin if $IDPageCommande et recu
 ?>
 <!-- h2>Historique des commandes</h2 -->
-<? if(empty($IDPageCommande)) { ?>
+<?php if(empty($IDPageCommande)) { ?>
 <table border='0' width='100%'>
 <tr><td width='33%'></td><td width='33%'><td align='right'>
   Vue: <select name='vue' onChange="document.location.href='historique.php'">
   <option value='1'>Par commandes</option><option value='2' selected>Par articles</option></select>
    </td></tr>
-<tr><td>Commandé par: <input type='text' name='compar' onChange='submitRecherche(this.form)' value='<?=$likeComPar?>'></input></td>
-<td align='center'>N° article: <input type='text' name='recherche' onChange='submitRecherche(this.form)' value='<?=$likeRec?>'></input></td>
+<tr><td>Commandé par: <input type='text' name='compar' onChange='submitRecherche(this.form)' value='<?=(!empty($likeComPar)?$likeComPar:"")?>'></input></td>
+<td align='center'>N° article: <input type='text' name='recherche' onChange='submitRecherche(this.form)' value='<?=(!empty($likeRec)?$likeRec:"")?>'></input></td>
 <td align='right'>
 Fournisseur :
 <select name='fournisseur' onChange='submitRec(this.form);'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes fournisseurs et fabriquants */
   $requete = "SELECT * FROM $tableFournisseur order by NomFournisseur";
-  $resultat =  mysql_query($requete);
-    while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($listeLigne = mysqli_fetch_array($resultat)) {
 	if($critere==$listeLigne[0]) {
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	} else {
@@ -365,11 +368,11 @@ Fournisseur :
   </select>
   </td></tr>
 </table><br>
-<? } ?>
+<?php } ?>
 <br>
 <div id='corners'>
 <div id='legend'>Historique des commandes</div>
-<?
+<?php
 	if(!empty($remarque)) {
 		echo "<br>".$remarque;
 	}
@@ -377,7 +380,7 @@ Fournisseur :
 
 
 
-<?
+<?php
 } // fin else $IDPageCommande
 /* liste composants */
 $requete = "SELECT * FROM $tableCommandeExt commext
@@ -414,7 +417,7 @@ if(!hasAdminRigth()) {
 	$requete = $requete . "  order by commext.IDFournisseur, NumArticle";
 //}
 
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 
 //echo "<br>".$requete;
 ?>
@@ -422,7 +425,7 @@ $resultat =  mysql_query($requete);
 
 <table id="hor-minimalist-b" border='0' width='100%'><tr>
 
-<?
+<?php
 
 
 $countImp = 0;
@@ -456,7 +459,8 @@ $totalList = 0;
 			echo "<th align='right' width='60'>Total</th>";
 			echo "<th align='left'>Commandé par</th><th></th></tr>";
 if(!empty($resultat)) {
-	while ($ligne = mysql_fetch_assoc($resultat) ) {
+	$noArticle = "";
+	while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		//if($rowCounter==0) {
 
 		//}
@@ -478,8 +482,8 @@ if(!empty($resultat)) {
 			$requeteFoundWhere .= 	"description like \"%$keyword%\" OR valeur like \"%$keyword%\" OR caracteristiques like \"%$keyword%\"";
 		}
 		//echo $requeteFound.$requeteFoundWhere;
-		$resultatFound =  mysql_query($requeteFound.$requeteFoundWhere);
-		$ligneFound = mysql_fetch_row($resultatFound);
+		$resultatFound =  mysqli_query($connexionDB,$requeteFound.$requeteFoundWhere);
+		$ligneFound = mysqli_fetch_row($resultatFound);
 		$compFound = "";
 		if($ligneFound!=null && $ligneFound[0]>0) {
 			$compFound = $ligneFound[0];
@@ -593,7 +597,7 @@ if(!empty($numArticleNew)) {
 <input type="hidden" name="lineChanged" value="">
 </div>
 </div></form>
-<?
+<?php
 if(isset($critere) && !empty($critere) && $rowCounter!=0 && hasAdminRigth()&&empty($recu)) { ?>
 <br>
 
@@ -630,7 +634,10 @@ if(isset($critere) && !empty($critere) && $rowCounter!=0 && hasAdminRigth()&&emp
 </div> <!-- post -->
 
 </form>
-<? } ?>
+<?php }
+
+if(!empty($toChange) && !empty($lineToChange)) {
+?>
 
 
 
@@ -638,7 +645,9 @@ if(isset($critere) && !empty($critere) && $rowCounter!=0 && hasAdminRigth()&&emp
 document.getElementById('myForm').<?=$toChange?><?=$lineToChange?>.parentNode.nextSibling.childNodes[0].select();
 //document.getElementById('myForm').PrixUnite1.focus();
 </script>
+<?php }
 
+?>
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>
