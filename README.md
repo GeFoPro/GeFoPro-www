@@ -7,5 +7,7 @@ Les fonctionnalités de GeFoPro sont:
 * Cours CIE: évaluations et autoévalutations, gestion des documents administratifs
 * Gestion de stock: gestion du matériel, de commande et de prêts
 
+Une rapide présentation de GeFoPro est accessible [ici](https://prezi.com/p/edit/vd7czwxvlaq1/)
+
 ## Structure WEB de GeFoPro
 Ce dépot contient uniquement la structure web de l'applicatif
