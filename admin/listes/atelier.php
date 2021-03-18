@@ -450,7 +450,7 @@ foreach ($configurationATE as $pos => $value) {
 								$cntIcon++;
 							}
 						}
-						
+
 						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribtroisplusun, $attribMPT, $attribMPTtrois, $attribfuturtrois)";
 						$resultat =  mysql_query($requete);
 						$ico = mysql_fetch_assoc($resultat);

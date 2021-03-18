@@ -5,7 +5,7 @@
 <title><?=$app_section?> - Gestion atelier</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link href="/<?=$app_section?>/default.css" rel="stylesheet" type="text/css" />
+<link href="/<?=$app_section?>/default.css?rdn=123" rel="stylesheet" type="text/css" />
 <link rel="icon" href='/<?=$app_section."/".Logo?>' type="image/x-icon" />
 <link rel="shortcut icon" href='/<?=$app_section."/".Logo?>' type="image/x-icon" />
 

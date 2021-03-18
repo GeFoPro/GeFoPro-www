@@ -2,8 +2,10 @@
 session_start();
 //if (isset($_SESSION['login'])) {
 //	$login = $_SESSION['login'];
-//} 
-$scturl = strtoupper(substr($_SERVER['REQUEST_URI'],1,3));
+//}
+//$scturl = strtoupper(substr($_SERVER['REQUEST_URI'],1,3));
+$subs = explode("/",$_SERVER['REQUEST_URI']);
+$scturl = $subs[count($subs)-2];
 require("Config_".$scturl.".php");
 checkEOL();
 
@@ -17,7 +19,7 @@ function printLDAPInfo($ldap_cnx,$user_login) {
 	} else if (($search=ldap_search($ldap_cnx, AD_DN_ADMINISTRATION, "sAMAccountName=".$user_login)) && (ldap_count_entries($ldap_cnx,$search)>0)) {
 		$msg = $msg . "Groupe Administration<br>";
 	}
-	
+
 	if (ldap_count_entries($ldap_cnx,$search)>0) {
 		$entries= ldap_get_entries($ldap_cnx,$search);
 		//foreach($entries[0] as $pos => $value) {
@@ -56,7 +58,7 @@ if(isset($_GET['logout'])) {
 		if (ISSET($_COOKIE[$scturl.'login'])) {
 			$user_login=$_COOKIE[$scturl.'login'];
 			$user_mdp=convert($_COOKIE[$scturl.'mdp'],"srvcookie");
-		} 
+		}
 	}
 	if (empty($user_login) || empty($user_mdp)) {
 		//session_destroy();
@@ -104,7 +106,7 @@ if(isset($_GET['logout'])) {
 				}
 			}
 		}
-	}	
+	}
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -132,7 +134,7 @@ if(isset($_GET['logout'])) {
 <div id='legend'>Connexion</div><br>
   <table border="0" align="center">
   <tr><td colspan=2><b><?=$loginMsg?></b></td></tr>
-  
+
   <tr><td colspan=2>&nbsp;</td></tr>
   <tr><td>Utilisateur:</td><td><input type="texte" name="login" value=""></td></tr>
   <tr><td>Mot de passe:</td><td><input type="password" name="mdp" value=""></td></tr>
@@ -143,7 +145,7 @@ if(isset($_GET['logout'])) {
   <tr><td colspan=2><b><font color='red'>La connexion à ce server est dorénavant sécurisée. Pour y accéder, veuillez utiliser dès à présent l'adresse <a href='https://ateliers.divtec.ch/<?=$scturl?>'>https://ateliers.divtec.ch/<?=$scturl?></a>. Attention, l'ancienne adresse sera très bientôt désactivée!</font></b></td></tr>
   <? } ?>
   </table>
-<script language="javascript">document.getElementsByName("login")[0].focus();</script>  
+<script language="javascript">document.getElementsByName("login")[0].focus();</script>
 </form>
 </div>
 
