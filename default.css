@@ -7,7 +7,7 @@ Released for free under a Creative Commons Attribution 2.5 License
 body {
 	margin-top: 50px;
 	padding: 0;
-	background: #f3f2f1; /* url(images/img01.jpg) repeat-x left top;*/
+	background: #f3f2f1; /* #e6e6e6; url(images/img01.jpg) repeat-x left top;*/
 	font-size: 12px;
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: justify;

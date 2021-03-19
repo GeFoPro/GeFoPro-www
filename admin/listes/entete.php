@@ -5,10 +5,9 @@
 <title><?=$app_section?> - Gestion atelier</title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
-<link href="<?=$_SESSION['home']?>default.css" rel="stylesheet" type="text/css" />
+<link href="<?=$_SESSION['home']?>default.css?rdn=123" rel="stylesheet" type="text/css" />
 <link rel="icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
 <link rel="shortcut icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
-
 <script>
 // iso-8859-1
 var toggle_ctrl;
@@ -47,7 +46,7 @@ function readKey(event) {
 		<table border='0' width="100%"><tr><td>
 		<h1><?=$app_section?> - Gestion atelier</h1>
 		</td>
-		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
+		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et Ã©quipement</a>
 		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
 		<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
 		<?php if(!empty($teamsURL)) { ?>
@@ -61,15 +60,15 @@ function readKey(event) {
 		<ul>
 			<?php if(hasAdminRigth()) { ?>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/horaire.php">Horaires</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">Elèves</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">ElÃ¨ves</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeCoursCIE.php">CIE</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeProjets.php">Projets</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php">Suivis</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeNotes.php">Notes</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML">Tâches</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML">TÃ¢ches</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/todo.php">Todo</a></li>
 			<?php  } ?>
-			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">DÃ©connecter</a></li>
 			<?php
 			if(!empty($modeAff) && $modeAff==$attribCarnet) {
 				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&reset=Effacer'>Effacer carnets</a></li>";
@@ -82,7 +81,7 @@ function readKey(event) {
 </div>
 <?php
 if(!hasAdminRigth()) {
-	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
+	echo "<br><br><center><b>Contenu non autorisÃ©.</b></center><br><br>";
 	exit;
 }
 ?>

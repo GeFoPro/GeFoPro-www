@@ -22,7 +22,7 @@ checkEOL();
 $loginMsg = "";
 if(isset($_GET['logout'])) {
 	// effacer la session
-	$loginMsg = "Déconnecté avec succès";
+	$loginMsg = "DÃ©connectÃ© avec succÃ¨s";
 	session_destroy();
 	unset($_COOKIE[$scturl.'login']);
     unset($_COOKIE[$scturl.'mdp']);
@@ -35,7 +35,7 @@ if(isset($_GET['logout'])) {
 		$user_mdp = $_POST['mdp'];
 	//Test si le login ou le password est vide
 	} else {
-		// on essaie de récupérer les informations dans le cookie
+		// on essaie de rÃ©cupÃ©rer les informations dans le cookie
 		if (ISSET($_COOKIE[$scturl.'login'])) {
 			$user_login=$_COOKIE[$scturl.'login'];
 			$user_mdp=convert($_COOKIE[$scturl.'mdp'],"srvcookie");
@@ -66,20 +66,20 @@ if(isset($_GET['logout'])) {
 				// test droits
 				readLDAP($ldap_cnx,$user_login);
 
-				//Test si l'utilisateur à au moins le droit de lecture (APP ou MAI avec droits)
+				//Test si l'utilisateur Ã  au moins le droit de lecture (APP ou MAI avec droits)
 				if(!isAPP()&&!hasReadRigth()) {
 					//Droits de connxion insuffisant
-					$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
+					$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nÃ©cessaires pour cette application!<br>";
 					$loginMsg = $loginMsg . printLDAPInfo($ldap_cnx,$user_login);
 				} else {
-					// test de connexion avec l'utilisateur DB récupéré
+					// test de connexion avec l'utilisateur DB rÃ©cupÃ©rÃ©
 					$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
 					if(!isset($connexion)) {
 						//DB inaccessible
 						//session_destroy();
-						$loginMsg ="Connexion à la base de donnée impossible ou manque de droits!";
+						$loginMsg ="Connexion Ã  la base de donnÃ©e impossible ou manque de droits!";
 					} else {
-						// user ok, mémorisation dans session et cookie
+						// user ok, mÃ©morisation dans session et cookie
 						$_SESSION['user_login'] = $user_login;
 						$_SESSION['user_mdp'] = $user_mdp;
 						Setcookie($scturl.'login',$user_login,time()+60*60*24*7);
@@ -134,7 +134,7 @@ if(isset($_GET['logout'])) {
   <tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Login"></td></tr>
   <? if(empty($_SERVER['HTTPS'])) { ?>
   <tr><td>&nbsp;</td></tr>
-  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisé n'est pas sécurisé! Veuillez utiliser de préférence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr>
+  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisÃ© n'est pas sÃ©curisÃ©! Veuillez utiliser de prÃ©fÃ©rence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr>
   <? } ?>
   </table>
 <script language="javascript">document.getElementsByName("login")[0].focus();</script>
