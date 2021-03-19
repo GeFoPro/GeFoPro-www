@@ -38,16 +38,16 @@ $objPHPExcel = $objReader->load("../docBase/listeStock.xls");
 /* requete pour entête*/
 if(isset($critere) && !empty($critere)) {
 	$requete = "SELECT * FROM $tableStock where IDStock=$critere";
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_row($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_row($resultat);
 
 	// remplissage stock
 	$objPHPExcel->getActiveSheet()->setCellValue('D3', $ligne[1]);
 }
 if(isset($genre) && !empty($genre)) {
 	$requete = "SELECT * FROM $tableGenre where IDGenre=$genre";
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_row($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_row($resultat);
 
 	// remplissage stock
 	$objPHPExcel->getActiveSheet()->setCellValue('D4', formatCell($ligne[1]));
@@ -66,14 +66,14 @@ if(isset($critere) && !empty($critere)) {
 	if(isset($genre) && !empty($genre)) {
 		$requete = $requete . " and ge.IDGenre = $genre";
 	}
-} 
+}
 $requete .= " order by ge.LibelleGenre, stock.tirroir";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 // remplissage de la liste
 if(!empty($resultat) && empty($errorMsg)) {
 	$cnt = 7;
-	while ($ligne = mysql_fetch_assoc($resultat) ) {
-		
+	while ($ligne = mysqli_fetch_assoc($resultat) ) {
+
 			$objPHPExcel->getActiveSheet()->setCellValue('A'.$cnt, formatCell($ligne['LibelleGenre']));
 			//$objPHPExcel->getActiveSheet()->setCellValue('B'.$cnt, formatCell($ligne['LibelleType']));
 			$objPHPExcel->getActiveSheet()->duplicateStyle( $objPHPExcel->getActiveSheet()->getStyle('A7'), 'A'.$cnt.':E'.$cnt );
@@ -82,7 +82,7 @@ if(!empty($resultat) && empty($errorMsg)) {
 			$objPHPExcel->getActiveSheet()->setCellValue('D'.$cnt, $ligne['Tirroir']);
 			$objPHPExcel->getActiveSheet()->setCellValue('E'.$cnt, $ligne['Quantite']);
 			$cnt++;
-		
+
 	}
 }
 
@@ -95,6 +95,6 @@ $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 
 header('Content-type: application/vnd.ms-excel');
 header("Content-Disposition: attachment;Filename=composants.xls");
-$writer->save('php://output');      
+$writer->save('php://output');
 
 ?>

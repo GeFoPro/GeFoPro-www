@@ -1,5 +1,5 @@
 <tr>
-<?
+<?php
 if(hasStockRight()) {
 	if($action=="Nouveau") {
 	  echo "<td></td><td colspan='2' align='left'><input type='submit' name='action' value='Ajouter'></td>";

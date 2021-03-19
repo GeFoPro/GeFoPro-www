@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 $admin = hasAdminRigth();
@@ -8,19 +8,19 @@ if($admin) {
 		$nom = $_GET['nom'];
 		$prenom = $_GET['prenom'];
 		$IDEleve = $_GET['idEleve'];
-		$classe = $_GET['Classe'];
+		$classe = (isset($_GET['Classe'])?$_GET['Classe']:"");
 	} else if(isset($_POST['nom'])) {
 		$nom = $_POST['nom'];
 		$prenom = $_POST['prenom'];
 		$IDEleve = $_POST['IDEleve'];
-		$classe = $_POST['Classe'];
+		$classe = (isset($_POST['Classe'])?$_POST['Classe']:"");
 	}
 } else {
 	// tentative de recherche par userid
 	$requete = "select * from eleves el join elevesbk bk on el.IDGDN=bk.IDGDN where Userid='".$_SESSION['user_login']."'";
     	//echo $requete;
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_assoc($resultat);
 	$nom = $ligne['Nom'];
 	//echo "Nom: ".$nom;
 	$prenom = $ligne['Prenom'];
@@ -49,7 +49,7 @@ if(isset($_POST['evaluation'])) {
 	// effacer les évaluations existantes
 	//$requete = "delete from appcompetencecie where IDDocEleve=".$IDDocEleve;
         //echo $requete."<br>";
-	//mysql_query($requete);
+	//mysqli_query($connexionDB,$requete);
 	//echo $requete."<br>";
 	foreach ($_POST as $key => $value) {
     		if (strpos($key, $role) === 0) {
@@ -57,8 +57,8 @@ if(isset($_POST['evaluation'])) {
 			// recherche si déja existant
 			$requete = "select * from appcompetencecie where IDCompetence=".substr($key,3)." and IDDocEleve=$IDDocEleve";
 			//echo $requete."<br>";
-			$result = mysql_query($requete);
-			if(mysql_num_rows($result)!=0) {
+			$result = mysqli_query($connexionDB,$requete);
+			if(mysqli_num_rows($result)!=0) {
 				// update
 				$requete = "update appcompetencecie set Eval".$role."=$value where IDDocEleve=$IDDocEleve and IDCompetence=".substr($key,3);
 			} else {
@@ -66,7 +66,7 @@ if(isset($_POST['evaluation'])) {
 				$requete = "insert into appcompetencecie (IDDocEleve,IDCompetence,Eval".$role.") values ($IDDocEleve,".substr($key,3).",$value)";
 			}
 			//echo $requete."<br>";
-			mysql_query($requete);
+			mysqli_query($connexionDB,$requete);
     		}
 	}
 	// mise à jour du cours de l'élève
@@ -80,12 +80,12 @@ if(isset($_POST['evaluation'])) {
 		if(!empty($_FILES['docSigne']['tmp_name'])) {
 			$data = file_get_contents($_FILES['docSigne']['tmp_name']);
 			if(!empty($data)) {
-				$requete .= ", PDFSigne = '".mysql_real_escape_string($data)."', Uploaded=1";
+				$requete .= ", PDFSigne = '".mysqli_real_escape_string($data)."', Uploaded=1";
 			}
 		}
 		$requete .= " where IDDocEleve=$IDDocEleve";
 		//echo $requete."<br>";
-		mysql_query($requete);
+		mysqli_query($connexionDB,$requete);
 	}
 	// mise à jour des observations
 	foreach ($competencesCIE as $key => $value) {
@@ -93,8 +93,8 @@ if(isset($_POST['evaluation'])) {
 		if(!empty($obs)) {
 			$requete = "select * from appbloccie where IDBlocRessource='".$key."' and IDDocEleve=$IDDocEleve";
 			//echo $requete."<br>";
-			$result = mysql_query($requete);
-			if(mysql_num_rows($result)!=0) {
+			$result = mysqli_query($connexionDB,$requete);
+			if(mysqli_num_rows($result)!=0) {
 				// update
 				$requete = "update appbloccie set Observation='".$obs."' where IDDocEleve=$IDDocEleve and IDBlocRessource='".$key."'";
 			} else {
@@ -102,14 +102,14 @@ if(isset($_POST['evaluation'])) {
 				$requete = "insert into appbloccie (IDDocEleve,IDBlocRessource,Observation) values ($IDDocEleve,'".$key."','".$obs."')";
 			}
 			//echo $requete."<br>";
-			mysql_query($requete);
+			mysqli_query($connexionDB,$requete);
 		} else {
 			// delete
 			$requete = "delete from appbloccie where IDDocEleve=$IDDocEleve and IDBlocRessource='".$key."'";
-			mysql_query($requete);
+			mysqli_query($connexionDB,$requete);
 		}
 	}
-	
+
 }
 
 function ponderationDis($nom,$pond,$disabled) {
@@ -140,7 +140,7 @@ function ponderation($nom,$pond,$disabled,$mai) {
 				$txt .= " disabled";
 			}
 			$txt .= ">";
-				
+
 		} else {
 			$txt .= "<img src='/iconsFam/contrast_low.png'>";
 		}
@@ -166,7 +166,7 @@ function toggle(thisname) {
 			}
 		}
 	}
-	
+
 }
 function submitNewCompetence(doc) {
 	//alert(theme);
@@ -177,8 +177,8 @@ function submitNewCompetence(doc) {
 
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 echo "<FORM id='myForm' ACTION='evalCoursCIE.php'  METHOD='POST' enctype='multipart/form-data'>";
 echo "<input type='hidden' name='actionCours' value=''>";
@@ -212,10 +212,10 @@ echo "</h2></td><td align='right'>";
 if(!empty($IDEleve)) {
 	$requeteH = "SELECT cours.IDCours, doc.TitreCIE FROM docelevecie as el join courscie as cours on el.IDCours=cours.IDCours join doccie as doc on cours.IDDoc=doc.IDDoc WHERE IDEleve=$IDEleve AND pdfSigne is null order by TitreCIE,Dates";
 	//echo $requeteH."<br>";
-	$resultat =  mysql_query($requeteH);
+	$resultat =  mysqli_query($connexionDB,$requeteH);
 	$options = "<option value='0'></option>";
 	$cntCours = 0;
-	while($ligne = mysql_fetch_assoc($resultat)) {
+	while($ligne = mysqli_fetch_assoc($resultat)) {
 		$options .= "<option value='".$ligne['IDCours']."'";
 		if($IDCours==$ligne['IDCours']) {
 			$options .= " selected";
@@ -234,14 +234,14 @@ if(!empty($IDCours)&&!empty($IDEleve)) {
 // recherche du document
 $requeteH = "SELECT doc.TitreCIE, doc.IDDoc, el.IDDocEleve, el.AbsencesEx, el.AbsencesNonEx, el.Encouragement, el.DateDiscussion, el.Uploaded FROM docelevecie as el join courscie as cours on el.IDCours=cours.IDCours join doccie as doc on cours.IDDoc=doc.IDDoc WHERE el.IDEleve=".$IDEleve." AND cours.IDCours= ".$IDCours;
 //echo $requeteH."<br>";
-$resultatH =  mysql_query($requeteH);
-$docinfo = mysql_fetch_assoc($resultatH);
+$resultatH =  mysqli_query($connexionDB,$requeteH);
+$docinfo = mysqli_fetch_assoc($resultatH);
 echo "<br><div id='corners'>";
 echo "<div id='legend'>Auto-évaluation du cours CIE</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250' colspan='2'>".$docinfo['TitreCIE']."</th><th width='10' align='center'>A</th><th width='10' align='center'>B</th><th width='10' align='center'>C</th><th width='10' align='center'>D</th>";
 $colspan = 6;
-if($admin) { 
+if($admin) {
 	// partie prof
 	echo "<th width='2' bgcolor='#EEEEEE'></th><th width='10' align='center'>A</th><th width='10' align='center'>B</th><th width='10' align='center'>C</th><th width='10' align='center'>D</th>";
 	$colspan = 11;
@@ -250,33 +250,33 @@ echo "</tr>";
 
 // recherche des observations
 $requeteObs = "SELECT * from appbloccie where IDDocEleve=".$docinfo['IDDocEleve'];
-$resultatObs =  mysql_query($requeteObs);
+$resultatObs =  mysqli_query($connexionDB,$requeteObs);
 if($resultatObs) {
 	$obsArray = array();
-	while($obsLigne = mysql_fetch_assoc($resultatObs)) {
+	while($obsLigne = mysqli_fetch_assoc($resultatObs)) {
 		$obsArray[$obsLigne['IDBlocRessource']] = $obsLigne['Observation'];
 	}
 }
 
 $requeteH = "SELECT com.Numero, com.Description, com.IDCompetence, app.EvalAPP, app.EvalMAI FROM competencedoccie as cdc left join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie app on com.IDCompetence=app.IDCompetence and IDDocEleve=".$docinfo['IDDocEleve']." where IDDoc= ".$docinfo['IDDoc']." order by IDBlocRessource, Numero";
 //echo $requete."<br>";
-$resultatH =  mysql_query($requeteH);
+$resultatH =  mysqli_query($connexionDB,$requeteH);
 //$doc = 0;
 $ressource = "";
-while($ligne = mysql_fetch_assoc($resultatH)) {
-	
+while($ligne = mysqli_fetch_assoc($resultatH)) {
+
 	if(!empty($ligne['Numero'])) {
 		if($ressource!=substr($ligne['Numero'], 0, 3 )) {
 			// insertion d'une zone d'observation de la catégorie précédente
 			if($admin&&!empty($ressource)) {
-				echo "<tr><td width='10'></td><td valign='top'>Observations:</td><td colspan='9'><textarea name='observ".$ressource."' COLS=40 ROWS=4>".$obsArray[$ressource]."</textarea></td></tr>";
+				echo "<tr><td width='10'></td><td valign='top'>Observations:</td><td colspan='9'><textarea name='observ".$ressource."' COLS=40 ROWS=4>".(isset($obsArray[$ressource])?$obsArray[$ressource]:"")."</textarea></td></tr>";
 				echo "<tr><td colspan='".$colspan."' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 			}
 			$ressource = substr($ligne['Numero'], 0, 3 );
 			echo "<tr><td colspan='".$colspan."'><b><i>".$competencesCIE[$ressource]."</i><br>".$ressourcesExplicatif[$ressource]."</b></td></tr>";
 		}
 		echo "<tr><td width='10'></td><td>".$ligne['Numero']." ".$ligne['Description']."</td>";
-		
+
 		if($admin) {
 			echo ponderation("APP".$ligne['IDCompetence'],$ligne['EvalAPP'],1,$ligne['EvalMAI']);
 			//echo ponderation("APP".$ligne['IDCompetence'],$ligne['EvalAPP'],0,0);
@@ -286,11 +286,11 @@ while($ligne = mysql_fetch_assoc($resultatH)) {
 			echo ponderation("APP".$ligne['IDCompetence'],$ligne['EvalAPP'],0,0);
 		}
 		echo "</tr>";
-	} 
+	}
 }
 if($admin) {
 	if(!empty($ressource)) {
-		echo "<tr><td width='10'></td><td valign='top'>Observations:</td><td colspan='9'><textarea name='observ".$ressource."' COLS=40 ROWS=4>".$obsArray[$ressource]."</textarea></td></tr>";
+		echo "<tr><td width='10'></td><td valign='top'>Observations:</td><td colspan='9'><textarea name='observ".$ressource."' COLS=40 ROWS=4>".(isset($obsArray[$ressource])?$obsArray[$ressource]:"")."</textarea></td></tr>";
 	}
 	echo "<tr><td colspan='".$colspan."' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 	echo "<tr><td colspan='2' valign='top'><b>Observations et mesures d'encouragement:</b></td><td colspan='9'><textarea name='encouragement' COLS=40 ROWS=4>".$docinfo['Encouragement']."</textarea></td></tr>";
@@ -302,9 +302,9 @@ if($admin) {
 	}
 	echo "></input></td></tr>";
 	echo "<tr><td colspan='2' valign='top'><b>Document signé:</b></td><td colspan='9'><input type='hidden' name='MAX_FILE_SIZE' value='5000000'><input type='file' name='docSigne'>";
-	if($docinfo['Uploaded']==1)  { 
+	if($docinfo['Uploaded']==1)  {
 		echo " <img src='/iconsFam/tick.png'> <a href='lireScanCIE.php?IDEleve=".$IDEleve."&IDCours=".$IDCours."' target='pdf'><img src='/iconsFam/page_white_acrobat.png'></a>";
-	} else { 
+	} else {
 		echo " <img src='/iconsFam/cross.png'>";
 	}
 	echo "</td></tr>";
@@ -317,7 +317,7 @@ if($admin) {
 }
 
 
-echo "</table>"; 
+echo "</table>";
 
 echo "<br><b>Echelle d'évaluation:</b><br><table border=0>";
 echo "<tr><td width='20'><b>A</b></td><td>Exigences dépassées</td></tr>";
@@ -325,7 +325,7 @@ echo "<tr><td width='20'><b>B</b></td><td>Exigences atteintes</td></tr>";
 echo "<tr><td width='20'><b>C</b></td><td>Exigences juste atteintes, mesures de soutien nécessaires</td></tr>";
 echo "<tr><td width='20'><b>D</b></td><td>Exigences pas atteintes, mesures particulières nécessaires</td></tr>";
 echo "</table></div>";
-} 
+}
 //if($cntCours==0) {
 //	echo "<center>Aucune évaluation en cours.</center>";
 //}
@@ -336,5 +336,4 @@ echo "</table></div>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
-
+<?php include("../../piedPage.php"); ?>

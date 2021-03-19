@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 
 /* LIMIT */
@@ -87,14 +87,14 @@ if($tri=="LibelleGenre")
   $affSensGen = $affSens;
 if($tri=="LibelleType")
   $affSensTy = $affSens;
-  
+
 /* Impression */
 $countImp = 0;
 if(isset($_GET['imp']) && !empty($_GET['imp'])) {
 	// recherche si composant cochés
 	$requete = "select * from composant where Imprimer <> 0";
-	$resultat =  mysql_query($requete);
-	$countImp = mysql_num_rows($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$countImp = mysqli_num_rows($resultat);
 	if($countImp>0) {
 		$impTxt = "<input type='checkbox' name='impQ' value='on' checked onClick='resetImp(this.form);'>";
 		$impTri=1;
@@ -108,29 +108,29 @@ if(isset($_GET['imp']) && !empty($_GET['imp'])) {
 
 if(isset($_GET['Reset']) && !empty($_GET['Reset'])) {
 	$requete = "UPDATE $tableComp set Imprimer=0";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(isset($_GET['Modifier']) && !empty($_GET['Modifier'])) {
 	$requete = "UPDATE $tableComp set Imprimer=0";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	if(isset($_GET['imprimer'])) {
 		$imprimer = $_GET['imprimer'];
 		for($i=0;$i<sizeof($imprimer);$i++) {
 			$requete = "UPDATE $tableComp set Imprimer=1 where IDComposant=$imprimer[$i]";
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 		}
 	}
 }
 
 // fonction truncate
-function myTruncate($string, $limit, $break=".", $pad="...") { 
+function myTruncate($string, $limit, $break=".", $pad="...") {
 	// return with no change if string is shorter than $limit
 	if(strlen($string) <= $limit)
 		return $string;
-	// is $break present between $limit and the end of the string? 
-	if(false !== ($breakpoint = strpos($string, $break, $limit))) { 
-		if($breakpoint < strlen($string) - 1) { 
+	// is $break present between $limit and the end of the string?
+	if(false !== ($breakpoint = strpos($string, $break, $limit))) {
+		if($breakpoint < strlen($string) - 1) {
 			$string = substr($string, 0, $breakpoint) . $pad;
 		}
 	}
@@ -140,7 +140,7 @@ function myTruncate($string, $limit, $break=".", $pad="...") {
 $pageOut = "";
 
 /* liste composants */
-$requete = "SELECT comp.IDComposant, Imprimer, Caracteristiques, Description, Valeur, LibelleGenre, LibelleType, LibelleBoitier, datasheet, image, comp.IDGenre, comp.IDType FROM $tableComp comp 
+$requete = "SELECT comp.IDComposant, Imprimer, Caracteristiques, Description, Valeur, LibelleGenre, LibelleType, LibelleBoitier, datasheet, image, comp.IDGenre, comp.IDType FROM $tableComp comp
 left outer join $tableCommande com on comp.IDComposant=com.IDComposant
 left outer join $tableGenre ge on comp.IDGenre=ge.IDGenre
 left outer join $tableType ty on comp.IDType=ty.IDType
@@ -187,26 +187,26 @@ if(isset($impTri) && !empty($impTri)) {
 $requete = $requete . $whereClause . " GROUP BY comp.IDComposant ORDER BY $tri $sens";
 $requete .= " LIMIT ".$limit.",50";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 
 // construction de la table
 $rowcnt = 0;
 $lastIDComp="";
 $colorLine = "";
-while ($ligne = mysql_fetch_assoc($resultat) ) {
+while ($ligne = mysqli_fetch_assoc($resultat) ) {
 	// présent en stock?
 	$requeteStock = "SELECT count(*) FROM $tableStockage stg
 	join $tableStock st on stg.IDStock=st.IDStock
 	where IDComposant=$ligne[IDComposant]";
-	$resultatStock =  mysql_query($requeteStock );
+	$resultatStock =  mysqli_query($connexionDB,$requeteStock );
 	$stockImg = "accept.png";
 	if($resultatStock!=null) {
-		$resultCount = mysql_fetch_array($resultatStock);
+		$resultCount = mysqli_fetch_array($resultatStock);
 		if($resultCount[0]==0) {
 			$stockImg = "cross.png";
 		}
 	}
-	if($ligne['Imprimer']!=0) 
+	if($ligne['Imprimer']!=0)
 		$checked = "CHECKED";
 	else
 		$checked = "";
@@ -215,7 +215,7 @@ while ($ligne = mysql_fetch_assoc($resultat) ) {
 	} else {
 		$caracteristiquesTrunc = myTruncate($ligne['Caracteristiques'], 40, ' ');
 	}
-	$imgpath = "/".$app_section."/images/articles/";
+	$imgpath = "".$_SESSION['home']."images/articles/";
 	$pageOut = $pageOut . "<tr id='comp".$ligne['IDComposant']."' onclick='callDetail(".$ligne['IDComposant'].");' ".$colorLine." onmouseover='imageAppear(\"".$imgpath."\",\"".$ligne['image']."\",\"".preg_replace('/\W+/', '_', $ligne['Description'])."\",\"".$ligne['LibelleBoitier']."\",\"".$ligne['IDGenre']."_".$ligne['IDType']."_0\")' onmouseout='imageDisappear()'><td height='16' width='45' onclick='event.returnValue=false;'><input type='checkbox' name='imprimer[]' value='".$ligne['IDComposant']."' ".$checked." onClick='submitPage(this.form,".$ligne['IDComposant'].");'></td>";
 	$pageOut = $pageOut . "<td width='140'>".$ligne['Description']."</td>";
 	//$pageOut = $pageOut . "<td ><img src='".$imgsrc."' height='150'></td>";
@@ -232,8 +232,8 @@ while ($ligne = mysql_fetch_assoc($resultat) ) {
 	if($app_section=='ELT') {
 			$pageOut = $pageOut . "<td align='center' width='63'>";
 			$requete ="select comp.IDComposant from $tableComp comp join $tableFootprint foot on comp.IDComposant=foot.IDComposant where comp.IDComposant=$ligne[IDComposant] AND IDSchema<>''";
-			$resultatLigne =  mysql_query($requete);
-			$row = mysql_fetch_row($resultatLigne);
+			$resultatLigne =  mysqli_query($connexionDB,$requete);
+			$row = mysqli_fetch_row($resultatLigne);
 			if(!empty($row)) {
 				$pageOut = $pageOut . "<img src='/iconsFam/flag_green.png' align='absmiddle'></td>";
 				//width='20' height='20' border='0' hspace='0' vspace='0'>";
@@ -253,10 +253,10 @@ SELECT * FROM $tableCommande com
 join $tableFournisseur four on com.IDFournisseur=four.IDFournisseur
 where IDComposant=$ligne[IDComposant] and com.IDFournisseur=1
 FOURN;
-		$resultatF =  mysql_query($requeteF);
+		$resultatF =  mysqli_query($connexionDB,$requeteF);
 		$pdfexists = false;
 		if($resultatF!=null) {
-			while ($fournLigne = mysql_fetch_assoc($resultatF)) {
+			while ($fournLigne = mysqli_fetch_assoc($resultatF)) {
 				$link = $fournLigne['LienArticle'];
 				$dataSheet = $fournLigne['LienDatasheet'];
 				$noArticle= str_replace(" ","",$fournLigne['NoArticle']);
@@ -270,7 +270,7 @@ FOURN;
 				if(!empty($dataSheet)) {
 					$pageOut = $pageOut . "<a href='$dataSheet' target='_datasheet'><img src='/iconsFam/distrelec.png' align='absmiddle' onmouseover=\"Tip('Datasheet du fournisseur')\" onmouseout='UnTip()' align='absmiddle'></a>&nbsp";
 					$pdfexists = true;
-				} 
+				}
 			}
 		}
 		if(!$pdfexists) {
@@ -280,7 +280,7 @@ FOURN;
 	$pageOut = $pageOut . "</td></tr>\n";
 	$lastIDComp = $ligne['IDComposant'];
 	$rowcnt++;
-	
+
 }
 if($rowcnt==1 && isset($_GET['Rechercher'])) {
 	$_SESSION['recherche'] = "";
@@ -317,33 +317,33 @@ function openImage(image) {
 	xhr.send();
 	return (xhr.status != "404");
 }
-function imageAppear(path, img1, img2, img3, img4) { 
+function imageAppear(path, img1, img2, img3, img4) {
 
 	var image = null;
 	//alert(img1);
 	if(img1!='') {
-		image = path+img1+".PNG";
+		image = path+img1+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
 		}
 	}
 	if(image == null && img2!='') {
-		image = path+img2+".PNG";
+		image = path+img2+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
 		}
 	}
 	if(image == null && img3!='') {
-		image = path+img3+".PNG";
+		image = path+img3+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
 		}
 	}
 	if(image == null && img4!='') {
-		image = path+img4+".PNG";
+		image = path+img4+".png";
 		//alert(image);
 		if(!openImage(image)) {
 			image = null;
@@ -365,16 +365,16 @@ function imageAppear(path, img1, img2, img3, img4) {
 	}
 }
 
-function imageDisappear() { 
+function imageDisappear() {
     document.getElementById('compImgDiv').style.display = "none";
 }
 
 </SCRIPT>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 ?>
 <FORM id="myForm" ACTION="compList.php"  METHOD="GET">
-<?
+<?php
 echo "<div class='post'>";
 //if(isset($critere) && !empty($critere)) {
 //	echo "<br><h2>Résultat trouvé pour '$critere'</h2><br>";
@@ -386,11 +386,11 @@ echo "<div id='compImgDiv' style='display:none'><img src='' id='compImg'></div>"
 
 
 <table border='0' width='100%'><tr><td align='right'>
-<input type='text' name='recherche' value='<?=$critere?>'> <input type='submit' name='Rechercher' value='Rechercher'> 
+<input type='text' name='recherche' value='<?=$critere?>'> <input type='submit' name='Rechercher' value='Rechercher'>
 <input type="button" onclick="location.href='comp.php?action=Nouveau'" value="Nouveau" /></td></tr></table>
 
 <br><div id='corners'>
-<?
+<?php
 if(isset($critere) && !empty($critere)) {
 	echo "<div id='legend'>Résultat trouvé pour '$critere'</div>";
 } else {
@@ -400,19 +400,19 @@ if(isset($critere) && !empty($critere)) {
 <table id="hor-minimalist-b" border='0'><tr>
 <th align="left" width="25"><?=$impTxt?></th>
 <th align="left" width="130"><a href="compList.php?tri=Description&sens=<?=$newSens?>">Identifiant<?=$affSensDir?></a></th>
-<? if($app_section=='ELT') { ?>
+<?php if($app_section=='ELT') { ?>
 <th align="left" width="250"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractérisitiques</th>
-<? } else { ?>
+<?php } else { ?>
 <th align="left" width="430"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractérisitiques</th>
-<? } ?>
+<?php } ?>
 <!-- th align="left" width="20"><a href="compList.php?tri=Caracteristiques&sens=<?=$newSens?>">Caractéristiques<?=$affSensCar?></a></th -->
 <!-- th align="left"><a href="compList.php?tri=LibelleGenre&sens=<?=$newSens?>">Genre<?=$affSensGen?></a></th -->
 <th align="left" width="120"><select name="IDGenre" onChange='resetType();submit();' style="font-size: 9px;"><option value=''>&lt;Genre&gt;</option>
 
-<?
+<?php
 $requeteTri = "SELECT * FROM $tableGenre order by LibelleGenre";
-$resultatTri =  mysql_query($requeteTri);
-while ($listeLigne = mysql_fetch_array($resultatTri)) {
+$resultatTri =  mysqli_query($connexionDB,$requeteTri);
+while ($listeLigne = mysqli_fetch_array($resultatTri)) {
 	if($IDGenre==$listeLigne[0])
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	else
@@ -423,12 +423,12 @@ while ($listeLigne = mysql_fetch_array($resultatTri)) {
 </select></th>
 <!-- th align="left"><a href="compList.php?tri=LibelleType&sens=<?=$newSens?>">Type<?=$affSensTy?></a></th -->
 <th align="left" width='160'><select name="IDType" onChange='submit();' style="font-size: 9px;"><option value=''>&lt;Type&gt;</option>
-<?
+<?php
 
 if(isset($IDGenre) && !empty($IDGenre)) {
-	$requeteTri = "SELECT * FROM $tableType where IDGenre=$IDGenre order by LibelleType";	
-	$resultatTri =  mysql_query($requeteTri);
-	while ($listeLigne = mysql_fetch_array($resultatTri)) {
+	$requeteTri = "SELECT * FROM $tableType where IDGenre=$IDGenre order by LibelleType";
+	$resultatTri =  mysqli_query($connexionDB,$requeteTri);
+	while ($listeLigne = mysqli_fetch_array($resultatTri)) {
 		if($IDType==$listeLigne[0])
 			echo "<option value='$listeLigne[0]' selected='selected'>";
 		else
@@ -438,12 +438,12 @@ if(isset($IDGenre) && !empty($IDGenre)) {
 }
 ?>
 </select></th>
-<? if($app_section=='ELT') { ?>
+<?php if($app_section=='ELT') { ?>
 <th align="left" width="120"><select name="IDBoitier" onChange='submit();' style="font-size: 9px;"><option value=''>&lt;Boitier&gt;</option>
-<?
+<?php
 $requeteTri = "SELECT * FROM $tableBoitier order by LibelleBoitier";
-$resultatTri =  mysql_query($requeteTri);
-while ($listeLigne = mysql_fetch_array($resultatTri)) {
+$resultatTri =  mysqli_query($connexionDB,$requeteTri);
+while ($listeLigne = mysqli_fetch_array($resultatTri)) {
 	if($IDBoitier==$listeLigne[0])
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	else
@@ -452,39 +452,39 @@ while ($listeLigne = mysql_fetch_array($resultatTri)) {
 }
 ?>
 </select></th>
-<? } ?>
+<?php } ?>
 <th align="center" width='50'>Stock</th>
-<? if($app_section=='ELT') { ?>
+<?php if($app_section=='ELT') { ?>
 	<th align="center" width='50'>Altium</th>
-<? } ?>
+<?php } ?>
 <th align="center" width='50'>DataS.</th>
 </tr>
 </table>
 <div style="height:500px;overflow:auto;overflow-x:hidden;width:1048px">
 <table id="hor-minimalist-b" border='0'>
-<? if($limit!=0) { ?>
+<?php if($limit!=0) { ?>
 <tr>
-<? if($app_section=='ELT') { ?>
+<?php if($app_section=='ELT') { ?>
 <td colspan="9">
-<? } else { ?>
+<?php } else { ?>
 <td colspan="7">
-<? } ?>
+<?php } ?>
 <a href="compList.php?limit=<?=$limit-50?>"><< Précédents</a></td></tr>
-<? } ?>
-<?
+<?php } ?>
+<?php
 echo $pageOut;
 ?>
 
 <tr><td></td>
-<? if($app_section=='ELT') { ?>
+<?php if($app_section=='ELT') { ?>
 <td colspan="5">
-<? } else { ?>
+<?php } else { ?>
 <td colspan="3">
-<? } ?>
+<?php } ?>
 <input type="hidden" name="Modifier" value=""><input type="hidden" name="Reset" value=""></td><td colspan="3" align="right">
-<? if($rowcnt==50) { ?>
+<?php if($rowcnt==50) { ?>
 <a href="compList.php?limit=<?=$limit+50?>">Suivants >></a>
-<? } ?>
+<?php } ?>
 </td></tr>
 </table>
 </div></div>
@@ -494,4 +494,4 @@ echo $pageOut;
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

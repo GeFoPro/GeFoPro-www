@@ -36,8 +36,8 @@ if(isset($_GET['Definitif'])) {
 	if(isset($critere) && !empty($critere)) {
 		// ajout commande
 		$requete = "select max(IDPageCommande) from $tablePageCommande";
-		$resultat =  mysql_query($requete);
-		$line = mysql_fetch_row($resultat);
+		$resultat =  mysqli_query($connexionDB,$requete);
+		$line = mysqli_fetch_row($resultat);
 		$IDPageCommande = $line[0]+1;
 		$requete = <<<REQ
 INSERT INTO $tablePageCommande
@@ -45,29 +45,29 @@ INSERT INTO $tablePageCommande
 ($IDPageCommande, 1, "$ajdSQL", "$abbreviation", "$utilisation", $critere, "$remarque", "$tva")
 REQ;
 		//$errorMsg = $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		if(!$resultat) {
-			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")"; 
-		} 
+			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")";
+		}
 		// maj commande externe
 		   $requete = <<<REQ
 UPDATE $tableCommandeExt set
 IDPageCommande = "$IDPageCommande"
 where IDPageCommande is null and IDFournisseur = $critere LIMIT 20
 REQ;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		if(!$resultat) {
-			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")"; 
+			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")";
 		}
 	}
 
 	// committer l'ensemble de l'historique
 	if(empty($errorMsg)) {
-		mysql_query('COMMIT');
+		mysqli_query($connexionDB,'COMMIT');
 	} else {
-		mysql_query('ROLLBACK');
+		mysqli_query($connexionDB,'ROLLBACK');
 	}
-} 
+}
 PHPExcel_Settings::setLocale('fr-CH');
 $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader->setReadDataOnly(true);
@@ -77,8 +77,8 @@ $objPHPExcel = $objReader->load("../docBase/commande.xls");
 // requete pour en-tête
  if(isset($critere) && !empty($critere)) {
 	$requete = "SELECT * FROM $tableFournisseur where IDFournisseur=$critere";
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_row($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_row($resultat);
 
 	// remplissage fournisseur
 	$objPHPExcel->getActiveSheet()->setCellValue('F4', iconv("ISO-8859-1", "UTF-8", $ligne[1]));
@@ -128,14 +128,14 @@ if(isset($critere) && !empty($critere)) {
 		$requete = $requete . " where IDPageCommande= $IDPageCommande";
 	}
 	$requete = $requete . "   group by NumArticle order by NumArticle limit 20";
-} 
+}
 //$errorMsg = $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 
 // remplissage de la commande
 if(!empty($resultat) && empty($errorMsg)) {
 	$cnt = 12;
-	while ($ligne = mysql_fetch_assoc($resultat) ) {
+	while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		$objPHPExcel->getActiveSheet()->setCellValue('C'.$cnt, $ligne['NumArticle']);
 		$objPHPExcel->getActiveSheet()->setCellValue('D'.$cnt, iconv("ISO-8859-1", "UTF-8", "$ligne[Libelle]"));
 		$objPHPExcel->getActiveSheet()->setCellValue('E'.$cnt, $ligne['Nombre']);
@@ -146,7 +146,7 @@ if(!empty($resultat) && empty($errorMsg)) {
 
 if(!empty($errorMsg)) {
 	$objPHPExcel->getActiveSheet()->setCellValue('D20', $errorMsg);
-} 
+}
 
 // générer excel
 $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
@@ -158,6 +158,6 @@ $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 
 header('Content-type: application/vnd.ms-excel');
 header("Content-Disposition: attachment;Filename=commande.xls");
-$writer->save('php://output');      
+$writer->save('php://output');
 
 ?>

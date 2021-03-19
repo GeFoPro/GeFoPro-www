@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 if(hasAdminRigth()) {
@@ -88,13 +88,13 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 		//$msg="<font color='#FF0000'>Tous les champs doivent être renseignés</font><script>alert(\"<font color='#FF0000'>Tous les champs doivent être renseignés!</font>\");</script>";
 		$msg="<script>alert(\"Tous les champs doivent être renseignés!\");</script>";
 		if(!isset($trpond)) {
-			$trpond = -1;	
+			$trpond = -1;
 		}
 		if(!isset($prpond)) {
-			$prpond = -1;	
+			$prpond = -1;
 		}
 		if(!isset($dipond)) {
-			$dipond = -1;	
+			$dipond = -1;
 		}
 	} else if(!is_numeric($notete) || $notete>6 || !is_numeric($noteap) || $noteap>6 || !is_numeric($notere) || $notere>6 || !is_numeric($notese) || $notese>6) {
 		//$msg="<font color='#FF0000'>Veuillez saisir une note correcte!</font>";
@@ -129,7 +129,7 @@ if(!$resultat || mysql_num_rows($resultat)==0) {
 	}
 }
 if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
-	
+
 	if($_POST['validation']=="lock") {
 		//echo "lock";
 		$anneeN = $_POST['anneeNew'];
@@ -138,22 +138,22 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		//echo $requete;
 		mysql_query($requete);
 		// ajouts nécessaire à la saisie des notes
-		if(!empty($msgNote1) ) { 
+		if(!empty($msgNote1) ) {
 			// créer la période
 			$requete = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, Note, RemarqueNote, IDTheme, Ponderation) values ($IDEleve, $semestreN, $anneeN, 0, null, \"\", 1, 0)";
 			mysql_query($requete);
 			$msg = "<font color='#088A08'>Période ajoutée dans la gestion des notes</font>";
 		}
-		if(!empty($msgNote2) || !empty($msgNote1)) { 
+		if(!empty($msgNote2) || !empty($msgNote1)) {
 			// créer le thème
 			$requete = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, Note, RemarqueNote, IDTheme, Ponderation) values ($IDEleve, $semestreN, $anneeN, 0, null, \"\", $IDTheme, 0)";
 			mysql_query($requete);
 			$msg = "<font color='#088A08'>Période ajoutée dans la gestion des notes</font>";
 		}
-		
+
 	} else {
 		//echo "unlock";
-		$requete = "update evaluation set DateValidationAuto = null, Annee = null, NoSemestre = null where IDEvaluation = $IDEvaluation"; 
+		$requete = "update evaluation set DateValidationAuto = null, Annee = null, NoSemestre = null where IDEvaluation = $IDEvaluation";
 		//echo $requete;
 		mysql_query($requete);
 	}
@@ -169,7 +169,7 @@ function ponderation($nom,$pond,$action) {
 		}
 		$txt .= "></div></td>";
 	}
-	
+
 	return $txt;
 }
 
@@ -202,7 +202,7 @@ function submitValidation(action) {
 function limitEvent(e) {
     if (window.event) { //IE
         window.event.cancelBubble = true;
-    } else if (e && e.stopPropagation) { //standard 
+    } else if (e && e.stopPropagation) { //standard
         e.stopPropagation();
     }
 }
@@ -314,7 +314,7 @@ if(!empty($resultat)) {
 	$min = 0;
 }
 
-	
+
 // définition de l'annee et mois de la date max
 if($max!=0) {
 	// recherche mois et année de la date récupérée
@@ -337,7 +337,7 @@ if($max!=0) {
 } else {
 	$anneeMax=date('Y');
 }
-	
+
 // définition de l'annee et mois min
 if($min!=0) {
 	// recherche mois et année de la date récupérée
@@ -349,20 +349,20 @@ if($min!=0) {
 	} else {
 		$anneeMin = $anneeActMin;
 	}
-	
+
 } else {
 	$anneeMin = date('Y') - 5;
 }
 
 // construction de la liste d'années
-$optionAnneeEval = "<select name='anneeAff' onChange='document.getElementById(\"myForm\").submit();'>";	
-$anneeToday = date('Y');	
+$optionAnneeEval = "<select name='anneeAff' onChange='document.getElementById(\"myForm\").submit();'>";
+$anneeToday = date('Y');
 for($cntA=0;$cntA<5;$cntA++) {
 	//echo $annee."/".$anneeMin."/".$anneeMax."//".($anneeToday-$cntA)."<br>";
 	if($anneeMin<=($anneeToday-$cntA)&&$anneeMax>=($anneeToday-$cntA)) {
 		$optionAnneeEval .= "<option value='".($anneeToday-$cntA)."'";
 		if(($anneeToday-$cntA)==$annee) {
-			$optionAnneeEval .= " selected ";	
+			$optionAnneeEval .= " selected ";
 		}
 		$optionAnneeEval .= ">".($anneeToday-$cntA)."/".($anneeToday-$cntA+1)."</option>";
 	}
@@ -397,7 +397,7 @@ echo "</table><br>";
 if($IDTheme!=0) {
 	// selection de l'évaluation
 	if($mois<8) {
-		
+
 		$anneeToday = $anneeToday-1;
 	}
 	if($annee!=$anneeToday) {
@@ -434,7 +434,7 @@ if($IDTheme!=0) {
 	echo "<br><div id='corners'>";
 	echo "<div id='legend'>Auto-évaluation du thème/projet</div>";
 	echo "<br><table border='0' >";
-	
+
 	echo "<tr><td width='300'><b>Mon sentiment sur le travail accompli:</b></td><td width='70' align='right'>bof</td>".ponderation('travail',$trpond,$action) ."<td>super</td></tr>";
 	$styleborder=""; if(!empty($action)&&empty($trtxt)) $styleborder="style='border-color: #ff0000'";
 	echo "<tr><td valign='top'>Parce que:</td><td colspan='7'><textarea name='remarqueTravail' COLS=60 ROWS=4 ".$styleborder.">".$trtxt."</textarea></td></tr>";
@@ -486,7 +486,7 @@ if($IDTheme!=0) {
 			for($cntA=0;$cntA<5;$cntA++) {
 				$optionAnnee .= "<option value='".($annee-$cntA)."'";
 				if(($annee-$cntA)==$annee) {
-					$optionAnnee .= " selected ";	
+					$optionAnnee .= " selected ";
 				}
 				$optionAnnee .= ">".($annee-$cntA)."/".($annee-$cntA+1)."</option>";
 			}

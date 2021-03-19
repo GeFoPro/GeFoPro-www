@@ -1,6 +1,6 @@
-<?php 
+<?php
 include("../../appHeader.php");
-
+/*
 if(isset($_GET['nom'])) {
 	$nom = $_GET['nom'];
 	$prenom = $_GET['prenom'];
@@ -10,7 +10,7 @@ if(isset($_GET['nom'])) {
 	$prenom = $_POST['prenom'];
 	$IDEleve = $_POST['IDEleve'];
 }
-
+*/
 if(isset($_POST['vue'])) {
 	$vue = $_POST['vue'];
 	$_SESSION['vue'] = $vue;
@@ -48,7 +48,7 @@ if($vue==1) {
 		$anneeCalc = $_POST['anneeCalc'];
 		$_SESSION['noSemaine'] = $noSemaine;
 		$_SESSION['anneeCalc'] = $anneeCalc;
-		
+
 	}
 } else {
 	$noSemaine = date('W');
@@ -135,8 +135,8 @@ function submitSemaine(nosemaine) {
 }
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 function niveauMoy($moyenne) {
@@ -171,7 +171,7 @@ foreach($listeId as $key => $valeur) {
 echo "</h2></td><td align='right'>\n";
 */
 
-	
+
 $noSemMoinsUn = date('W',$lundi - 86400*7);
 if($noSemaine==1) {
 	$anneeMoinsUn = $anneeCalc-1;
@@ -217,7 +217,7 @@ foreach ($configurationJRN as $pos => $value) {
 	$whereclasse .= $value;
 	$whereclasse .= "'";
 }
-	
+
 if($vue==2) {
 	echo "<br><div id='corners'>";
 	echo "<div id='legend'>Journaux ".$annee."/".$anneePlus."</div>";
@@ -232,7 +232,7 @@ if($vue==2) {
 	//echo "<th width='100'>Motivation</th><th width='100'>Progrets</th><th width='100'>Difficultés</th><th width='100'>Notes</th>";
 	echo "<th width='10' align='right'>Journaux</th></tr>";
 
-	
+
 	// recherche
 	//Classe LIKE 'ELT %' OR Classe LIKE 'AUT 1'
 $requete = "SELECT IDTheme, TypeTheme, NomTheme, Objectif, IDGDN, Classe, Nom, Prenom, sum( heures ) AS heures, count( heures ) AS jours
@@ -246,13 +246,13 @@ GROUP BY jo.IDEleve, jo.IDTheme, jo.DateJournal
 ) AS res
 GROUP BY IDTheme, IDGDN
 order by TypeTheme,NomTheme,Nom,Prenom";
-//LEFT JOIN evaluation ev on jo.IDTheme=ev.IDTheme and jo.IDEleve=ev.IDEleve and (ev.Annee is null OR ev.Annee = ".$annee.") 
-	
+//LEFT JOIN evaluation ev on jo.IDTheme=ev.IDTheme and jo.IDEleve=ev.IDEleve and (ev.Annee is null OR ev.Annee = ".$annee.")
+
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	$cnt=0;
 	$lastTheme = 0;
-	while ($ligne = mysql_fetch_assoc($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($lastTheme!=$ligne['IDTheme']) {
 			// nouveau theme
 			if($cnt!=0) {
@@ -269,13 +269,13 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			}
 			echo $ligne['NomTheme']."</b></td><td align='center' valign='top' bgColor='#DEDEDE'onmouseover=\"Tip('Objectif de temps')\" onmouseout='UnTip()'><b>".$objtxt."</b></td><td colspan='5' valign='top' bgColor='#DEDEDE'></td></tr>";
 			$lastTheme = $ligne['IDTheme'];
-		} 
+		}
 		echo "<tr onclick='document.location.href=\"../detail/activites.php?from=journaux&triPeriode=1&idEleve=".$ligne['IDGDN']."&nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&IDTheme=".$ligne['IDTheme']."\"'><td></td><td valign='top'>";
 		if($modeEvaluation=="hebdo") {
 			//echo $ligne['Classe']."-";
 		}
 		echo $ligne['Nom']." ".$ligne['Prenom']."</td><td valign='top' align='center'>".$ligne['jours']."</td><td align='center' valign='top'>".sprintf("%5.1f",$ligne['heures'])."h</td>";
-		
+
 		// recherche des évaluations
 		$requeteEval = "SELECT distinct NoSemaine, Annee, DateValidation FROM evalhebdo where IDEleve = ".$ligne['IDGDN']." and IDTheme=".$ligne['IDTheme'];
 		// tri sur année en cours
@@ -291,11 +291,11 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			$requeteEval .= " and (NoSemaine between ".$noSemaineSem2." and 30)";
 		}
 		$requeteEval .=	" order by Annee, NoSemaine LIMIT 20";
-		$resultatEval =  mysql_query($requeteEval);
-		$numEval = mysql_num_rows($resultatEval);
+		$resultatEval =  mysqli_query($connexionDB,$requeteEval);
+		$numEval = mysqli_num_rows($resultatEval);
 		echo "<td valign='top'>";
 		if(!empty($resultatEval)&&$numEval>0) {
-			while ($ligneEval = mysql_fetch_assoc($resultatEval)) {
+			while ($ligneEval = mysqli_fetch_assoc($resultatEval)) {
 				echo "<a id='circle";
 				if(empty($ligneEval['DateValidation'])) {
 					echo "red";
@@ -318,16 +318,16 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 		// recherche journaux non validés
 		$requeteEntrees = "SELECT count(IDGDN) as Entrees FROM elevesbk JOIN journal jo ON IDGDN = IDEleve WHERE (DateJournal between '".$annee."-08-01' and '".date("Y-m-d",$lundiSemEncours)."') and DateValidation is null and IDGDN=".$ligne['IDGDN']." and IDTheme=".$ligne['IDTheme'];
 		//echo $requeteEntrees;
-		$resultatEntrees =  mysql_query($requeteEntrees);
-		$ligneEntrees = mysql_fetch_array($resultatEntrees);
+		$resultatEntrees =  mysqli_query($connexionDB,$requeteEntrees);
+		$ligneEntrees = mysqli_fetch_array($resultatEntrees);
 		if($ligneEntrees[0]!=0) {
 			echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$ligneEntrees[0]." entrée(s) dans les journaux non validée(s) avant le ".date("d.m.Y",$lundiSemEncours)."')\" onmouseout='UnTip()'>";
 		} else {
 			echo "<img src='/iconsFam/tick.png' align='absmiddle'>";
 		}
-		//echo "<a href='../detail/evaluations.php?from=journaux&nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&idEleve=".$ligne['IDGDN']."&IDTheme=".$ligne['IDTheme']."'>";		
+		//echo "<a href='../detail/evaluations.php?from=journaux&nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&idEleve=".$ligne['IDGDN']."&IDTheme=".$ligne['IDTheme']."'>";
 		//if(empty($ligne['DateValidationAuto']) || $ligne['DateValidationAuto']=="0000-00-00") {
-		//	echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Evaluation non validée')\" onmouseout='UnTip()'>";	
+		//	echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Evaluation non validée')\" onmouseout='UnTip()'>";
 		//} else {
 		//	if(empty($ligne['Annee'])) {
 		//		echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Evaluation validée, pas assignée à une période')\" onmouseout='UnTip()'>";
@@ -341,12 +341,12 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 	}
 	if ($cnt==0) {
 		echo "<tr><td colspan='9' align='center'><i>Aucun enregistrement</i></td></tr>";
-	} 
-	
+	}
+
 	echo "</table></div>";
 } else {
 	$requete = "SELECT Classe, elbk.IDGDN, Nom, Prenom, DateJournal, DateValidation, Heures FROM elevesbk elbk join eleves el on elbk.IDGDN=el.IDGDN and el.IDEntreprise=1 left join attribeleves att on att.IDEleve=elbk.IDGDN and IDAttribut=13 left join journal jo on elbk.IDGDN=jo.IDEleve and (jo.DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') where IDAttribut is NULL and (".$whereclasse.") order by Classe desc ,Nom,Prenom,DateJournal";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	//echo $requete;
 	echo "<br><div id='corners'>";
 	echo "<div id='legend'>Journaux hebdomadaires</div>";
@@ -365,7 +365,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 	$cntunlock = 0;
 	$msgErreur = '';
 
-	while ($ligne = mysql_fetch_assoc($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($lastClasse!=$ligne['Classe'] || $lastEleve!=$ligne['IDGDN']) {
 			// nouvelle classe ou nouvel élève -> terminer la ligne précédente
 			if($lastEleve!=0) {
@@ -384,13 +384,13 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 				// terminer les jours non renseignés
 				while($jour<=$vendredi) {
 					echo "<td valign='top' align='center'>-</td>";
-					$jour += 86400;	
+					$jour += 86400;
 				}
 				// terminer la ligne précédante
 				echo "<td align='center'>".$nbrjour."</td><td align='center'>".sprintf("%4.1f",$cumulsemaine)."h</td><td align='right'>";
 				if($joursATE[$lastClasse] != $nbrjour) {
 					$msgErreur .= "Semaine incomplète<br>";
-				} 
+				}
 				if(!empty($msgErreur)) {
 					echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$msgErreur."')\" onmouseout='UnTip()'>";
 				}
@@ -421,7 +421,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			echo "<tr onclick='document.location.href=\"../detail/activites.php?from=journaux&idEleve=".$ligne['IDGDN']."&nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&Classe=".urlencode($ligne['Classe'])."\"'><td></td><td valign='top'>".$ligne['Nom']." ".$ligne['Prenom']."</td>";
 			$lastEleve = $ligne['IDGDN'];
 		}
-		
+
 		while((empty($ligne['Heures']) && $jour<=$vendredi) || (!empty($ligne['DateJournal']) && date('Y-m-d', $jour)!=$ligne['DateJournal'])) {
 			if($cumulJour!=0) {
 				// nouveau jour
@@ -446,7 +446,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			} else {
 				$cntunlock++;
 			}
-		} 
+		}
 	}
 	if($lastEleve!=0) {
 		if($cumulJour!=0) {
@@ -464,15 +464,15 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 		// terminer les jours non renseignés
 		while($jour<=$vendredi) {
 			echo "<td valign='top' align='center'>-</td>";
-			$jour += 86400;	
+			$jour += 86400;
 		}
-	
+
 		// terminer la ligne précédante
 		echo "<td align='center'>".$nbrjour."</td><td align='center'>".sprintf("%4.1f",$cumulsemaine)."h</td><td align='right'>";
 		if(substr($lastClasse, -1)==4 && ($nbrjour<4 || $nbrjour>4)) {
 			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplète')\" onmouseout='UnTip()'>";
 			$msgErreur .= "Semaine incomplète<br>";
-					
+
 		} else if($nbrjour<3 || $nbrjour>3) {
 			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplète".$msgErreur."')\" onmouseout='UnTip()'>";
 			$msgErreur .= "Semaine incomplète<br>";
@@ -502,4 +502,4 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

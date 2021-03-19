@@ -80,7 +80,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 			$ponderation = $_POST['Ponderation'.$IDNote];
 			if(empty($note)) {
 				$note = 'NULL';
-			} 
+			}
 			// maj de la note en DB
 	    		$requete = "UPDATE notes set Note=".$note.", RemarqueNote=\"".$remarque."\", Ponderation=".$ponderation." where IDNote=".$IDNote;
 		} else {
@@ -114,8 +114,8 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 		//echo 'NewPond'.$annee.$semestre.$theme;
 		//print_r($_POST);
 		$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$theme." and IDTypeNote=0 and Annee=".$annee." and NoSemestre=".$semestre;
-		$resultat =  mysql_query($requete);
-		if(mysql_num_rows($resultat)==0) {
+		$resultat =  mysqli_query($connexionDB,$requete);
+		if(mysqli_num_rows($resultat)==0) {
 			// l'entrée avec IDTypeNote=0 n'existe pas pour stocker la pondération, on l'ajoute
 			$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (NULL, ".$IDEleve.", ".$theme.", 0, ".$semestre.", ".$annee.", '', ".$updPond.")";
 		} else {
@@ -171,8 +171,8 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 				$ponderation = 0;
 				// pour les notes autres que TE, tester si pas déjà existante pour le thème
 				$requete = "SELECT count(IDNote) from notes where IDEleve=$IDEleve and NoSemestre=$semestre and Annee=$annee and IDTheme=$theme and IDTypeNote=$idTypeNote";
-				$result =  mysql_query($requete);
-				$resultat=mysql_fetch_row($result);
+				$result =  mysqli_query($connexionDB,$requete);
+				$resultat=mysqli_fetch_row($result);
 				if($resultat[0]!=0) {
 					// la note existe déjà
 					$messageErreur = "La note existe déjà!";
@@ -197,7 +197,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 		}
 	}
 	if(empty($messageErreur)) {
-    		$resultat =  mysql_query($requete);
+    		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 	// ajout automatique des notes TARS
 	//while($noteAuto>0&&$noteAuto<6) {
@@ -214,7 +214,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 			//echo $requete;
 			//$noteAuto++;
 			if(empty($messageErreur)) {
-				$resultat =  mysql_query($requete);
+				$resultat =  mysqli_query($connexionDB,$requete);
 			}
 		}
 	}
@@ -345,8 +345,8 @@ function limitEvent(e) {
     }
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 function niveauMoy($moyenne) {
@@ -394,8 +394,8 @@ $navApp .= "</h2><br>\n";
 
 /*
 $requete = "SELECT * FROM typenote where IDTypeNote < 6 and IDTypeNote > 0";
-$resultat =  mysql_query($requete);
-while ($ligne = mysql_fetch_assoc($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$optionTypeNote .= "<option value=".$ligne['IDTypeNote'].">".$ligne['LibelleTypeNote']."</option>";
 }
 */
@@ -403,9 +403,9 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 // construction de la liste déroulante pour ajout Theme
 //$requete = "SELECT th.IDTheme, pr.IDProjet, pr.IDEleve, th.NomTheme, th.TypeTheme FROM theme th left join projets pr on th.IDTheme=pr.IDTheme where th.IDTheme >= 10 and th.TypeTheme < 2 order by th.TypeTheme,th.NomTheme";
 $requete = "SELECT th.IDTheme, pr.IDProjet, pr.IDEleve, th.NomTheme, th.TypeTheme FROM theme th left join projets pr on th.IDTheme=pr.IDTheme where (th.TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (th.TypeTheme = 1 and pr.IDEleve=$IDEleve) group by th.IDTheme order by th.TypeTheme,th.NomTheme";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $optionThemes = "";
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	if(empty($ligne['IDProjet']) || $ligne['IDEleve']==$IDEleve) {
 		$texte = $ligne['NomTheme'];
 		if($ligne['TypeTheme']==1) {
@@ -447,7 +447,7 @@ echo "</tr>";
 //$requete = "SELECT * FROM notes no join typenote ty on no.IDTypeNote=ty.IDTypeNote join theme th on no.IDTheme=th.IDTheme where IDEleve = $IDEleve and annee like '".$anneeTri."' order by annee desc, nosemestre, nomtheme, no.IDTypeNote, no.IDNote";
 $requete = "SELECT * FROM notes no join theme th on no.IDTheme=th.IDTheme where IDEleve = $IDEleve and annee like '".$anneeTri."' order by annee desc, nosemestre, nomtheme, no.IDTypeNote, no.IDNote";
 //echo $requete;
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 $cntNoteTheme = 0;
 $annee = 0;
@@ -663,9 +663,9 @@ function clotureSemestre() {
 		$requete = "SELECT * FROM AttribEleves el join Attribut att on el.IDAttribut=att.IDAttribut where IDEleve = $IDEleve and el.IDAttribut in (102,103,104,105)  ".$dateReq." order by Date";
 		//echo $requete;
 
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		$histo = "";
-		while ($ligne = mysql_fetch_assoc($resultat)) {
+		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			$histo .= date('d.m.Y', strtotime($ligne['Date']))." [".$ligne['Nom']."] ".$ligne['Remarque']."<br>";
 		}
 		if(!empty($histo)&&$annee!=0) {
@@ -681,7 +681,7 @@ function clotureSemestre() {
 
 }
 
-while ($ligne = mysql_fetch_assoc($resultat)) {
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	if($ligne['Annee'] != $annee || $ligne['NoSemestre'] != $semestre) {
 		// nouvelle année
 		// clôture de la ligne des TE si nécessaire
@@ -770,15 +770,15 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		}
 		$requetePon .= "group by DateJournal) as datej";
 		//echo $requetePon."<br>";
-		$resultatPon =  mysql_query($requetePon);
-		$lignePon = mysql_fetch_assoc($resultatPon);
+		$resultatPon =  mysqli_query($connexionDB,$requetePon);
+		$lignePon = mysqli_fetch_assoc($resultatPon);
 		if(!empty($joursATE[$classe])) {
 			$pondAuto = round($lignePon['nbrday']/$joursATE[$classe],1);
 		} else {
 			$pondAuto = 1;
 		}
 
-		if($pondMode=="auto") {
+		if(isset($pondMode) && $pondMode=="auto") {
 			$pondTheme = $pondAuto;
 		} else {
 			$pondTheme = $ligne['Ponderation'];
@@ -821,11 +821,11 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		}
 		$requeteMoy .= " and DateValidation is not null group by IDCompetence, IDTypeEval order by IDCompetence";
 		//echo "<br>".$requeteMoy;
-		$resultatMoy =  mysql_query($requeteMoy);
+		$resultatMoy =  mysqli_query($connexionDB,$requeteMoy);
 		$moyEstimee  = "";
 		$remConcat = "";
-		if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
-			$ligneMoy = mysql_fetch_assoc($resultatMoy);
+		if(!empty($resultatMoy)&&mysqli_num_rows($resultatMoy)>0) {
+			$ligneMoy = mysqli_fetch_assoc($resultatMoy);
 			if($typeEvaluation=="abcd") {
 				$moyEstimee = "(".niveauMoy($ligneMoy['NiveauMoyen']).")";
 			} else {
@@ -844,10 +844,10 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 		}
 		$requeteMoy .= " group by IDCompetence, IDTypeEval order by IDCompetence";
 		//echo "<br>".$requeteMoy;
-		$resultatMoy =  mysql_query($requeteMoy);
+		$resultatMoy =  mysqli_query($connexionDB,$requeteMoy);
 		$moyEstimeeNoValid  = "";
-		if(!empty($resultatMoy)&&mysql_num_rows($resultatMoy)>0) {
-			$ligneMoy = mysql_fetch_assoc($resultatMoy);
+		if(!empty($resultatMoy)&&mysqli_num_rows($resultatMoy)>0) {
+			$ligneMoy = mysqli_fetch_assoc($resultatMoy);
 			if($typeEvaluation=="abcd") {
 				$moyEstimeeNoValid = "(".niveauMoy($ligneMoy['NiveauMoyen']).")";
 			} else {
@@ -1099,8 +1099,9 @@ echo "</table><input type='submit' name='ajoutNote' value='Ajouter'></input>";
 
 ?>
 </table></div><br>
-<?
-if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])&&$_SESSION['expand']!="expand") {
+<?php
+$postExpand = isset($_SESSION['expand'])?$_SESSION['expand']:"";
+if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])&&$postExpand!="expand") {
 	// ouvrir le thème précédemment ouvert
 	echo "<script>toggle(\"block".$_POST['idBlock']."\");</script>";
 	//echo "<script>alert(\"hello\");</script>";
@@ -1111,4 +1112,4 @@ if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])&&$_SESSION['expand']!="
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

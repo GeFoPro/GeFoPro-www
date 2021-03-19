@@ -62,26 +62,26 @@ function submitRetour(id) {
 }
 
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 
 /* action emprunt *) */
 if(isset($actionEmp)) {
 
-	//mysql_select_db(DBComp);
+	//mysqli_select_db($connexionDB,DBComp);
 	if($actionEmp=="Ajouter") {
 		$idStock = $_POST['IDStockage'];
 		$newuid = $_POST['newUID'];
 
 		$requete = "INSERT into emprunt (Userid, IDStockage, DateEmprunt) values (\"".$newuid."\",".$idStock.",\"".date('Y-m-d')."\")";
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 
 	}
 	if(!empty($IDEmprunt)) {
 		$requete = "UPDATE emprunt set DateRetour = \"".date('Y-m-d')."\" where IDEmprunt=".$IDEmprunt;
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 
 	}
 }
@@ -92,14 +92,14 @@ echo "<input type='hidden' name='IDEmprunt' value=''>";
 echo "<div class='post'>";
 
 // construction de la liste des élèves
-mysql_select_db(DBAdmin);
+mysqli_select_db($connexionDB,DBAdmin);
 $listeSCT = "<option value='0'></option>";
 // recherche des élèves
 $requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
-$resultat =  mysql_query($requete);
-while ($ligne = mysql_fetch_assoc($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while ($ligne = mysqli_fetch_assoc($resultat)) {
 	$listeSCT .= "<option value='".$ligne['Userid']."'";
 	if($ligne['Userid']==$uid) {
 				$listeSCT .= " selected";
@@ -109,11 +109,11 @@ while ($ligne = mysql_fetch_assoc($resultat)) {
 
 /* Construction listes des emplacements */
 
-mysql_select_db(DBComp);
+mysqli_select_db($connexionDB,DBComp);
 $listeEmp = "<option value='0'></option>";
 $requete = "SELECT * FROM $tableStock order by Emplacement";
-$resultat =  mysql_query($requete);
-while ($listeLigne = mysql_fetch_array($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while ($listeLigne = mysqli_fetch_array($resultat)) {
 	$listeEmp .= "<option value='$listeLigne[0]'";
 	if($listeLigne[0]==$IDStock) {
 		$listeEmp .= " selected";
@@ -135,7 +135,7 @@ if(!empty($IDStockage)) {
 echo "</div>";
 echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
 echo "<tr><th width='300'>Appareil</th><th width='100' align='center'>No Inventaire</th><th width='100' align='center'>Emplacement</th><th  width='200'>Utilisé par</th><th>Depuis</th><th width='10'></th></tr>";
-mysql_select_db(DBComp);
+mysqli_select_db($connexionDB,DBComp);
 $filtreSQLUser = "";
 if(empty($uid)) {
 	if($uid=="0" || hasAdminRigth()) {
@@ -182,52 +182,54 @@ if(empty($uid)) {
 //}
 //echo $requete;
 //
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 
 $cnt = 0;
-while ($ligne = mysql_fetch_assoc($resultat)) {
-	$desc = "";
-	//if($ligne['Nbr']==1) {
-		$desc = $ligne['Description']."<br>".$ligne['Caracteristiques'];
-	//} else {
-	//	$desc = $ligne['Emplacement'];
-	//}
-	echo "<tr><td onClick='location.href=\"comp.php?IDComposant=".$ligne['IDComp']."\"'>".$desc."</td>";
-	echo "<td align='center'>";
-	//echo $ligne['IDInv'];
-	if(!empty($ligne['IDInv'])) {
-		echo $ligne['NoInventaire'];
-	}
-	echo "</td>";
-	echo "<td align='center'>".$ligne['Emplacement']."<br>".$ligne['Tirroir']."</td>";
-	$usebyTxt = "";
-	if(!empty($ligne['Userid'])) {
-		mysql_select_db(DBAdmin);
-		$requete = "SELECT * FROM elevesbk bk join eleves el on bk.IDGDN=el.IDGDN where Userid='".$ligne['Userid']."'";
-		$resultatUser =  mysql_query($requete);
-		if($resultatUser!=null && !empty($resultatUser) && mysql_num_rows($resultatUser)==1) {
-			$user = mysql_fetch_assoc($resultatUser);
-			$usebyTxt = $user['Nom']." ".$user['Prenom'];
-		} else {
-			// on essai avec la table des profs
-			$requete = "SELECT * FROM prof where userid='".$ligne['Userid']."'";
-			$resultatUser =  mysql_query($requete);
-			if($resultatUser!=null && !empty($resultatUser) && mysql_num_rows($resultatUser)==1) {
-				$user = mysql_fetch_assoc($resultatUser);
-				$usebyTxt = $user['abbr'];
+if(!empty($resultat)) {
+	while ($ligne = mysqli_fetch_assoc($resultat)) {
+		$desc = "";
+		//if($ligne['Nbr']==1) {
+			$desc = $ligne['Description']."<br>".$ligne['Caracteristiques'];
+		//} else {
+		//	$desc = $ligne['Emplacement'];
+		//}
+		echo "<tr><td onClick='location.href=\"comp.php?IDComposant=".$ligne['IDComp']."\"'>".$desc."</td>";
+		echo "<td align='center'>";
+		//echo $ligne['IDInv'];
+		if(!empty($ligne['IDInv'])) {
+			echo $ligne['NoInventaire'];
+		}
+		echo "</td>";
+		echo "<td align='center'>".$ligne['Emplacement']."<br>".$ligne['Tirroir']."</td>";
+		$usebyTxt = "";
+		if(!empty($ligne['Userid'])) {
+			mysqli_select_db($connexionDB,DBAdmin);
+			$requete = "SELECT * FROM elevesbk bk join eleves el on bk.IDGDN=el.IDGDN where Userid='".$ligne['Userid']."'";
+			$resultatUser =  mysqli_query($connexionDB,$requete);
+			if($resultatUser!=null && !empty($resultatUser) && mysqli_num_rows($resultatUser)==1) {
+				$user = mysqli_fetch_assoc($resultatUser);
+				$usebyTxt = $user['Nom']." ".$user['Prenom'];
 			} else {
-				$usebyTxt = $ligne['Userid'];
+				// on essai avec la table des profs
+				$requete = "SELECT * FROM prof where userid='".$ligne['Userid']."'";
+				$resultatUser =  mysqli_query($connexionDB,$requete);
+				if($resultatUser!=null && !empty($resultatUser) && mysqli_num_rows($resultatUser)==1) {
+					$user = mysqli_fetch_assoc($resultatUser);
+					$usebyTxt = $user['abbr'];
+				} else {
+					$usebyTxt = $ligne['Userid'];
+				}
 			}
 		}
+		echo "<td>".$usebyTxt."</td>";
+		echo "<td>".date("d.m.Y",strtotime($ligne['DateEmprunt']))."</td>";
+		echo "<td>";
+		if(hasAdminRigth()) {
+			echo "<img src='/iconsFam/user_delete.png' onmouseover=\"Tip('Retour de l\'emprunt')\" onmouseout='UnTip()' onclick='submitRetour(".$ligne['IDEmp'].");' align='absmiddle'>";
+		}
+		echo "</td></tr>";
+		$cnt++;
 	}
-	echo "<td>".$usebyTxt."</td>";
-	echo "<td>".date("d.m.Y",strtotime($ligne['DateEmprunt']))."</td>";
-	echo "<td>";
-	if(hasAdminRigth()) {
-		echo "<img src='/iconsFam/user_delete.png' onmouseover=\"Tip('Retour de l\'emprunt')\" onmouseout='UnTip()' onclick='submitRetour(".$ligne['IDEmp'].");' align='absmiddle'>";
-	}
-	echo "</td></tr>";
-	$cnt++;
 }
 if ($cnt==0) {
 	echo "<tr><td colspan='6' align='center'><i>Aucun enregistrement</i></td></tr>";
@@ -247,4 +249,4 @@ echo "</table></div><br>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

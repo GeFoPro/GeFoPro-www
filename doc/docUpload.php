@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 $IDDocument = "";
 if(isset($_GET['IDDocument'])) {
@@ -23,30 +23,30 @@ include("entete.php");
 ?>
 
 <div id="page">
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 ?>
 
-<?  
+<?php
 
 /* détail */
 if(!empty($IDDocument)) {
-	$requete = "SELECT * FROM Document doc"; 
-	$requete .= " join Dossier dos on doc.IDDossier = dos.IDDossier";	 
-	$requete .= " where IDDocument = ".$IDDocument; 
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);
+	$requete = "SELECT * FROM document doc";
+	$requete .= " join dossier dos on doc.IDDossier = dos.IDDossier";
+	$requete .= " where IDDocument = ".$IDDocument;
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_assoc($resultat);
 } else {
 	$ligne['IDDossier'] = $IDDossier;
-	$ligne['Nom'] = $nomDossier;	
+	$ligne['Nom'] = $nomDossier;
 	$ligne['Libelle'] = "";
 	$ligne['IDType'] = "";
 	$ligne['Taille'] = "";
 	$ligne['Auteur'] = "";
 	$ligne['LienAuteur'] = "";
-	
+
 	$ligne['Version'] = "";
-	$ligne['NoIdentite'] = "";	
+	$ligne['NoIdentite'] = "";
 }
 //echo $requete;
 ?>
@@ -61,20 +61,20 @@ if(!empty($IDDocument)) {
 <tr><td>Version</td><td><input type='text' name='Version' value='<?=$ligne['Version']?>' size='4'></input></td></tr>
 <tr><td>Identité</td><td><input type='text' name='NoIdentite' value='<?=$ligne['NoIdentite']?>' size='40'></input></td></tr>
 <tr><td>Document</td><td><input type="hidden" name="MAX_FILE_SIZE" value="5000000"><input type="file" name="cours">
-<? if(!empty($ligne['document']))  { 
+<?php if(!empty($ligne['document']))  {
 	echo " (<a href='lireCours.php?IDDocument=".$IDDocument."' target='pdf'>document actuel</a>)";
-} else { 
+} else {
 	echo " *";
 } ?>
 </td></tr>
 <tr><td>Type de document</td><td>
 <select name='IDType'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction liste type document */
   $requete = "SELECT * FROM type";
-  $resultat =  mysql_query($requete);
-  while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+  while ($listeLigne = mysqli_fetch_array($resultat)) {
 	if($ligne['IDType']==$listeLigne[0]) {
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	} else {
@@ -104,4 +104,4 @@ if(!empty($IDDocument)) {
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

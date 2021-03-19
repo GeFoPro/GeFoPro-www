@@ -4,8 +4,8 @@ include("entete.php");
 ?>
 
 <div id="page">
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../userInfo.php");
 ?>
 
 <FORM id="myForm" ACTION="listeStock.php"  METHOD="GET">
@@ -18,11 +18,11 @@ include($app_section."/userInfo.php");
 <td>Emplacement :</td><td>
   <select name='IDStock'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes des emplacements */
   $requete = "SELECT * FROM $tableStock order by Emplacement";
-  $resultat =  mysql_query($requete);
-    while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($listeLigne = mysqli_fetch_array($resultat)) {
 	echo "<option value='$listeLigne[0]'>";
 	echo "$listeLigne[1] </option>";
     }
@@ -31,11 +31,11 @@ include($app_section."/userInfo.php");
 <td>Genre :</td><td>
   <select name='IDGenre'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes des genre */
   $requete = "SELECT * FROM $tableGenre order by LibelleGenre";
-  $resultat =  mysql_query($requete);
-  while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+  while ($listeLigne = mysqli_fetch_array($resultat)) {
 	echo "<option value='$listeLigne[0]'>";
 	echo "$listeLigne[1] </option>";
   }
@@ -50,4 +50,4 @@ include($app_section."/userInfo.php");
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

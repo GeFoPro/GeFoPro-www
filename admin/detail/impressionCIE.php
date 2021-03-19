@@ -1,8 +1,8 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 // chargement des librairies PHPWord
-require_once 'PhpWord/Classes/Autoloader.php';
+require_once 'PHPWord/Autoloader.php';
 \PhpOffice\PhpWord\Autoloader::register();
 
 
@@ -29,8 +29,8 @@ $templateProcessor->setValue('profession', Profession);
 // Recherche des information du cours pour la personne et mise à jour
 $requeteH = "SELECT * FROM docelevecie as doc join elevesbk el on doc.IDEleve=el.IDGDN join eleves as elex on doc.IDEleve=elex.IDGDN left join entreprise as ent on elex.IDEntreprise=ent.IDEntreprise WHERE IDCours=$IDCours AND IDEleve=$IDEleve";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
-$ligne = mysql_fetch_assoc($resultat);
+$resultat =  mysqli_query($connexionDB,$requeteH);
+$ligne = mysqli_fetch_assoc($resultat);
 $templateProcessor->setValue("nom", $ligne['Nom']);
 $templateProcessor->setValue("prenom", $ligne['Prenom']);
 $nomApp = $ligne['Nom'];
@@ -70,8 +70,8 @@ $IDDocEleve = $ligne['IDDocEleve'];
 
 //Observations
 $requete = "SELECT * FROM appbloccie where IDDocEleve=$IDDocEleve";
-$resultat =  mysql_query($requete);
-while($ligne = mysql_fetch_assoc($resultat)) {
+$resultat =  mysqli_query($connexionDB,$requete);
+while($ligne = mysqli_fetch_assoc($resultat)) {
 	$templateProcessor->setValue("observ".$ligne['IDBlocRessource'],$ligne['Observation']);
 }
 $templateProcessor->setValue("observ".$groupesCompetences[1],"");
@@ -84,8 +84,8 @@ $templateProcessor->setValue("observ".$groupesCompetences[4],"");
 // Recherche des information du cours et mise à jour
 $requeteH = "SELECT * FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc WHERE IDCours=$IDCours";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
-$ligne = mysql_fetch_assoc($resultat);
+$resultat =  mysqli_query($connexionDB,$requeteH);
+$ligne = mysqli_fetch_assoc($resultat);
 $denom = $ligne['TitreCIE'];
 $templateProcessor->setValue("denominationCours", $ligne['TitreCIE']);
 $templateProcessor->setValue("responsable", $ligne['Responsable']);
@@ -96,12 +96,12 @@ $IDDoc = $ligne['IDDoc'];
 // Recherche des ressources professionnelles du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence and app.IDDocEleve=$IDDocEleve WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[1]."%' order by Numero";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRP', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRP#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRP#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -121,12 +121,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 // Recherche des ressources méthodologiques du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence and app.IDDocEleve=$IDDocEleve WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[2]."%' order by Numero";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRM', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRM#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRM#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -146,12 +146,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 // Recherche des ressources sociales du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence and app.IDDocEleve=$IDDocEleve WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[3]."%' order by Numero";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRS', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRS#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRS#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -171,12 +171,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 // Recherche des ressources de sécurité et protection du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence and app.IDDocEleve=$IDDocEleve WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[4]."%' order by Numero";
 //echo $requete;
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRA', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRA#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRA#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {

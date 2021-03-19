@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 /* action */
@@ -35,11 +35,11 @@ function getIDCell($jr,$pf,$pr,$tabJ) {
 }
 /* table des profs */
 $requete = "SELECT * FROM $tableProf order by IDProf";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $profs = array();
 $theorieProfs = array();
 $timeProfs = array();
-while ($ligne = mysql_fetch_assoc($resultat) ) {
+while ($ligne = mysqli_fetch_assoc($resultat) ) {
 	$profs[$ligne['IDProf']] = $ligne['Nom'];
 	$theorieProfs[$ligne['IDProf']] = $ligne['Theorie'];
 	$timeProfs[] = 0;
@@ -48,10 +48,10 @@ $cntProfs = count($profs);
 
 /* table des périodes */
 $requete = "SELECT * FROM $tablePeriode where Duree > 0 order by IDPeriode";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $periods = array();
 $dureePeriode = array();
-while ($ligne = mysql_fetch_assoc($resultat) ) {
+while ($ligne = mysqli_fetch_assoc($resultat) ) {
 	$periods[$ligne['IDPeriode']] = $ligne['Heure'];
 	$dureePeriode[$ligne['IDPeriode']] = $ligne['Duree'];
 }
@@ -62,7 +62,7 @@ $cntPeriode = count($periods);
 
 /*
 if(!isset($_POST['noSemaine']) || "" == $_POST['noSemaine']) {
-	
+
 	if(!isset($_SESSION['noSemaine']) || "" == $_SESSION['noSemaine']) {
 		$noSemaine = date('W');
 	} else {
@@ -95,12 +95,12 @@ if(!empty($actionValider)) {
 	/* effacer les anciens enregistrements */
 	$requete = "delete from $tableSemaine where noSemaine = $noSemaine and annee=$anneeCalc";
 	//echo "<br>".$requete."<br>";
-	mysql_query($requete);
-	
+	mysqli_query($connexionDB,$requete);
+
 	// enregister le défaut pour l'année en cours
 	$requete = "select max(IDSemaine) from $tableSemaine";
-	$resultat =  mysql_query($requete);
-	$line = mysql_fetch_row($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$line = mysqli_fetch_row($resultat);
 	$IDSemaine = $line[0]+1;
 
 	/* recherche des éventuels coches */
@@ -120,7 +120,7 @@ INSERT INTO $tableSemaine
 ($IDSemaine, $anneeCalc, $noSemaine, $jour, $cell, $pos)
 REQ;
 				//echo "<br>".$requete."<br>";
-				$resultat =  mysql_query($requete);
+				$resultat =  mysqli_query($connexionDB,$requete);
 				$IDSemaine++;
 			}
 		    }
@@ -167,7 +167,7 @@ function setBGColorFillRight(id) {
 		check.parentNode.bgColor = "#32cd32";
 		if(switchCheck) {
 			next = check.parentNode.nextSibling.firstChild;
-			alert(''+next.nodeName); 
+			alert(''+next.nodeName);
 			if(next!=null) {
 				next.checked = true;
 				setBGColorFillRight(next.id);
@@ -177,7 +177,7 @@ function setBGColorFillRight(id) {
 		check.parentNode.bgColor = "#FFFFFF";
 		if(switchCheck) {
 			next = check.parentNode.nextSibling.firstChild;
-			//alert(''+next.nodeName); 
+			//alert(''+next.nodeName);
 			if(next!=null) {
 				next.checked = false;
 				setBGColorFillRight(next.id);
@@ -201,8 +201,8 @@ function submitSemaine(nosemaine) {
 	document.getElementById('myForm').submit();
 }
 </SCRIPT>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 // print_r($profs);echo "<br>";
 // print_r($periods);echo "<br>";
 // création des éléments sélectionnés
@@ -211,17 +211,17 @@ $checked = array();
 $cntBoucle = 0;
 //while(count($checked)==0 && $cntBoucle<2) {
 	$requete = "SELECT * FROM $tableSemaine where noSemaine=$noSemaine and annee=$anneeCalc";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	// construction de la table
-	while ($ligne = mysql_fetch_assoc($resultat) ) {
+	while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		$checked[] = getIDCell($ligne['NoJour'],$ligne['IDProf'],$ligne['IDPeriode'],$tab_jour);
 	}
 	$cntBoucle++;
 	if(count($checked)==0) {
 		$requete = "SELECT * FROM $tableSemaine where noSemaine=0";
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexionDB,$requete);
 		// construction de la table
-		while ($ligne = mysql_fetch_assoc($resultat) ) {
+		while ($ligne = mysqli_fetch_assoc($resultat) ) {
 			$checked[] = getIDCell($ligne['NoJour'],$ligne['IDProf'],$ligne['IDPeriode'],$tab_jour);
 		}
 		$cntBoucle++;
@@ -232,9 +232,9 @@ $cntBoucle = 0;
 //print_r($checked);echo "<br>";
 /* table des heures de théories */
 $requete = "SELECT * FROM $tableTheorie where annee=$anneeCalc";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 $theories = array();
-while ($ligne = mysql_fetch_assoc($resultat) ) {
+while ($ligne = mysqli_fetch_assoc($resultat) ) {
 	$theories[] = getIDCell($ligne['NoJour'],$ligne['IDProf'],$ligne['IDPeriode'],$tab_jour);
 }
 
@@ -246,7 +246,7 @@ for($jour=1;$jour<=5;$jour++) {
 		$periodProf = array();
 		foreach ($profs as $pos => $value) {
 			$idCell = getIDCell($jour,$pos,$cell,$tab_jour);
-			$periodProf[] = $idCell; 
+			$periodProf[] = $idCell;
 			if(in_array($idCell,$checked)) {
 				// au moins un enseignant dans la période -> OK
 				$periodeOK = true;
@@ -259,7 +259,7 @@ for($jour=1;$jour<=5;$jour++) {
 				$errors[] = $periodProf[$cnt];
 			}
 		}
-	}	
+	}
 }
 ?>
 <br>
@@ -268,7 +268,7 @@ for($jour=1;$jour<=5;$jour++) {
 <input type='hidden' name='anneeCalc' value=''>
 <div class="post">
 <table border='0' width='100%'><tr>
-<?
+<?php
 /* calcul du lundi */
 //$anneeCalc = date('Y');
 $dateCalc=mktime(0,0,0,1,4,$anneeCalc);
@@ -319,7 +319,7 @@ echo "</tr><tr><td align='left'>".$lundiTxt."</td><td></td></tr>";
 <div id='legend'>Horaires</div>
 <table id="hor-minimalist-c" align='center'><tr>
 <th></th><th></th>
-<? 
+<?php
 
 /* liste périodes */
 $precedent=0;
@@ -363,7 +363,7 @@ for($jour=1;$jour<=5;$jour++) {
 				echo "setBGColor(\"$idCell\",\"#FF9933\");";
 				// incrémenter compteur prof si théorie
 				$time = $time + $dureePeriode[$cell];
-			} else if(in_array($idCell,$errors)) {	
+			} else if(in_array($idCell,$errors)) {
 				echo "setBGColor(\"$idCell\",\"#CC3333\");";
 			} else {
 				echo "setCheckBGColor(\"$idCell\");";
@@ -371,8 +371,11 @@ for($jour=1;$jour<=5;$jour++) {
 			echo "</script></td>\n";
 		}
 	    }
-	    $strTime = floor($time/60).'h'.sprintf("%02d",($time%60)); 
+	    $strTime = floor($time/60).'h'.sprintf("%02d",($time%60));
 	    echo "<td align='center'><b>$strTime</b></td></tr>\n<tr>";
+			if(!isset($timeProfs[$pos])) {
+					$timeProfs[$pos]=0;
+			}
 	    $timeProfs[$pos] = $timeProfs[$pos] + $time;
 	}
 	$colspantr = $cntPeriode+2;
@@ -388,8 +391,8 @@ for($jour=1;$jour<=5;$jour++) {
 
 echo $pageOut;
 ?>
-</table><div><br>
-<?
+</table><br>
+<?php
 // construction du récapitulatif par prof
 $span = $cntProfs+1;
 echo "<table border='0' width='100%'><tr><td rowspan='$span' width='850' valign='top'>";
@@ -417,7 +420,7 @@ foreach ($profs as $pos => $value) {
 	$strTime = floor($time/60).'h'.sprintf("%02d",($time%60));
 	echo "<td align='center'>=</td><td align='right'><b>$strTime</b></td></tr>";
 }
-echo "</table>";
+echo "</table></div>";
 
 
 ?>
@@ -426,4 +429,4 @@ echo "</table>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

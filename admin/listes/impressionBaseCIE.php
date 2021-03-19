@@ -1,9 +1,10 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 // chargement des librairies PHPWord
-require_once 'PhpWord/Classes/Autoloader.php';
+require_once 'PHPWord/Autoloader.php';
 \PhpOffice\PhpWord\Autoloader::register();
+
 
 // Cours CIE concerné
 $IDDoc = 0;
@@ -17,8 +18,8 @@ $templateProcessor->setValue('profession',  Profession);
 
 // Recherche des information du document et mise à jour
 $requeteH = "SELECT * FROM doccie WHERE IDDoc=$IDDoc";
-$resultat =  mysql_query($requeteH);
-$ligne = mysql_fetch_assoc($resultat);
+$resultat =  mysqli_query($connexionDB,$requeteH);
+$ligne = mysqli_fetch_assoc($resultat);
 $denom = $ligne['TitreCIE'];
 $templateProcessor->setValue("denominationCours", $ligne['TitreCIE']);
 $templateProcessor->setValue("responsable", "");
@@ -27,12 +28,12 @@ $templateProcessor->setValue("datesCours", "");
 
 // Recherche des ressources professionnelles du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[1]."%' order by Numero";
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRP', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRP#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRP#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -43,12 +44,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 
 // Recherche des ressources méthodologiques du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[2]."%' order by Numero";
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRM', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRM#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRM#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -59,12 +60,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 
 // Recherche des ressources sociales du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[3]."%' order by Numero";
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRS', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRS#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRS#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {
@@ -75,12 +76,12 @@ for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
 
 // Recherche des ressources de sécurité et protection du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[4]."%' order by Numero";
-$resultat =  mysql_query($requeteH);
+$resultat =  mysqli_query($connexionDB,$requeteH);
 // cloner les lignes en fonction du nombre d'éléments
-$numrow = mysql_num_rows($resultat);
+$numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRA', $numrow);
 // remplir avec les éléments trouvés
-for ($id=1;$ligne = mysql_fetch_assoc($resultat);$id++) {
+for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRA#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRA#'.$id, $ligne['Description']);
 	for($apid=1;$apid<=4;$apid++) {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 
 // get
@@ -47,8 +47,8 @@ REQ;
 		//$errorMsg = $requete;
 		$resultat =  mysql_query($requete);
 		if(!$resultat) {
-			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")"; 
-		} 
+			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")";
+		}
 		// maj commande externe
 		   $requete = <<<REQ
 UPDATE $tableCommandeExt set
@@ -57,7 +57,7 @@ where IDPageCommande is null and IDFournisseur = $critere LIMIT 20
 REQ;
 		$resultat =  mysql_query($requete);
 		if(!$resultat) {
-			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")"; 
+			$errorMsg = $errorMsg . " ! Impossible d'ajouter l'historique (".$requete.")";
 		}
 	}
 
@@ -67,7 +67,7 @@ REQ;
 	} else {
 		mysql_query('ROLLBACK');
 	}
-} 
+}
 PHPExcel_Settings::setLocale('fr-CH');
 $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader->setReadDataOnly(true);
@@ -127,7 +127,7 @@ if(isset($critere) && !empty($critere)) {
 	} else {
 		$requete = $requete . " where IDPageCommande= $IDPageCommande";
 	}
-} 
+}
 //$errorMsg = $requete;
 $resultat =  mysql_query($requete);
 
@@ -145,7 +145,7 @@ if(!empty($resultat) && empty($errorMsg)) {
 
 if(!empty($errorMsg)) {
 	$objPHPExcel->getActiveSheet()->setCellValue('D20', $errorMsg);
-} 
+}
 
 // générer excel
 $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
@@ -157,6 +157,6 @@ $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 
 header('Content-type: application/vnd.ms-excel');
 header("Content-Disposition: attachment;Filename=commande.xls");
-$writer->save('php://output');      
+$writer->save('php://output');
 
 ?>

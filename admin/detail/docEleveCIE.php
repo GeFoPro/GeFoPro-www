@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../../appHeader.php");
 
 if(isset($_GET['nom'])) {
@@ -20,14 +20,14 @@ if(isset($_GET['effacerCours'])) {
 	$IDCours = $_GET['effacerCours'];
 	// effacer le cours
 	$requete = "DELETE FROM docelevecie where IDCours=$IDCours and IDEleve=$IDEleve";
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	//echo $requete;
 }
 include("entete.php");
 //if(!hasAdminRigth()) {
 //	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
 //	exit;
-//} 
+//}
 ?>
 
 <div id="page">
@@ -45,8 +45,8 @@ function toggle(thisname) {
 	}
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 echo "<FORM id='myForm' ACTION='docEleveCIE.php'  METHOD='POST'>";
@@ -92,12 +92,12 @@ echo "<th width='10'>Scan</th><th width='10'></th></tr>";
 
 // requete pour liste des cours trouvé pour l'élève
 $requeteH = "SELECT el.IDCours, doc.TitreCIE, cours.Dates, cours.NbrJours, el.PDFSigne, el.AbsencesEx, el.AbsencesNonEx, sum(if(EvalAPP is NULL OR EvalAPP = 0,0,1)) as evalAPP, sum(if(EvalMAI is NULL OR EvalMAI = 0,0,1)) as evalMAI FROM docelevecie as el join courscie as cours on el.IDCours=cours.IDCours join doccie as doc on cours.IDDoc=doc.IDDoc left join appcompetencecie as app on el.IDDocEleve=app.IDDocEleve WHERE IDEleve=$IDEleve group by el.IDCours order by TitreCIE,Dates";
-//echo $requete;
-$resultat =  mysql_query($requeteH);
+//echo $requeteH;
+$resultat =  mysqli_query($connexionDB,$requeteH);
 $cntJours = 0;
 $absencesEx = 0;
 $absencesNonEx = 0;
-while($ligne = mysql_fetch_assoc($resultat)) {
+while($ligne = mysqli_fetch_assoc($resultat)) {
 	if(!empty($ligne['PDFSigne'])&&!hasAdminRigth()) {
 		echo "<tr>";
 	} else {
@@ -149,4 +149,4 @@ echo "</table></div>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>

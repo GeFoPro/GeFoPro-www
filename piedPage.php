@@ -1,5 +1,10 @@
 <!-- start footer -->
 <?php
+	$release = "<br><b><i>2.5</i></b>";
+	$release .= "<br>- migration vers php7 (utilisation de mysqli)";
+	$release .= "<br>- corrections pour fonctionnement sur systèmes linux (LAMP)";
+	$release .= "<br>- paramétrage amélioré pour utilisation de LDAP";
+	$release .= "<br>- possibilité d\'installer l\'application dans une sous structure web";
 	$release .= "<br><b><i>2.4.3</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Textes pour commandes et étiquettes séparés";
@@ -62,7 +67,7 @@
 	$release .= "<br>- Problème de création globale des périodes pour les notes, pour le système d\'évaluation hebdomadaire";
 ?>
 <div id="footer">
-	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.4.3, 2020 &copy; Designed by DGI</p>
+	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5, 2010 &copy; Designed by DGI</p>
 
 </div>
 <!-- end footer -->

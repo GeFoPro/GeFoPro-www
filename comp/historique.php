@@ -1,4 +1,4 @@
-<?php 
+<?php
 include("../appHeader.php");
 include("entete.php");
 ?>
@@ -27,7 +27,7 @@ function commitChange(name,line) {
 
 
 </SCRIPT>
-<?
+<?php
 $annee = date('Y');
 $anneeTri = $annee;
 if(isset($_POST['annee'])) {
@@ -51,10 +51,10 @@ if(isset($_POST['fournisseur'])) {
 if(isset($_GET['action'])&&'supprimer'==$_GET['action']&&isset($_GET['IDPageCommande'])) {
 	$requete = "delete from $tableCommandeExt where IDPageCommande = ".$_GET['IDPageCommande'];
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 	$requete = "delete from $tablePageCommande where IDPageCommande = ".$_GET['IDPageCommande'];
 	//echo $requete;
-	$resultat =  mysql_query($requete);
+	$resultat =  mysqli_query($connexionDB,$requete);
 }
 // maj
 if(isset($_POST['lineChanged']) && !empty($_POST['lineChanged'])) {
@@ -69,18 +69,18 @@ if(isset($_POST['lineChanged']) && !empty($_POST['lineChanged'])) {
 				$requete = "UPDATE $tablePageCommande set $toChange = $valueChanged where IDPageCommande = $lineToChange";
 			}
 			//echo $requete;
-			$resultat =  mysql_query($requete);
+			$resultat =  mysqli_query($connexionDB,$requete);
 		}
 	}
 }
 
-include($app_section."/userInfo.php");
+include("../userInfo.php");
 
 $optionAnnee = "";
 for($cntA=0;$cntA<5;$cntA++) {
 	$optionAnnee .= "<option value='".($annee-$cntA)."'";
 	if(($annee-$cntA)==$anneeTri) {
-		$optionAnnee .= " selected ";	
+		$optionAnnee .= " selected ";
 	}
 	$optionAnnee .= ">".($annee-$cntA)."</option>";
 }
@@ -101,11 +101,11 @@ Vue: <select name='vue' onChange='callPage(this)'>
 Fournisseur :
 <select name='fournisseur' onChange='submit();'>
   <option selected> </option>
-  <?
+  <?php
   /* Construction listes fournisseurs et fabriquants */
   $requete = "SELECT * FROM $tableFournisseur order by NomFournisseur";
-  $resultat =  mysql_query($requete);
-    while ($listeLigne = mysql_fetch_array($resultat)) {
+  $resultat =  mysqli_query($connexionDB,$requete);
+    while ($listeLigne = mysqli_fetch_array($resultat)) {
 	if($critere==$listeLigne[0]) {
 		echo "<option value='$listeLigne[0]' selected='selected'>";
 	} else {
@@ -122,32 +122,32 @@ Fournisseur :
 <div id='legend'>Historique des commandes</div>
 
 
-<?  
+<?php
 
 /* liste des commandes */
-$requete = "SELECT page.IDPageCommande, NoCommande, DateCommande, NomFournisseur, Remarque, Createur, Numero, Type, page.IDFournisseur,  TVA, count(ext.IDPageCommande) as NbrComp, TotalFacture, sum(ext.PrixUnite*ext.Nombre) as TotalCommande, sum(case when DateReception is not null then 1 else 0 end) as TotalRecu FROM $tablePageCommande page 
+$requete = "SELECT page.IDPageCommande, NoCommande, DateCommande, NomFournisseur, Remarque, Createur, Numero, Type, page.IDFournisseur,  TVA, count(ext.IDPageCommande) as NbrComp, TotalFacture, sum(ext.PrixUnite*ext.Nombre) as TotalCommande, sum(case when DateReception is not null then 1 else 0 end) as TotalRecu FROM $tablePageCommande page
 left outer join $tableCommandeExt ext on page.IDPageCommande = ext.IDPageCommande
 left outer join $tableFournisseur four on page.IDFournisseur=four.IDFournisseur";
 $requete = $requete . " where (DateCommande between '".$anneeTri."-01-01' and '".$anneeTri."-12-31')";
 if(isset($critere) && !empty($critere)) {
 	$requete = $requete . " and page.IDFournisseur = $critere";
-} 
+}
 $requete = $requete . " group by page.IDPageCommande order by DateCommande DESC";
-$resultat =  mysql_query($requete);
+$resultat =  mysqli_query($connexionDB,$requete);
 
 //echo $requete;
 ?>
 
 <br><br>
 <table id="hor-minimalist-b" width='100%'><tr>
-<?
+<?php
 $rowCounter = 0;
 $totalYear = 0;
 $totalYearCom = 0;
 $totalYearTPI = 0;
 $totalYearComTPI = 0;
 if(!empty($resultat)) {
-	while ($ligne = mysql_fetch_assoc($resultat) ) {
+	while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		if($rowCounter==0) {
 			// créer entête
 			if(empty($critere)) {
@@ -162,12 +162,12 @@ if(!empty($resultat)) {
 			echo "<th align='right'>Montant total</th>";
 			echo "<th align='right'>N° commande</th>";
 			echo "<th align='right'>Total facturé</th>";
-			
+
 			echo"<th></th></tr>";
 		}
 		$rowCounter++;
 		$dateCommande = explode("-", $ligne['DateCommande']);
-		$dateList = date("d.m.Y",mktime(0,0,0, $dateCommande[1], $dateCommande[2], $dateCommande[0])); 
+		$dateList = date("d.m.Y",mktime(0,0,0, $dateCommande[1], $dateCommande[2], $dateCommande[0]));
 		//$rem = "Commande ".$ligne['NomFournisseur'];
 		$rem = "<table>";
 		$rem .= "<tr><td><b>Fournisseur: </b></td><td>".$ligne['NomFournisseur']."</td></tr>";
@@ -186,7 +186,7 @@ if(!empty($resultat)) {
 		if(empty($critere)) {
 			echo  "<a href='historique.php?fournisseur=".$ligne['IDFournisseur']."' onclick='event.stopImmediatePropagation();'>".$ligne['NomFournisseur']."</a></td><td align='left'>";
 		}
-		
+
 		echo "$dateList</td>";
 		echo "<td align='center'>".$ligne['Createur']."</td>";
 		echo "<td align='left'>".$ligne['Remarque']."</td>";
@@ -208,7 +208,7 @@ if(!empty($resultat)) {
 		} else {
 			$totalYearComTPI = $totalYearComTPI + $totalTVA;
 		}
-		
+
 		if($ligne['NoCommande']==0) {
 			echo "<td align='right' width='100'><input type='text' name='NoCommande$ligne[IDPageCommande]' value='' size='6' style='text-align:right' onclick='event.stopImmediatePropagation();' onChange='commitChange(\"NoCommande\",\"$ligne[IDPageCommande]\")'></input></td>";
 		} else {
@@ -232,7 +232,7 @@ if(!empty($resultat)) {
 				$totalYearTPI = $totalYearTPI + $ligne['TotalFacture'];
 			}
 		}
-		
+
 		echo "<td>&nbsp;<a href='excel.php?Abbr=".$ligne['Createur']."&Util=".$ligne['Type']."&IDFournisseur=".$ligne['IDFournisseur']."&IDPageCommande=".$ligne['IDPageCommande']."&Tva=".$ligne['TVA']."'><img src='/iconsFam/printer.png' align='absmiddle' onmouseover=\"Tip('Imprimer une copie')\" onmouseout='UnTip()'></a> ";
 		if($ligne['NoCommande']==0) {
 			echo "<a href='historique.php?action=supprimer&IDPageCommande=".$ligne['IDPageCommande']."'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette commande')\" onmouseout='UnTip()'></a>";
@@ -255,7 +255,7 @@ if($rowCounter==0) {
 </div> <!-- post -->
 
 </form>
-<? } ?>
+<?php } ?>
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../piedPage.php"); ?>

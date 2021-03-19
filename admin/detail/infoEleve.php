@@ -15,8 +15,8 @@ if(hasAdminRigth()) {
 	// tentative de recherche par userid
 	$requete = "select * from eleves el join elevesbk bk on el.IDGDN=bk.IDGDN where Userid='".$_SESSION['user_login']."'";
     	//echo $requete;
-	$resultat =  mysql_query($requete);
-	$ligne = mysql_fetch_assoc($resultat);
+	$resultat =  mysqli_query($connexionDB,$requete);
+	$ligne = mysqli_fetch_assoc($resultat);
 	$nom = $ligne['Nom'];
 	//echo "Nom: ".$nom;
 	$prenom = $ligne['Prenom'];
@@ -42,8 +42,8 @@ function toggle(thisname) {
 	}
 }
 </script>
-<?
-include($app_section."/userInfo.php");
+<?php
+include("../../userInfo.php");
 /* en-tête */
 
 echo "<FORM id='myForm' ACTION='infoEleve.php'  METHOD='POST'>";
@@ -56,8 +56,8 @@ echo "<center> <font color='#088A08'>Veuillez signaler au responsable de section
 
 $requete = "SELECT * FROM elevesbk bk join eleves el on el.IDGDN=bk.IDGDN left join entreprise ent on el.IDEntreprise=ent.IDEntreprise left join cleatelier ca on el.IDCle=ca.IDCle where bk.IDGDN = $IDEleve";
 //ECHO $requete;
-$resultat =  mysql_query($requete);
-$ligne = mysql_fetch_assoc($resultat);
+$resultat =  mysqli_query($connexionDB,$requete);
+$ligne = mysqli_fetch_assoc($resultat);
 //echo $ligne['Nom'];
 echo "<br><div id='corners'>";
 echo "<div id='legend'>Données personnelles</div>";
@@ -101,7 +101,7 @@ echo "<tr height='25'><td></td><td></td></tr>\n";
 echo "<tr><td>Classe</td><td>Userid</td></tr>";
 echo "<tr><td><input type='texte' name='ClasseNew' value='".$ligne['Classe']."' size='15'></input></td><td><input type='texte' name='UseridNew' value='".$ligne['Userid']."' size='7'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
-echo "<td valign='top'><img src='/".$app_section."/images/photo/".$ligne['Nom']."_".$ligne['Prenom'].".jpg' id='studentImg' alt='(pas de photo)'></td>";
+echo "<td valign='top'><img src='".$_SESSION['home']."images/photo/".$ligne['Nom']."_".$ligne['Prenom'].".jpg' id='studentImg' alt='(pas de photo)'></td>";
 
 echo "</tr></table></div>";
 
@@ -111,4 +111,4 @@ echo "</tr></table></div>";
 
 </div> <!-- page -->
 
-<?php include($app_section."/piedPage.php"); ?>
+<?php include("../../piedPage.php"); ?>
