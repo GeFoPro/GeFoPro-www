@@ -4,3 +4,4 @@ images/*/*.gif
 default_*.css
 *_2*.php
 *_last.php
+*.orig.php
