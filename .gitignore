@@ -1,3 +1,6 @@
 images/*/*.png
 images/*/*.jpg
 images/*/*.gif
+default_*.css
+*_2*.php
+*_last.php
