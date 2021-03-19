@@ -49,7 +49,7 @@ function readKey(event) {
 		<h1><?=$app_section?> - Gestion personnelle</h1>
 		<?php } ?>
 		</td>
-		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et Ã©quipement</a>
+		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
 		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
 		<?php if(hasAdminRigth()) { ?>
 			<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
@@ -70,13 +70,13 @@ function readKey(event) {
 				<?php if($from=="journaux") { ?>
 				<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php">Retour journaux</a></li>
 				<?php } else if($from=="theme") { ?>
-				<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/themes.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>&IDTheme=<?=$IDTheme?>">Retour thÃ¨me</a></li>
+				<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/themes.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>&IDTheme=<?=$IDTheme?>">Retour thème</a></li>
 				<?php } else { ?>
-				<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">Retour liste Ã©lÃ¨ves</a></li>
+				<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">Retour liste élèves</a></li>
 				<?php } ?>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/detailEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Fiche Ã©lÃ¨ve</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/detailEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Fiche élève</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/docEleveCIE.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">CIE</a></li>
-			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/themes.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">ThÃ¨mes</a></li -->
+			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/themes.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Thèmes</a></li -->
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/suiviEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Suivi</a></li -->
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Suivi de formation</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/notesEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Notes</a></li>
@@ -84,11 +84,11 @@ function readKey(event) {
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/infoEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Info personnelles</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/docEleveCIE.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Cours interentreprises</a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>&vue=1">Mon suivi de formation</a></li>
-			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/evaluations.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Auto-Ã©valuations</a></li -->
+			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/evaluations.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Auto-évaluations</a></li -->
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/impressionJournal.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Imprimer</a></li -->
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/evalCoursCIE.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">CIE</a></li -->
 			<?php  } ?>
-			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">DÃ©connecter</a></li>
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
 			<?php if(hasAdminRigth()) { ?>
 				<li class='last'>&nbsp;</li><li class='context'><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>&vue=app">Vue apprenti</a></li>
 			<?php  } ?>
