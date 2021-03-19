@@ -4,7 +4,7 @@
 	$release .= "<br>- migration vers php7 (utilisation de mysqli)";
 	$release .= "<br>- corrections pour fonctionnement sur systèmes linux (LAMP)";
 	$release .= "<br>- paramétrage amélioré pour utilisation de LDAP";
-	$release .= "<br>- possibilité d'installer l'application dans une sous structure web";
+	$release .= "<br>- possibilité d\'installer l\'application dans une sous structure web";
 	$release .= "<br><b><i>2.4.3</i></b>";
 	$release .= "<br>Fonctionnalités:";
 	$release .= "<br>- Textes pour commandes et étiquettes séparés";
