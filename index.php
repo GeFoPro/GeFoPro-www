@@ -133,8 +133,8 @@ if(isset($_GET['logout'])) {
   <tr><td colspan=2>&nbsp;</td></tr>
   <tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Login"></td></tr>
   <? if(empty($_SERVER['HTTPS'])) { ?>
-  <tr><td>&nbsp;</td></tr>
-  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisé n'est pas sécurisé! Veuillez utiliser de préférence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr>
+  <!--  tr><td>&nbsp;</td></tr>
+  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisé n'est pas sécurisé! Veuillez utiliser de préférence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr -->
   <? } ?>
   </table>
 <script language="javascript">document.getElementsByName("login")[0].focus();</script>
