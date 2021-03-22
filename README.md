@@ -10,4 +10,4 @@ Les fonctionnalités de GeFoPro sont:
 Une rapide présentation de GeFoPro est accessible [ici](https://prezi.com/p/edit/vd7czwxvlaq1/)
 
 ## Structure WEB de GeFoPro
-Ce dépot contient uniquement la structure web de l'applicatif
+Ce dépot contient uniquement la structure web de l'applicatif et sans les feuilles de style
