@@ -4,7 +4,7 @@ images/*/*.gif
 images/*.png
 images/*.jpg
 images/*.gif
-default_*.css
+*.css
 *_2*.php
 *_last.php
 *_orig.php
