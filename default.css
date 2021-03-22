@@ -394,12 +394,8 @@ input:focus, textarea:focus, select:focus {
 
 #footer {
 	width:auto;
-	margin-left: 1160px;
-	position: fixed;
-    bottom: 0;
-	margin-bottom:-20px;
-	padding:0px;
-	padding-bottom: 0px;
+	margin-bottom:-50px;
+	margin-left: 900px;
 }
 
 html>body #footer {
