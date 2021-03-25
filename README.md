@@ -14,4 +14,4 @@ Ce dépot contient uniquement la structure web de l'applicatif et sans les feuil
 
 ## Prérequis
  * Serveur LAMP ou WAMP (environnements Apache - MySQL - PHP)
- * Groupes ensignants et apprentis définis dans LDAP/ActiveDirectory
+ * Groupes utilisateurs définis dans LDAP/ActiveDirectory
