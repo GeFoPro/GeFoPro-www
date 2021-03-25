@@ -11,3 +11,7 @@ Une rapide présentation de GeFoPro est accessible [ici](https://prezi.com/p/edi
 
 ## Structure WEB de GeFoPro
 Ce dépot contient uniquement la structure web de l'applicatif et sans les feuilles de style
+
+## Prérequis
+ * Serveur LAMP ou WAMP (environnements Apache - MySQL - PHP)
+ * Groupes ensignants et apprentis définis dans LDAP/ActiveDirectory
