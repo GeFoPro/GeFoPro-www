@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: todo.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:52
+# @Last modified time: 30.03.2021 16:03:63
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -82,7 +82,7 @@ function toggle(thisname) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tï¿½te */
+/* en-tête */
 
 echo "<FORM id='myForm' ACTION='todo.php'  METHOD='POST'>";
 // transfert info
@@ -98,11 +98,11 @@ echo "<option value='3,4'";
 if("3,4"==$tri) {
 	echo " selected";
 }
-echo ">Terminï¿½s</option></select></td></tr></table><br>\n";
+echo ">Terminés</option></select></td></tr></table><br>\n";
 echo "<div id='corners'>";
 echo "<div id='legend'>ToDo</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
-echo "<tr><th width='100'>Date</th><th width='470'>Texte</th><th width='100' align='center'>Dï¿½lai</th><th width='100' align='center'>Responsable</th><th width='100' align='center'>Status</th><th></th></tr>";
+echo "<tr><th width='100'>Date</th><th width='470'>Texte</th><th width='100' align='center'>Délai</th><th width='100' align='center'>Responsable</th><th width='100' align='center'>Status</th><th></th></tr>";
 // recherche des todos
 $requete = "SELECT * FROM todo tod left outer join prof pr on tod.IDProf=pr.IDProf join status st on tod.IDStatus=st.IDStatus where tod.IDStatus in (".$tri.") order by tod.IDStatus, dateCreation desc";
 $resultat =  mysqli_query($connexionDB,$requete);
@@ -115,14 +115,14 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 	}
 	echo "<tr><td valign='top'>".date('d.m.Y', strtotime($ligne['dateCreation']))."</td><td valign='top' width='470'>".nl2br($ligne['libelle'])."</td><td align='center' valign='top'>".$delaistr."</td><td align='center' valign='top'>".$ligne['Nom']."</td><td align='center' valign='top'>".$ligne['Etat']."</td><td valign='top'>";
 	if($ligne['IDStatus']==1 || ($ligne['IDStatus']==2 && strtolower($_SESSION['user_id']) != $ligne['userid'])) {
-		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=charge'><img src='/iconsFam/user_add.png' align='absmiddle' onmouseover=\"Tip('Prendre en charge la tï¿½che')\" onmouseout='UnTip()'></a> ";
+		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=charge'><img src='/iconsFam/user_add.png' align='absmiddle' onmouseover=\"Tip('Prendre en charge la tâche')\" onmouseout='UnTip()'></a> ";
 	} else {
 		echo "<img src='/iconsFam/empty.png' align='absmiddle'> ";
 	}
 	//echo strtolower($_SESSION['user_id']." - ".$ligne['userid']);
 	if($ligne['IDStatus']==2 && strtolower($_SESSION['user_id']) == $ligne['userid']) {
-		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=accept'><img src='/iconsFam/accept.png' align='absmiddle' onmouseover=\"Tip('Tï¿½che terminï¿½e')\" onmouseout='UnTip()'></a> ";
-		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=annule'><img src='/iconsFam/delete.png' align='absmiddle' onmouseover=\"Tip('Annuler la tï¿½che')\" onmouseout='UnTip()'></a> ";
+		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=accept'><img src='/iconsFam/accept.png' align='absmiddle' onmouseover=\"Tip('Tâche terminée')\" onmouseout='UnTip()'></a> ";
+		echo "<a href='todo.php?IDTodo=$ligne[IDTodo]&action=annule'><img src='/iconsFam/delete.png' align='absmiddle' onmouseover=\"Tip('Annuler la tâche')\" onmouseout='UnTip()'></a> ";
 	} else {
 		echo "<img src='/iconsFam/empty.png' align='absmiddle'> ";
 		echo "<img src='/iconsFam/empty.png' align='absmiddle'> ";
@@ -146,8 +146,8 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 }
 
 echo "<tr><td colspan='6' bgColor='#5C5C5C'></td></tr>";
-echo "<tr newTodo='1'><td colspan='5'></td><td align='right'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter une tï¿½che')\" onmouseout='UnTip()' onclick='toggle(\"newTodo\");' align='absmiddle'></td></tr>";
-echo "<tr newTodo='1' style='display:none'><td colspan='6' valign='bottom' height='30'><b>Nouvelle entrï¿½e:<b></td></tr>";
+echo "<tr newTodo='1'><td colspan='5'></td><td align='right'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter une tâche')\" onmouseout='UnTip()' onclick='toggle(\"newTodo\");' align='absmiddle'></td></tr>";
+echo "<tr newTodo='1' style='display:none'><td colspan='6' valign='bottom' height='30'><b>Nouvelle entrée:<b></td></tr>";
 echo "<tr newTodo='1' style='display:none'><td></td>";
 echo "<td valign='top'><textarea name='Libelle' COLS=60 ROWS=2></textarea></td>";
 echo "<td valign='top' align='center'><input name='Delai' size='8' maxlength='10' value=''></input></td>";

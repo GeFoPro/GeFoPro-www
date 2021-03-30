@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: impressionBaseCIE.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:58
+# @Last modified time: 30.03.2021 16:03:63
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -16,7 +16,7 @@ require_once 'PHPWord/Autoloader.php';
 \PhpOffice\PhpWord\Autoloader::register();
 
 
-// Cours CIE concernï¿½
+// Cours CIE concerné
 $IDDoc = 0;
 if(isset($_GET['IDDoc'])) {
 	$IDDoc = $_GET['IDDoc'];
@@ -26,7 +26,7 @@ if(isset($_GET['IDDoc'])) {
 $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('../../docBase/ciebaseRow.docx');
 $templateProcessor->setValue('profession',  Profession);
 
-// Recherche des information du document et mise ï¿½ jour
+// Recherche des information du document et mise à jour
 $requeteH = "SELECT * FROM doccie WHERE IDDoc=$IDDoc";
 $resultat =  mysqli_query($connexionDB,$requeteH);
 $ligne = mysqli_fetch_assoc($resultat);
@@ -36,13 +36,13 @@ $templateProcessor->setValue("responsable", "");
 $templateProcessor->setValue("nbrJours", "");
 $templateProcessor->setValue("datesCours", "");
 
-// Recherche des ressources professionnelles du cours et mise ï¿½ jour
+// Recherche des ressources professionnelles du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[1]."%' order by Numero";
 $resultat =  mysqli_query($connexionDB,$requeteH);
-// cloner les lignes en fonction du nombre d'ï¿½lï¿½ments
+// cloner les lignes en fonction du nombre d'éléments
 $numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRP', $numrow);
-// remplir avec les ï¿½lï¿½ments trouvï¿½s
+// remplir avec les éléments trouvés
 for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRP#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRP#'.$id, $ligne['Description']);
@@ -52,13 +52,13 @@ for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	}
 }
 
-// Recherche des ressources mï¿½thodologiques du cours et mise ï¿½ jour
+// Recherche des ressources méthodologiques du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[2]."%' order by Numero";
 $resultat =  mysqli_query($connexionDB,$requeteH);
-// cloner les lignes en fonction du nombre d'ï¿½lï¿½ments
+// cloner les lignes en fonction du nombre d'éléments
 $numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRM', $numrow);
-// remplir avec les ï¿½lï¿½ments trouvï¿½s
+// remplir avec les éléments trouvés
 for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRM#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRM#'.$id, $ligne['Description']);
@@ -68,13 +68,13 @@ for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	}
 }
 
-// Recherche des ressources sociales du cours et mise ï¿½ jour
+// Recherche des ressources sociales du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[3]."%' order by Numero";
 $resultat =  mysqli_query($connexionDB,$requeteH);
-// cloner les lignes en fonction du nombre d'ï¿½lï¿½ments
+// cloner les lignes en fonction du nombre d'éléments
 $numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRS', $numrow);
-// remplir avec les ï¿½lï¿½ments trouvï¿½s
+// remplir avec les éléments trouvés
 for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRS#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRS#'.$id, $ligne['Description']);
@@ -84,13 +84,13 @@ for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	}
 }
 
-// Recherche des ressources de sï¿½curitï¿½ et protection du cours et mise ï¿½ jour
+// Recherche des ressources de sécurité et protection du cours et mise à jour
 $requeteH = "SELECT * FROM competencedoccie as cdc join competencecie as com on cdc.IDCompetence=com.IDCompetence WHERE cdc.IDDoc=$IDDoc AND Numero like '".$groupesCompetences[4]."%' order by Numero";
 $resultat =  mysqli_query($connexionDB,$requeteH);
-// cloner les lignes en fonction du nombre d'ï¿½lï¿½ments
+// cloner les lignes en fonction du nombre d'éléments
 $numrow = mysqli_num_rows($resultat);
 $templateProcessor->cloneRow('idRA', $numrow);
-// remplir avec les ï¿½lï¿½ments trouvï¿½s
+// remplir avec les éléments trouvés
 for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 	$templateProcessor->setValue('idRA#'.$id, $ligne['Numero']);
 	$templateProcessor->setValue('nomRA#'.$id, $ligne['Description']);
@@ -101,7 +101,7 @@ for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 }
 
 
-// partie du document propre ï¿½ chaque apprenti -> vide
+// partie du document propre à chaque apprenti -> vide
 $templateProcessor->setValue("nom", "");
 $templateProcessor->setValue("prenom", "");
 $templateProcessor->setValue("dateNaissance", "");
@@ -124,7 +124,7 @@ $templateProcessor->setValue("observXXS",'');
 $templateProcessor->setValue("observXXA",'');
 
 // envoi du fichier
-$file = "DIVTEC - FOR - MOD 2.10 Contrï¿½le de compï¿½tences CIE.docx";
+$file = "DIVTEC - FOR - MOD 2.10 Contrôle de compétences CIE.docx";
 header("Content-Description: File Transfer");
 header('Content-Disposition: attachment; filename="' . $file . '"');
 header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');

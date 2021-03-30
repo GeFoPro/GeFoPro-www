@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: journaux.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:55
+# @Last modified time: 30.03.2021 16:03:52
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -42,18 +42,18 @@ if($vue==1) {
 */
 if($vue==1) {
 	if(!isset($_POST['noSemaine']) || "" == $_POST['noSemaine']) {
-		//echo "pas trouvï¿½ en POST: ".$_POST['noSemaine'];
+		//echo "pas trouvé en POST: ".$_POST['noSemaine'];
 		if(!isset($_SESSION['noSemaine']) || "" == $_SESSION['noSemaine']) {
-			//echo "- pas trouvï¿½ en session: ".$_SESSION['noSemaine'];
+			//echo "- pas trouvé en session: ".$_SESSION['noSemaine'];
 			$noSemaine = date('W');
 			$anneeCalc = date('Y');
 		} else {
-			//echo "- trouvï¿½ en session: ".$_SESSION['noSemaine'];
+			//echo "- trouvé en session: ".$_SESSION['noSemaine'];
 			$noSemaine = $_SESSION['noSemaine'];
 			$anneeCalc = $_SESSION['anneeCalc'];
 		}
 	} else {
-		//echo "trouvï¿½ en POST: ".$_POST['noSemaine'];
+		//echo "trouvé en POST: ".$_POST['noSemaine'];
 		$noSemaine = $_POST['noSemaine'];
 		$anneeCalc = $_POST['anneeCalc'];
 		$_SESSION['noSemaine'] = $noSemaine;
@@ -74,10 +74,10 @@ $vendredi = $lundi + 86400*4;
 $lundiSemEncours = $dateCalc-86400*($jour_semaine)+604800*(date('W')-1);
 //$lundi=$dateCalc*($jour_semaine-1)+604800*($noSemaine-1);
 
-/* annï¿½e en cours */
+/* année en cours */
 $annee = date('Y');
 $mois = date('m');
-/* annï¿½es pour en-tï¿½te */
+/* années pour en-tête */
 if($mois<8) {
 	$anneePlus = $annee;
 	$annee = $annee-1;
@@ -85,7 +85,7 @@ if($mois<8) {
 	$anneePlus= $annee+1;
 }
 if($modeEvaluation=="hebdo") {
-	// si mode hebdo on affiche les 4 derniï¿½res annï¿½e (bidouille en attendant)
+	// si mode hebdo on affiche les 4 dernières année (bidouille en attendant)
 	$annee = $annee-5;
 }
 
@@ -108,7 +108,6 @@ $filtreSQL = "";
 if($filtre!=10) {
 	$filtreSQL = " and ep.IDEtatProjet = ".$filtre;
 }
-
 */
 function progressB($valeur) {
 	if(isset($valeur)) {
@@ -147,7 +146,7 @@ function submitSemaine(nosemaine) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tï¿½te */
+/* en-tête */
 
 function niveauMoy($moyenne) {
 	return chr(round($moyenne,0,PHP_ROUND_HALF_DOWN)+64);
@@ -200,8 +199,8 @@ if($noSemPlusUn==1) {
 if($vue==2) {
 	echo "<table border='0' width='100%'><tr><!-- td><h2>Journaux ".$annee."/".$anneePlus."</h2></td -->";
 	//echo "<br><table border='0' width='1000' vueTable='1' ".$afftab1."><tr><td><h2>Journaux ".$annee."/".$anneePlus."</h2></td>";
-	//echo "<td align='right'>Vue: <select name='vue' onChange='toggle(\"vueTable\")'><option value='1'>Par thï¿½me</option><option value='2' ";
-	echo "<td align='right'>Vue: <select name='vue' onChange='document.getElementById(\"myForm\").submit();'><option value='2'>Par thï¿½me</option><option value='1' ";
+	//echo "<td align='right'>Vue: <select name='vue' onChange='toggle(\"vueTable\")'><option value='1'>Par thème</option><option value='2' ";
+	echo "<td align='right'>Vue: <select name='vue' onChange='document.getElementById(\"myForm\").submit();'><option value='2'>Par thème</option><option value='1' ";
 	echo ">Par semaine</option></select></td></tr>";
 	echo "</table>";
 } else {
@@ -212,8 +211,8 @@ if($vue==2) {
 		echo "<img id='down' src='/iconsFam/resultset_next.png' onClick='submitSemaineAnnee(".$noSemPlusUn.",".$anneePlusUn.")'>";
 	}
 	echo "</h2></td>";
-	echo "<td align='right'>Vue: <select name='vue' onChange='document.getElementById(\"myForm\").submit();'><option value='2'>Par thï¿½me</option><option value='1' selected>Par semaine</option></select></td></tr>";
-	//echo "<td align='right'>Vue: <select name='vue' onChange='toggle(\"vueTable\")'><option value='1'>Par thï¿½me</option><option value='2' selected>Par semaine</option></select></td></tr>";
+	echo "<td align='right'>Vue: <select name='vue' onChange='document.getElementById(\"myForm\").submit();'><option value='2'>Par thème</option><option value='1' selected>Par semaine</option></select></td></tr>";
+	//echo "<td align='right'>Vue: <select name='vue' onChange='toggle(\"vueTable\")'><option value='1'>Par thème</option><option value='2' selected>Par semaine</option></select></td></tr>";
 	$lundiTxt =  "Semaine du lundi " . date('d.m', $lundi) . " au vendredi ".date('d.m.Y', $vendredi) . "";
 	echo "<tr><td></td><td align='center'>".$lundiTxt."</td><td></td></tr>";
 	echo "</table><br>";
@@ -233,13 +232,13 @@ if($vue==2) {
 	echo "<div id='legend'>Journaux ".$annee."/".$anneePlus."</div>";
 	echo "<table id='hor-minimalist-b' width='100%'>\n";
 	//echo "<table id='hor-minimalist-b' vueTable='1' ".$afftab1.">\n";
-	echo "<tr><th width='50'>Thï¿½me</th><th width='150'>Nom</th><th width='50' align='center'>Nbr. jour</th><th width='80' align='center'>Nbr. heures</th>";
+	echo "<tr><th width='50'>Thème</th><th width='150'>Nom</th><th width='50' align='center'>Nbr. jour</th><th width='80' align='center'>Nbr. heures</th>";
 	if($modeEvaluation=="hebdo") {
 		echo "<th></th>";
 	} else {
 		echo "<th>Eval. semestre ".$semestreAct."</th>";
 	}
-	//echo "<th width='100'>Motivation</th><th width='100'>Progrets</th><th width='100'>Difficultï¿½s</th><th width='100'>Notes</th>";
+	//echo "<th width='100'>Motivation</th><th width='100'>Progrets</th><th width='100'>Difficultés</th><th width='100'>Notes</th>";
 	echo "<th width='10' align='right'>Journaux</th></tr>";
 
 
@@ -266,7 +265,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 		if($lastTheme!=$ligne['IDTheme']) {
 			// nouveau theme
 			if($cnt!=0) {
-				//sauf pour la premiï¿½re ligne
+				//sauf pour la première ligne
 				echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 			}
 			echo "<tr><td colspan='3' valign='top' bgColor='#DEDEDE'><b>";
@@ -286,9 +285,9 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 		}
 		echo $ligne['Nom']." ".$ligne['Prenom']."</td><td valign='top' align='center'>".$ligne['jours']."</td><td align='center' valign='top'>".sprintf("%5.1f",$ligne['heures'])."h</td>";
 
-		// recherche des ï¿½valuations
+		// recherche des évaluations
 		$requeteEval = "SELECT distinct NoSemaine, Annee, DateValidation FROM evalhebdo where IDEleve = ".$ligne['IDGDN']." and IDTheme=".$ligne['IDTheme'];
-		// tri sur annï¿½e en cours
+		// tri sur année en cours
 		//if($noSemaine>30) {
 			$requeteEval .= " and (Annee between ".$annee." and ".$anneePlus.")";
 		//} else {
@@ -319,30 +318,30 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 		echo "</td>";
 		//echo "<td valign='top'>".progressB($ligne['TravailPond'])."</td><td valign='top'>".progressB($ligne['ProgretsPond'])."</td><td valign='top'>".progressB($ligne['DifficultesPond'])."</td>";
 		//echo "<td>";
-		//echo <img src='/iconsFam/exclamation.png' align='absmiddle' onmouseover=\"Tip('Avertir oubli ï¿½valuation')\" onmouseout='UnTip()'>";
+		//echo <img src='/iconsFam/exclamation.png' align='absmiddle' onmouseover=\"Tip('Avertir oubli évaluation')\" onmouseout='UnTip()'>";
 		//if(!empty($ligne['NoteTechnique'])) {
 		//	echo $ligne['NoteTechnique']." | ".$ligne['NoteApplication']." | ".$ligne['NoteRendement']." | ".$ligne['NoteSavoirEtre'];
 		//}
 		//echo "</td>";
 		echo "<td align='center'>";
-		// recherche journaux non validï¿½s
+		// recherche journaux non validés
 		$requeteEntrees = "SELECT count(IDGDN) as Entrees FROM elevesbk JOIN journal jo ON IDGDN = IDEleve WHERE (DateJournal between '".$annee."-08-01' and '".date("Y-m-d",$lundiSemEncours)."') and DateValidation is null and IDGDN=".$ligne['IDGDN']." and IDTheme=".$ligne['IDTheme'];
 		//echo $requeteEntrees;
 		$resultatEntrees =  mysqli_query($connexionDB,$requeteEntrees);
 		$ligneEntrees = mysqli_fetch_array($resultatEntrees);
 		if($ligneEntrees[0]!=0) {
-			echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$ligneEntrees[0]." entrï¿½e(s) dans les journaux non validï¿½e(s) avant le ".date("d.m.Y",$lundiSemEncours)."')\" onmouseout='UnTip()'>";
+			echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$ligneEntrees[0]." entrée(s) dans les journaux non validée(s) avant le ".date("d.m.Y",$lundiSemEncours)."')\" onmouseout='UnTip()'>";
 		} else {
 			echo "<img src='/iconsFam/tick.png' align='absmiddle'>";
 		}
 		//echo "<a href='../detail/evaluations.php?from=journaux&nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&idEleve=".$ligne['IDGDN']."&IDTheme=".$ligne['IDTheme']."'>";
 		//if(empty($ligne['DateValidationAuto']) || $ligne['DateValidationAuto']=="0000-00-00") {
-		//	echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Evaluation non validï¿½e')\" onmouseout='UnTip()'>";
+		//	echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Evaluation non validée')\" onmouseout='UnTip()'>";
 		//} else {
 		//	if(empty($ligne['Annee'])) {
-		//		echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Evaluation validï¿½e, pas assignï¿½e ï¿½ une pï¿½riode')\" onmouseout='UnTip()'>";
+		//		echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Evaluation validée, pas assignée à une période')\" onmouseout='UnTip()'>";
 		//	} else {
-		//		echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Evaluation validï¿½e, annï¿½e ".$ligne['Annee']."/".($ligne['Annee']+1)."')\" onmouseout='UnTip()'>";
+		//		echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Evaluation validée, année ".$ligne['Annee']."/".($ligne['Annee']+1)."')\" onmouseout='UnTip()'>";
 		//	}
 		//}
 		//echo "</a>";
@@ -377,13 +376,13 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 
 	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($lastClasse!=$ligne['Classe'] || $lastEleve!=$ligne['IDGDN']) {
-			// nouvelle classe ou nouvel ï¿½lï¿½ve -> terminer la ligne prï¿½cï¿½dente
+			// nouvelle classe ou nouvel élève -> terminer la ligne précédente
 			if($lastEleve!=0) {
 				if($cumulJour!=0) {
 					// inscrire dernier cumul
 					if($cumulJour>9) {
 						echo "<td valign='top' align='center'><font color='#FF0000'>".sprintf("%2.1f",$cumulJour)."</font></td>";
-						$msgErreur .= "Heures journaliï¿½res > 9h<br>";
+						$msgErreur .= "Heures journalières > 9h<br>";
 					} else {
 						echo "<td valign='top' align='center'>".sprintf("%2.1f",$cumulJour)."</td>";
 					}
@@ -391,37 +390,37 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 					$nbrjour++;
 					$jour += 86400;
 				}
-				// terminer les jours non renseignï¿½s
+				// terminer les jours non renseignés
 				while($jour<=$vendredi) {
 					echo "<td valign='top' align='center'>-</td>";
 					$jour += 86400;
 				}
-				// terminer la ligne prï¿½cï¿½dante
+				// terminer la ligne précédante
 				echo "<td align='center'>".$nbrjour."</td><td align='center'>".sprintf("%4.1f",$cumulsemaine)."h</td><td align='right'>";
 				if($joursATE[$lastClasse] != $nbrjour) {
-					$msgErreur .= "Semaine incomplï¿½te<br>";
+					$msgErreur .= "Semaine incomplète<br>";
 				}
 				if(!empty($msgErreur)) {
 					echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$msgErreur."')\" onmouseout='UnTip()'>";
 				}
 				if($cntlock!=0 && $cntunlock==0) {
-					echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Journal validï¿½')\" onmouseout='UnTip()'>";
+					echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Journal validé')\" onmouseout='UnTip()'>";
 				} else if($cntlock!=0 && $cntunlock==0) {
-					echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Journal partiellement validï¿½')\" onmouseout='UnTip()'>";
+					echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Journal partiellement validé')\" onmouseout='UnTip()'>";
 				} else {
-					echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Journal non validï¿½')\" onmouseout='UnTip()'>";
+					echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Journal non validé')\" onmouseout='UnTip()'>";
 				}
 				echo "</td></tr>";
 			}
 		}
 		if($lastClasse!=$ligne['Classe']) {
-			// nouvelle classe ï¿½ afficher
+			// nouvelle classe à afficher
 			echo "<tr><td colspan='10' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 			echo "<tr bgColor='#DEDEDE'><td colspan='10' valign='top'><b>".$ligne['Classe']."</b></td></tr>";
 			$lastClasse = $ligne['Classe'];
 		}
 		if($lastEleve!=$ligne['IDGDN']) {
-			// nouvel ï¿½lï¿½ve ï¿½ traiter
+			// nouvel élève à traiter
 			$jour = $lundi;
 			$cumulsemaine = 0;
 			$nbrjour = 0;
@@ -437,7 +436,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 				// nouveau jour
 				if($cumulJour>9) {
 					echo "<td valign='top' align='center'><font color='#FF0000'>".sprintf("%2.1f",$cumulJour)."</font></td>";
-					$msgErreur .= "Heures journaliï¿½res > 9h<br>";
+					$msgErreur .= "Heures journalières > 9h<br>";
 				} else {
 					echo "<td valign='top' align='center'>".sprintf("%2.1f",$cumulJour)."</td>";
 				}
@@ -463,7 +462,7 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			// inscrire dernier cumul
 			if($cumulJour>9) {
 				echo "<td valign='top' align='center'><font color='#FF0000'>".sprintf("%2.1f",$cumulJour)."</font></td>";
-				$msgErreur .= "Heures journaliï¿½res > 9h<br>";
+				$msgErreur .= "Heures journalières > 9h<br>";
 			} else {
 				echo "<td valign='top' align='center'>".sprintf("%2.1f",$cumulJour)."</td>";
 			}
@@ -471,21 +470,21 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			$nbrjour++;
 			$jour += 86400;
 		}
-		// terminer les jours non renseignï¿½s
+		// terminer les jours non renseignés
 		while($jour<=$vendredi) {
 			echo "<td valign='top' align='center'>-</td>";
 			$jour += 86400;
 		}
 
-		// terminer la ligne prï¿½cï¿½dante
+		// terminer la ligne précédante
 		echo "<td align='center'>".$nbrjour."</td><td align='center'>".sprintf("%4.1f",$cumulsemaine)."h</td><td align='right'>";
 		if(substr($lastClasse, -1)==4 && ($nbrjour<4 || $nbrjour>4)) {
-			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplï¿½te')\" onmouseout='UnTip()'>";
-			$msgErreur .= "Semaine incomplï¿½te<br>";
+			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplète')\" onmouseout='UnTip()'>";
+			$msgErreur .= "Semaine incomplète<br>";
 
 		} else if($nbrjour<3 || $nbrjour>3) {
-			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplï¿½te".$msgErreur."')\" onmouseout='UnTip()'>";
-			$msgErreur .= "Semaine incomplï¿½te<br>";
+			//echo "<td align='right'><img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Semaine incomplète".$msgErreur."')\" onmouseout='UnTip()'>";
+			$msgErreur .= "Semaine incomplète<br>";
 		} else {
 			//echo "<td align='right'>";
 		}
@@ -493,11 +492,11 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 			echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$msgErreur."')\" onmouseout='UnTip()'>";
 		}
 		if($cntlock!=0 && $cntunlock==0) {
-			echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Journal validï¿½')\" onmouseout='UnTip()'>";
+			echo " <img src='/iconsFam/bullet_green.png' align='absmiddle' onmouseover=\"Tip('Journal validé')\" onmouseout='UnTip()'>";
 		} else if($cntlock!=0 && $cntunlock==0) {
-			echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Journal partiellement validï¿½')\" onmouseout='UnTip()'>";
+			echo " <img src='/iconsFam/bullet_orange.png' align='absmiddle' onmouseover=\"Tip('Journal partiellement validé')\" onmouseout='UnTip()'>";
 		} else {
-			echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Journal non validï¿½')\" onmouseout='UnTip()'>";
+			echo " <img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Journal non validé')\" onmouseout='UnTip()'>";
 		}
 		echo "</tr>";
 	}
