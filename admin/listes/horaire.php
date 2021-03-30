@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:70
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: horaire.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:33
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 /* action */
@@ -19,7 +29,7 @@ if(isset($_POST['Annuler'])) {
 if(!empty($actionModifier)) {
 	if(isset($_SESSION['APP']) && $_SESSION['APP']['LockHoraire']) {
 		//$actionModifier = "";
-		//$msgLock = "L'horaire est actullement modifié par un autre utilisateur";
+		//$msgLock = "L'horaire est actullement modifiï¿½ par un autre utilisateur";
 	} else {
 		$_SESSION['APP']['LockHoraire'] = true;
 		application_save();
@@ -46,7 +56,7 @@ while ($ligne = mysqli_fetch_assoc($resultat) ) {
 }
 $cntProfs = count($profs);
 
-/* table des périodes */
+/* table des pï¿½riodes */
 $requete = "SELECT * FROM $tablePeriode where Duree > 0 order by IDPeriode";
 $resultat =  mysqli_query($connexionDB,$requete);
 $periods = array();
@@ -57,7 +67,7 @@ while ($ligne = mysqli_fetch_assoc($resultat) ) {
 }
 $cntPeriode = count($periods);
 
-// année et noSemaine
+// annï¿½e et noSemaine
 //$annee = date('Y');
 
 /*
@@ -73,18 +83,18 @@ if(!isset($_POST['noSemaine']) || "" == $_POST['noSemaine']) {
 }
 */
 if(!isset($_POST['noSemaine']) || "" == $_POST['noSemaine']) {
-	//echo "pas trouvé en POST: ".$_POST['noSemaine'];
+	//echo "pas trouvï¿½ en POST: ".$_POST['noSemaine'];
 	if(!isset($_SESSION['noSemaine']) || "" == $_SESSION['noSemaine']) {
-		//echo "- pas trouvé en session: ".$_SESSION['noSemaine'];
+		//echo "- pas trouvï¿½ en session: ".$_SESSION['noSemaine'];
 		$noSemaine = date('W');
 		$anneeCalc = date('Y');
 	} else {
-		//echo "- trouvé en session: ".$_SESSION['noSemaine']."/".$_SESSION['anneeCalc'];
+		//echo "- trouvï¿½ en session: ".$_SESSION['noSemaine']."/".$_SESSION['anneeCalc'];
 		$noSemaine = $_SESSION['noSemaine'];
 		$anneeCalc = $_SESSION['anneeCalc'];
 	}
 } else {
-	//echo "trouvé en POST: ".$_POST['noSemaine']."/".$_POST['anneeCalc'];
+	//echo "trouvï¿½ en POST: ".$_POST['noSemaine']."/".$_POST['anneeCalc'];
 	$noSemaine = $_POST['noSemaine'];
 	$anneeCalc = $_POST['anneeCalc'];
 	$_SESSION['noSemaine'] = $noSemaine;
@@ -97,13 +107,13 @@ if(!empty($actionValider)) {
 	//echo "<br>".$requete."<br>";
 	mysqli_query($connexionDB,$requete);
 
-	// enregister le défaut pour l'année en cours
+	// enregister le dï¿½faut pour l'annï¿½e en cours
 	$requete = "select max(IDSemaine) from $tableSemaine";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	$line = mysqli_fetch_row($resultat);
 	$IDSemaine = $line[0]+1;
 
-	/* recherche des éventuels coches */
+	/* recherche des ï¿½ventuels coches */
 	for($jour=1;$jour<=5;$jour++) {
 		foreach ($profs as $pos => $value) {
 		    foreach ($periods as $cell => $value) {
@@ -205,7 +215,7 @@ function submitSemaine(nosemaine) {
 include("../../userInfo.php");
 // print_r($profs);echo "<br>";
 // print_r($periods);echo "<br>";
-// création des éléments sélectionnés
+// crï¿½ation des ï¿½lï¿½ments sï¿½lectionnï¿½s
 $checked = array();
 //$noSemaineToUse = $noSemaine;
 $cntBoucle = 0;
@@ -230,7 +240,7 @@ $cntBoucle = 0;
 	//$cntBoucle++;
 //}
 //print_r($checked);echo "<br>";
-/* table des heures de théories */
+/* table des heures de thï¿½ories */
 $requete = "SELECT * FROM $tableTheorie where annee=$anneeCalc";
 $resultat =  mysqli_query($connexionDB,$requete);
 $theories = array();
@@ -239,7 +249,7 @@ while ($ligne = mysqli_fetch_assoc($resultat) ) {
 }
 
 $errors = array();
-// création des période en erreur
+// crï¿½ation des pï¿½riode en erreur
 for($jour=1;$jour<=5;$jour++) {
 	foreach ($periods as $cell => $value) {
 		$periodeOK = false;
@@ -248,13 +258,13 @@ for($jour=1;$jour<=5;$jour++) {
 			$idCell = getIDCell($jour,$pos,$cell,$tab_jour);
 			$periodProf[] = $idCell;
 			if(in_array($idCell,$checked)) {
-				// au moins un enseignant dans la période -> OK
+				// au moins un enseignant dans la pï¿½riode -> OK
 				$periodeOK = true;
 			}
 		}
 		// si periodOK false -> enregister les cellules en erreur
 		if(!$periodeOK) {
-			//echo "Période $cell erreur<br>";
+			//echo "Pï¿½riode $cell erreur<br>";
 			foreach ($periodProf as $cnt => $value) {
 				$errors[] = $periodProf[$cnt];
 			}
@@ -303,9 +313,9 @@ if(empty($actionModifier)) {
 	echo "</h2></td>";
 	//echo "<td><h2>Horaire semaine no <input type='texte' name='noSemaine' value='$noSemaine' size='2'><input type='submit' name='Afficher' value='Afficher'> </h2></td><td>$lundiTxt</td>";
 	if($cntBoucle>1) {
-		echo "<td align='right' onClick='submitSemaineAnnee(0,".$anneeCalc.")'><i><font color='green'>Horaire semaine $noSemaine par défaut</font></i></td>";
+		echo "<td align='right' onClick='submitSemaineAnnee(0,".$anneeCalc.")'><i><font color='green'>Horaire semaine $noSemaine par dï¿½faut</font></i></td>";
 	} else {
-		echo "<td align='right'><i><font color='red'>Horaire semaine $noSemaine personnalisé</font></i></td>";
+		echo "<td align='right'><i><font color='red'>Horaire semaine $noSemaine personnalisï¿½</font></i></td>";
 	}
 } else {
 	echo "<td><h2>Semaine $noSemaine</h2></td>";
@@ -321,11 +331,11 @@ echo "</tr><tr><td align='left'>".$lundiTxt."</td><td></td></tr>";
 <th></th><th></th>
 <?php
 
-/* liste périodes */
+/* liste pï¿½riodes */
 $precedent=0;
 foreach ($periods as $per => $value) {
 	if($precedent!=0) {
-		echo "<th align='center'>$precedent<br>à<br>$value</th>";
+		echo "<th align='center'>$precedent<br>ï¿½<br>$value</th>";
 	}
 	$precedent = $value;
 }
@@ -345,7 +355,7 @@ for($jour=1;$jour<=5;$jour++) {
 			echo "<td align='center'><input type='checkbox' id='$idCell' name='$idCell' onClick='setBGColorFillRight(\"$idCell\")' onkeydown='switchAll()' onkeyup='switchOne()'";
 			if(in_array($idCell,$checked)) {
 				echo " checked";
-				// incrémenter compteur prof
+				// incrï¿½menter compteur prof
 				$time = $time + $dureePeriode[$cell];
 				if($cell==1) {
 					$jourTab[0] = "Matin%20".utf8_encode($profs[$pos]);
@@ -361,7 +371,7 @@ for($jour=1;$jour<=5;$jour++) {
 			}
 			if(in_array($idCell,$theories)) {
 				echo "setBGColor(\"$idCell\",\"#FF9933\");";
-				// incrémenter compteur prof si théorie
+				// incrï¿½menter compteur prof si thï¿½orie
 				$time = $time + $dureePeriode[$cell];
 			} else if(in_array($idCell,$errors)) {
 				echo "setBGColor(\"$idCell\",\"#CC3333\");";
@@ -393,7 +403,7 @@ echo $pageOut;
 ?>
 </table><br>
 <?php
-// construction du récapitulatif par prof
+// construction du rï¿½capitulatif par prof
 $span = $cntProfs+1;
 echo "<table border='0' width='100%'><tr><td rowspan='$span' width='850' valign='top'>";
 
@@ -403,7 +413,7 @@ if(isMAIAEL()) {
 		echo "<input type='submit' name='Modifier' value='Modifier'>";
 		echo "<br><a href='http://www.google.com/calendar/event?action=TEMPLATE&text=Horaire%20atelier&dates=".date('Ymd', $lundi)."/".date('Ymd', $vendredi+86400)."&details=".$strGoogle."&location=&trp=false&sprop=&sprop=name:' target='_blank'><img src='http://www.google.com/calendar/images/ext/gc_button1_fr.gif' border=0></a>";
 	} else {
-		echo "<b>Astuce: </b>Sélectionner/désélectionner toute la ligne restante en cliquant sur la case à cocher en maintenant la touche Ctrl.<br><br>";
+		echo "<b>Astuce: </b>Sï¿½lectionner/dï¿½sï¿½lectionner toute la ligne restante en cliquant sur la case ï¿½ cocher en maintenant la touche Ctrl.<br><br>";
 		echo "<input type='submit' name='Valider' value='Valider'> ";
 		echo "<input type='submit' name='Annuler' value='Annuler'>";
 	}
@@ -411,7 +421,7 @@ if(isMAIAEL()) {
 
 echo "</td><td colspan='4'><b>Total de la semaine (minimum):</b></td></tr>";
 foreach ($profs as $pos => $value) {
-	// soustraire temps de théorie
+	// soustraire temps de thï¿½orie
 	$strTime = floor($timeProfs[$pos]/60).'h'.sprintf("%02d",($timeProfs[$pos]%60));
 	echo "<tr><td>$profs[$pos]:</td><td align='right'>$strTime - ";
 	$strTime = floor($theorieProfs[$pos]/60).'h'.sprintf("%02d",($theorieProfs[$pos]%60));

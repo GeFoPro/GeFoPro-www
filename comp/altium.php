@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:84
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: altium.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:75
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 if($action!="Nouveau") {
 ?>
 <br><br><div id='corners'>
@@ -6,7 +16,7 @@ if($action!="Nouveau") {
 <table border='0'>
 <tr><td colspan='6'>&nbsp</td></tr>
 
-<tr><td>Schéma:</td><td colspan="2">
+<tr><td>Schï¿½ma:</td><td colspan="2">
 <div id="IDSchNew"><select name='IDSchema'><option></option>
 <?php
   $requete = "SELECT * FROM $tableRefSchema order by ReferenceSchema";
@@ -20,8 +30,8 @@ if($action!="Nouveau") {
   }
 ?>
   </select>
-  <a href="#" onClick="toggleForm('IDSchNew','SchNew')"><img src="/iconsFam/table_edit.png" align="absmiddle" onmouseover="Tip('Editer la liste des schémas')" onmouseout="UnTip()"></a></div>
-  <div id="SchNew"><input type="texte" name="SchemaNew" value="" size="25"><a href="#" onClick="toggleForm('IDSchNew','SchNew')"><img src="/iconsFam/table.png" align='absmiddle' onmouseover="Tip('Retour à la liste')" onmouseout="UnTip()"></a></div>
+  <a href="#" onClick="toggleForm('IDSchNew','SchNew')"><img src="/iconsFam/table_edit.png" align="absmiddle" onmouseover="Tip('Editer la liste des schï¿½mas')" onmouseout="UnTip()"></a></div>
+  <div id="SchNew"><input type="texte" name="SchemaNew" value="" size="25"><a href="#" onClick="toggleForm('IDSchNew','SchNew')"><img src="/iconsFam/table.png" align='absmiddle' onmouseover="Tip('Retour ï¿½ la liste')" onmouseout="UnTip()"></a></div>
 </td><td colspan='3'></td></tr>
 <tr><td>Footprints <?=$ligne['LibelleBoitier']?>:</td>
 
@@ -46,10 +56,10 @@ where IDComposant=$IDComp";
   }
 ?>
   </select><a href="#" onClick="toggleForm('IDRefNew','RefNew')"><img src="/iconsFam/table_edit.png" align="absmiddle" onmouseover="Tip('Editer la liste des footprints')" onmouseout="UnTip()"></a></div>
-  <div id="RefNew"><input type="texte" name="ReferenceNew" value="" size="25"><a href="#" onClick="toggleForm('IDRefNew','RefNew')"><img src="/iconsFam/table.png" align='absmiddle' onmouseover="Tip('Retour à la liste')" onmouseout="UnTip()"></a></div>
+  <div id="RefNew"><input type="texte" name="ReferenceNew" value="" size="25"><a href="#" onClick="toggleForm('IDRefNew','RefNew')"><img src="/iconsFam/table.png" align='absmiddle' onmouseover="Tip('Retour ï¿½ la liste')" onmouseout="UnTip()"></a></div>
   </td><!-- td><input type="submit" name="actionFoot" value="Ajouter" --><td colspan='3'></td></tr>
 </table></div>
-  
+
 <?php } ?>
 <SCRIPT language="Javascript">
 toggleForm('IDRefNew','RefNew');

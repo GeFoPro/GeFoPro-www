@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:85
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: commande.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:94
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../appHeader.php");
 include("entete.php");
 ?>
@@ -146,7 +156,7 @@ REQ;
   }
 
 
-// action maj si nécessaire
+// action maj si nï¿½cessaire
 
 if(isset($_POST['lineChanged']) && !empty($_POST['lineChanged'])) {
 	$lineToChange = $_POST['lineChanged'];
@@ -215,7 +225,7 @@ function getFieldToPrint($value, $ligne, $pos) {
 			if($pos!=0) {
 				return substr($ligne['Description'],0,18);
 			} else {
-				// si une seule position utilisée, on coupe à 45
+				// si une seule position utilisï¿½e, on coupe ï¿½ 45
 				return substr($ligne['Description'],0,45);;
 			}
 		case 2: return $ligne['Valeur'];
@@ -223,7 +233,7 @@ function getFieldToPrint($value, $ligne, $pos) {
 			if($pos!=0) {
 				return substr($ligne['Caracteristiques'],0,25);
 			} else {
-				// si une seule position utilisée, on coupe à 45
+				// si une seule position utilisï¿½e, on coupe ï¿½ 45
 				return substr($ligne['Caracteristiques'],0,45);
 			}
 		case 4: return $ligne['LibelleBoitier'];
@@ -313,7 +323,7 @@ REQ;
 if(empty($IDPageCommande)&&empty($recu)) {
 ?>
 
-<!-- h2>Liste des articles à commander</h2 -->
+<!-- h2>Liste des articles ï¿½ commander</h2 -->
 <table border='0' width='100%'>
 <tr><td align='right'>
 Fournisseur :
@@ -335,7 +345,7 @@ Fournisseur :
   ?>
 </select></td></tr></table><br>
 <div id='corners'>
-<div id='legend'>Liste des articles à commander</div>
+<div id='legend'>Liste des articles ï¿½ commander</div>
 <?php
 	} else { // fin if $IDPageCommande et recu
 ?>
@@ -346,8 +356,8 @@ Fournisseur :
   Vue: <select name='vue' onChange="document.location.href='historique.php'">
   <option value='1'>Par commandes</option><option value='2' selected>Par articles</option></select>
    </td></tr>
-<tr><td>Commandé par: <input type='text' name='compar' onChange='submitRecherche(this.form)' value='<?=(!empty($likeComPar)?$likeComPar:"")?>'></input></td>
-<td align='center'>N° article: <input type='text' name='recherche' onChange='submitRecherche(this.form)' value='<?=(!empty($likeRec)?$likeRec:"")?>'></input></td>
+<tr><td>Commandï¿½ par: <input type='text' name='compar' onChange='submitRecherche(this.form)' value='<?=(!empty($likeComPar)?$likeComPar:"")?>'></input></td>
+<td align='center'>Nï¿½ article: <input type='text' name='recherche' onChange='submitRecherche(this.form)' value='<?=(!empty($likeRec)?$likeRec:"")?>'></input></td>
 <td align='right'>
 Fournisseur :
 <select name='fournisseur' onChange='submitRec(this.form);'>
@@ -410,7 +420,7 @@ if(empty($IDPageCommande)) {
 }
 
 if(!hasAdminRigth()) {
-	// afficher uniquement ses propres composants commandés
+	// afficher uniquement ses propres composants commandï¿½s
 	$requete = $requete . " and Userid=\"".$_SESSION['user_login']."\"";
 }
 //if(!empty($IDPageCommande)||!empty($recu)) {
@@ -436,7 +446,7 @@ if(isset($idToggle)&&!is_numeric($idToggle)) {
 		$impTxt = "<input type='checkbox' name='recQ' onClick='toggleRec(this.form,\"all\");'>";
 	}
 } else {
-	$impTxt = "Reçu";
+	$impTxt = "Reï¿½u";
 	//if(!empty($recu)) {
 		$impTxt = "<a href='javascript:toggleRec(document.getElementById(\"myForm\"),\"act\")'>".$impTxt."</a>";
 	//}
@@ -445,7 +455,7 @@ if(isset($idToggle)&&!is_numeric($idToggle)) {
 
 $rowCounter = 0;
 $totalList = 0;
-// créer entête
+// crï¿½er entï¿½te
 			if(!empty($IDPageCommande)||!empty($recu)) {
 				echo "<th align='left' width='25'>".$impTxt."</th>";
 			}
@@ -453,11 +463,11 @@ $totalList = 0;
 				echo "<th align='left'>Fournisseur</th>";
 			}
 			echo "<th align='left'>No fournisseur</th>";
-			echo "<th align='left'>Libellé</th>";
-			echo "<th align='right'>Quantité</th>";
+			echo "<th align='left'>Libellï¿½</th>";
+			echo "<th align='right'>Quantitï¿½</th>";
 			echo "<th align='right'>Prix unitaire</th>";
 			echo "<th align='right' width='60'>Total</th>";
-			echo "<th align='left'>Commandé par</th><th></th></tr>";
+			echo "<th align='left'>Commandï¿½ par</th><th></th></tr>";
 if(!empty($resultat)) {
 	$noArticle = "";
 	while ($ligne = mysqli_fetch_assoc($resultat) ) {
@@ -471,7 +481,7 @@ if(!empty($resultat)) {
 		$noArticle= str_replace(".","",$noArticle);
 		$noArticle= str_replace("-","",$noArticle);
 
-		// recherche si article semble exister dans la gestion du matériel
+		// recherche si article semble exister dans la gestion du matï¿½riel
 		/* liste composants */
 		/*
 		$requeteFound = "SELECT count(*) FROM $tableComp comp where ";
@@ -556,12 +566,12 @@ if(!empty($resultat)) {
 if($rowCounter==0) {
 	echo "<tr newArticle='1'><td colspan='8' align='center' height='80'>Aucun article";
 	if(empty($IDPageCommande) && empty($recu)) {
-		echo " à commander";
+		echo " ï¿½ commander";
 	} else {
 		if(!empty($likeRec)) {
-			echo " trouvé";
+			echo " trouvï¿½";
 		} else {
-			echo " non reçu";
+			echo " non reï¿½u";
 		}
 	}
 	echo "</td></tr>";
@@ -582,7 +592,7 @@ if(empty($recu) && (!empty($critere) || !empty($IDPageCommande))) {
 	if(!empty($IDPageCommande)||!empty($recu)) echo "<td></td>";
 	echo "<td colspan='4' align='right'><b>Total</b></td><td align='right'><b>$totalListStr</b></td><td><b>CHF</b></td><td>";
 	if(empty($IDPageCommande)) {
-		echo "<img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un article à commander')\" onmouseout='UnTip()' onclick='toggle(\"newArticle\");document.getElementById(\"myForm\").NumArticle.focus();' align='right'>";
+		echo "<img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un article ï¿½ commander')\" onmouseout='UnTip()' onclick='toggle(\"newArticle\");document.getElementById(\"myForm\").NumArticle.focus();' align='right'>";
 	}
 	echo "</td></tr>";
 }
@@ -608,26 +618,26 @@ if(isset($critere) && !empty($critere) && $rowCounter!=0 && hasAdminRigth()&&emp
 <br>
 <!-- h2>Commande</h2 -->
 <table border=0>
-<tr><td>Créateur :</td><td><input type='text' size='4' name='Abbr' value=''>
+<tr><td>Crï¿½ateur :</td><td><input type='text' size='4' name='Abbr' value=''>
 </td></tr>
 <tr><td>Utilisation :</td><td><select name='Util'>
 <option>Consommables</option>
 <option>CFC</option>
 <option>CFC / TPI</option>
 <option>Consommables</option>
-<option>Entité existante</option>
+<option>Entitï¿½ existante</option>
 <option>Investissement</option>
 <option>Maintenance</option>
-<option>Nouvelle entité</option>
+<option>Nouvelle entitï¿½</option>
 <option>Remplacement</option>
-<option>Réparation</option>
-<option>Revente élèves</option>
+<option>Rï¿½paration</option>
+<option>Revente ï¿½lï¿½ves</option>
 <option>Travaux pour tiers</option>
 </select></td></tr>
 <tr><td>Avec TVA :</td><td><input type="checkbox" name="Tva"></tr>
-<tr><td>Intitulé :</td><td><input type="texte" name="Remarque" value="" size="35"</td></tr>
+<tr><td>Intitulï¿½ :</td><td><input type="texte" name="Remarque" value="" size="35"</td></tr>
 <tr><td></td><td>
-<input type="submit" name="Submit" value="Commander"> <input type="checkbox" name="Definitif">Commande définitive
+<input type="submit" name="Submit" value="Commander"> <input type="checkbox" name="Definitif">Commande dï¿½finitive
 <input type="hidden" name="IDFournisseur" value="<?=$critere?>">
 </td></tr></table>
 </div>

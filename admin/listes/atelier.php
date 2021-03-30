@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:68
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: atelier.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:05
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 /* config attributs */
@@ -22,7 +32,7 @@ $attribMAT = 11;
 
 $attribHOR = 12;
 
-// liste des ids des apprentis, triées par classe et par nom
+// liste des ids des apprentis, triï¿½es par classe et par nom
 $listeIds = array();
 
 /* mode html ou excel */
@@ -48,7 +58,7 @@ if(isset($_GET['idEleve'])) {
 	$IDEleve = $_GET['idEleve'];
 }
 
-// si APP pas chargé l'effectuer maintenant
+// si APP pas chargï¿½ l'effectuer maintenant
 //require_once("Session.php");
 //if(!application_loaded()) {
 	//echo "reload app";
@@ -148,13 +158,13 @@ function nextEntry($connexion, $data) {
 }
 
 //if(!hasAdminRigth() && $modeHTML) {
-//	echo "<br><center><b>Contenu non autorisé.</b></center>";
+//	echo "<br><center><b>Contenu non autorisï¿½.</b></center>";
 //} else {
-/* année en cours */
+/* annï¿½e en cours */
 $annee = date('Y');
 $mois = date('m');
 
-/* en-tête */
+/* en-tï¿½te */
 if($mois<8) {
 	$anneePlus = $annee;
 	$annee = $annee-1;
@@ -168,7 +178,7 @@ if(!$modeHTML) {
 	// form
 	echo "<FORM id='myForm' ACTION='atelier.php'  METHOD='GET'>";
 	echo "<input type='hidden' name='modeHTML'>";
-	echo "<br><table width='100%'><tr><td><!-- h2>&nbsp;Liste élèves $app_section $annee - $anneePlus</h2 --></td><td align='right'>Mode d'affichage <select id='modeAff' name='modeAff' onChange='submit();'>";
+	echo "<br><table width='100%'><tr><td><!-- h2>&nbsp;Liste ï¿½lï¿½ves $app_section $annee - $anneePlus</h2 --></td><td align='right'>Mode d'affichage <select id='modeAff' name='modeAff' onChange='submit();'>";
 	if($modeAff==0) {
 		echo "<option value='".$attribNormal."' selected='selected'>Normal</option><option value='".$attribCarnet."'>Carnets</option>";
 	} else {
@@ -194,7 +204,7 @@ if(!$modeHTML) {
 			echo "<option value='$pos'>$value</option>";
 		}
 	}
-	// ajout d'une ligne pour interrogation des anciennes années (id=100)
+	// ajout d'une ligne pour interrogation des anciennes annï¿½es (id=100)
 	if(isset($classe) && $classe==100) {
 		echo "<option value='100' selected='selected'>Anciens</option>";
 	} else {
@@ -204,16 +214,16 @@ if(!$modeHTML) {
 	/*
 	$linkDB = "";
 	if($connexion!=null) {
-		$linkDB = "<a href='atelier.php?modeHTML&modeLocal=1'><img src='/iconsFam/database_refresh.png' onmouseover=\"Tip('Désactiver GDN')\" onmouseout='UnTip()'></a>";
+		$linkDB = "<a href='atelier.php?modeHTML&modeLocal=1'><img src='/iconsFam/database_refresh.png' onmouseover=\"Tip('Dï¿½sactiver GDN')\" onmouseout='UnTip()'></a>";
 	} else {
 		$linkDB = "<a href='atelier.php?modeHTML&modeLocal=0'><img src='/iconsFam/database_refresh.png' onmouseover=\"Tip('Activer GDN')\" onmouseout='UnTip()'></a>";
 	} */
-	echo "<div class='post'><div id='corners'><div id='legend'>Liste élèves $app_section $annee - $anneePlus</div><table id='hor-minimalist-b' width='100%'><tr><th colspan='2'><a href='atelier.php'><img src='/iconsFam/page_excel.png' onmouseover=\"Tip('Liste Excel')\" onmouseout='UnTip()'></a>";
+	echo "<div class='post'><div id='corners'><div id='legend'>Liste ï¿½lï¿½ves $app_section $annee - $anneePlus</div><table id='hor-minimalist-b' width='100%'><tr><th colspan='2'><a href='atelier.php'><img src='/iconsFam/page_excel.png' onmouseover=\"Tip('Liste Excel')\" onmouseout='UnTip()'></a>";
 	//echo "<a href='syncGDN.php'><img src='/iconsFam/arrow_refresh.png' onmouseover=\"Tip('Synchro local-GDN')\" onmouseout='UnTip()'></a> $linkDB ";
-	echo "<a href='../detail/detailEleve.php'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter élève')\" onmouseout='UnTip()'></a></th><th></th><th align='center'>Vestiaire</th><th align='center'>Jetons</th><th align='center' width='100'>Clé</th><th width='100'>Utilisateur/<br>Nom PC</th><!-- th align='center' width='100'>Chaise/<br>Banc</th --><th>Adresse</th><th align='center' width='120'>Tel. Parents/<br>Personnel</th><th></th><th width='100' align='center'>Date de naissance</th><!-- <th>ID GDN</th> --></tr>\n";
+	echo "<a href='../detail/detailEleve.php'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter ï¿½lï¿½ve')\" onmouseout='UnTip()'></a></th><th></th><th align='center'>Vestiaire</th><th align='center'>Jetons</th><th align='center' width='100'>Clï¿½</th><th width='100'>Utilisateur/<br>Nom PC</th><!-- th align='center' width='100'>Chaise/<br>Banc</th --><th>Adresse</th><th align='center' width='120'>Tel. Parents/<br>Personnel</th><th></th><th width='100' align='center'>Date de naissance</th><!-- <th>ID GDN</th> --></tr>\n";
 }
 
-// gestion des modification sur élève
+// gestion des modification sur ï¿½lï¿½ve
 if(!empty($IDEleve) && $modeAff!=0) {
 	$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $IDEleve and IDAttribut = $modeAff";
 	//echo $requete."<br>";
@@ -232,13 +242,13 @@ if(!empty($IDEleve) && $modeAff!=0) {
 
 }
 if(!empty($_GET['reset']) && $modeAff!=0) {
-	// effacer l'attribut pour tous les élèves
+	// effacer l'attribut pour tous les ï¿½lï¿½ves
 	$requete = "DELETE from $tableAttribEleves where IDAttribut=$modeAff";
 	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
 if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
-	// ajouter une remarque de carnet non signés
+	// ajouter une remarque de carnet non signï¿½s
 	$requete = "SELECT distinct IDGDN as IDEleve from $tableEleves where IDGDN not in (SELECT IDEleve from $tableAttribEleves where IDAttribut=100)";
 	$requeteNew = "SELECT distinct el.IDGDN as IDEleve from $tableEleves as el join elevesbk as elbk on el.IDGDN=elbk.IDGDN where el.IDEntreprise=1 and elbk.Classe in ('ZZZ'";
 	foreach ($configurationATE as $pos => $value) {
@@ -253,12 +263,12 @@ if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
 		mysqli_query($connexionDB,$requeteUpd);
 		$cntModif++;
 	}
-	// effacer l'attribut pour tous les élèves
+	// effacer l'attribut pour tous les ï¿½lï¿½ves
 	$requete = "DELETE from $tableAttribEleves where IDAttribut=$modeAff";
 	$resultat =  mysqli_query($connexionDB,$requete);
 }
 
-// construction de la liste des classe si 'ancien' à été choisi
+// construction de la liste des classe si 'ancien' ï¿½ ï¿½tï¿½ choisi
 if(isset($classe)&&$classe==100) {
 	$requeteCl = "select distinct Classe from elevesbk where Classe not in (''";
 	foreach ($configurationATE as $pos => $value) {
@@ -297,11 +307,11 @@ if(isset($classe)&&$classe==101) {
 }
 
 
-/* tableau des élèves par jour et construction de l'entête*/
+/* tableau des ï¿½lï¿½ves par jour et construction de l'entï¿½te*/
 $cntCell = 3;
 foreach ($configurationATE as $pos => $value) {
 	if(empty($classe) || $classe==$pos || $classe==100 || ($classe==101 && strpos($value, $app_section)===0)) {
-		// Récupérer la liste des adresses e-mail des profs (seulement si la DB de la GDN est accessible)
+		// Rï¿½cupï¿½rer la liste des adresses e-mail des profs (seulement si la DB de la GDN est accessible)
 		$liste_emails_profs = "" ;
 		/*
 		if($connexion!=null)
@@ -315,7 +325,7 @@ foreach ($configurationATE as $pos => $value) {
 			//}
 		} */
 
-		// associer la liste d'élève
+		// associer la liste d'ï¿½lï¿½ve
 		//if($connexion!=null) {
 			//$stmt = ociparse($connexion,"$GDN_eleves WHERE $GDN_tri like '$value%' $GDN_orderby");
 			//ociexecute($stmt,OCI_DEFAULT);
@@ -330,7 +340,7 @@ foreach ($configurationATE as $pos => $value) {
 			$objPHPExcel->getActiveSheet()->getStyle("A".$cntCell++)->getFont()->setBold(true);
 		} else {
 			echo "<tr><td colspan='10'><b><a href='#' onClick='toggle(\"block$pos\");'>$value</a></b></td><td colspan='3'>";
-			//echo "<a href='' id='email_eleve_$value'>  <img src='/iconsFam/iconStudent.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email à la classe')\" onmouseout='UnTip()'></a>";
+			//echo "<a href='' id='email_eleve_$value'>  <img src='/iconsFam/iconStudent.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email ï¿½ la classe')\" onmouseout='UnTip()'></a>";
 			//echo "<a href='mailto:$liste_emails_profs' id='email_profs_$value'>  <img src='/iconsFam/iconProfessor.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email aux enseigants')\" onmouseout='UnTip()'></a>";
 			echo "</td></tr>\n";
 		}
@@ -343,7 +353,7 @@ foreach ($configurationATE as $pos => $value) {
 			//if(strstr(getValue($connexion,$data,9),"+1")) {
 			//	$troisplusun = true;
 			//}
-			// recherche des données complémentaires
+			// recherche des donnï¿½es complï¿½mentaires
 
 			//$idGDN = getValue($connexion,$data,1);
 			$idGDN = $data['IDGDN'];
@@ -358,7 +368,7 @@ foreach ($configurationATE as $pos => $value) {
 			if($resultat!=null) {
 				$ligne = mysqli_fetch_assoc($resultat);
 			}
-			// ajout dans liste éleves si internes
+			// ajout dans liste ï¿½leves si internes
 			//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
 			if($ligne['IDEntreprise']==1) {
 				$listeIds[] = array($idGDN,htmlentities($nom, ENT_QUOTES),$prenom,$value);
@@ -378,7 +388,7 @@ foreach ($configurationATE as $pos => $value) {
 					//writeToCell($stmt,6,$objPHPExcel,"K",$cntCell,$troisplusun);
 					writeDataToCell($data['Email'],$objPHPExcel,"N",$cntCell,$troisplusun);
 					//writeToCell($stmt,7,$objPHPExcel,"N",$cntCell,$troisplusun);
-					// données uniquement de srv-electro
+					// donnï¿½es uniquement de srv-electro
 					writeDataToCell($ligne['NoVestiaire'],$objPHPExcel,"C",$cntCell,$troisplusun);
 					writeDataToCell($ligne['NoJeton'],$objPHPExcel,"D",$cntCell,$troisplusun);
 					writeDataToCell($ligne['NoBadge'],$objPHPExcel,"E",$cntCell,$troisplusun);
@@ -413,7 +423,7 @@ foreach ($configurationATE as $pos => $value) {
 						if($ico['IDAttribut']==$attribTel) {
 							echo "Malade";
 						} else {
-							echo "Congé aujourd\'hui";
+							echo "Congï¿½ aujourd\'hui";
 						}
 						echo ": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 					}
@@ -422,7 +432,7 @@ foreach ($configurationATE as $pos => $value) {
 					$resultat =  mysqli_query($connexionDB,$requete);
 					$ico = mysqli_fetch_assoc($resultat);
 					if($ico!=null) {
-						echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
+						echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congï¿½ le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 					}
 					if($ligne['IDEntreprise']!=1) {
 						echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
@@ -485,7 +495,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Délégué de classe')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Dï¿½lï¿½guï¿½ de classe')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -517,7 +527,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('Horaire bloqué')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('Horaire bloquï¿½')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -529,7 +539,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('Hors liste tâches')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('Hors liste tï¿½ches')\" onmouseout='UnTip()'>";
 						}
 
 					} else {
@@ -601,11 +611,11 @@ foreach ($configurationATE as $pos => $value) {
 	}
 }
 
-//mémorisation de la liste d'éleves en session
+//mï¿½morisation de la liste d'ï¿½leves en session
 $_SESSION['listeId'] = $listeIds;
 
 if(!$modeHTML) {
-	// générer la feuille excel
+	// gï¿½nï¿½rer la feuille excel
 	$writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 	header('Content-type: application/vnd.ms-excel');
 	header("Content-Disposition: attachment;Filename=liste.xls");
@@ -613,12 +623,12 @@ if(!$modeHTML) {
 } else {
 ?>
 </table></div><br><br>
-<div id='corners'><div id='legend'>Légende</div>
+<div id='corners'><div id='legend'>Lï¿½gende</div>
 <br><table border='0'>
-<!-- tr><td colspan><b>Légendes:</b></td></tr -->
-<tr><td width='5'></td><td>Formation 3 + 1</td><td><img src='/iconsFam/award_star_gold_1.png'></td><td width='100'></td><td>Délégué de classe</td><td><img src='/iconsFam/rosette.png'></td><td width='100'></td><td>Horaire bloqué</td><td><img src='/iconsFam/clock_error.png'></td><td width='100'></td><td>Stage</td><td><img src='/iconsFam/building_go.png'></td></tr>
-<tr><td width='5'></td><td>Inscrit(e) 3 + 1</td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td>Cours d'appui</td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('Anglais')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('Allemand')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('Maths')" onmouseout='UnTip()'></td><td width='100'></td><td>Hors liste tâches</td><td><img src='/iconsFam/cog_delete.png'></td></tr>
-<tr><td width='5'></td><td>Inscrit(e) 3 + 1, prép. MPT</td><td><img src='/iconsFam/award_star_silver_3.png'></td><td width='100'></td><td>Cours prép. MPT</td><td><img src='/iconsFam/medal_silver_3.png'></td><td width='100'></td><td>Formation dual</td><td><img src='/iconsFam/building.png'></td></tr>
+<!-- tr><td colspan><b>Lï¿½gendes:</b></td></tr -->
+<tr><td width='5'></td><td>Formation 3 + 1</td><td><img src='/iconsFam/award_star_gold_1.png'></td><td width='100'></td><td>Dï¿½lï¿½guï¿½ de classe</td><td><img src='/iconsFam/rosette.png'></td><td width='100'></td><td>Horaire bloquï¿½</td><td><img src='/iconsFam/clock_error.png'></td><td width='100'></td><td>Stage</td><td><img src='/iconsFam/building_go.png'></td></tr>
+<tr><td width='5'></td><td>Inscrit(e) 3 + 1</td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td>Cours d'appui</td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('Anglais')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('Allemand')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('Maths')" onmouseout='UnTip()'></td><td width='100'></td><td>Hors liste tï¿½ches</td><td><img src='/iconsFam/cog_delete.png'></td></tr>
+<tr><td width='5'></td><td>Inscrit(e) 3 + 1, prï¿½p. MPT</td><td><img src='/iconsFam/award_star_silver_3.png'></td><td width='100'></td><td>Cours prï¿½p. MPT</td><td><img src='/iconsFam/medal_silver_3.png'></td><td width='100'></td><td>Formation dual</td><td><img src='/iconsFam/building.png'></td></tr>
 </table></div>
 </div> <!-- post -->
 </form>

@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:76
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: listeCoursCIE.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:35
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 $annee = date('Y');
@@ -37,11 +47,11 @@ if(isset($_GET['effacerCours'])) {
 	// effacer cours
 	$requete = "DELETE FROM courscie where IDCours=$IDCours";
 	$resultat =  mysqli_query($connexionDB,$requete);
-	// rechercher les évlauationa et observation pour chaque inscriptions à effacer
+	// rechercher les ï¿½vlauationa et observation pour chaque inscriptions ï¿½ effacer
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	while($ligne = mysqli_fetch_assoc($resultat)) {
-		// évaluations
+		// ï¿½valuations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
 		mysqli_query($connexionDB,$requeteDel);
 		// observation
@@ -56,11 +66,11 @@ if(isset($_GET['effacerCours'])) {
 
 if(isset($_GET['effacerInscription'])) {
 	$IDCours = $_GET['effacerInscription'];
-	// rechercher les évlauations et observation pour chaque inscription à effacer
+	// rechercher les ï¿½vlauations et observation pour chaque inscription ï¿½ effacer
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	while($ligne = mysqli_fetch_assoc($resultat)) {
-		// évaluations
+		// ï¿½valuations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
 		mysqli_query($connexionDB,$requeteDel);
 		// observation
@@ -73,11 +83,11 @@ if(isset($_GET['effacerInscription'])) {
 }
 if(isset($_GET['effacerEvaluation'])) {
 	$IDCours = $_GET['effacerEvaluation'];
-	// rechercher les évlauations et observation pour chaque inscription concernée
+	// rechercher les ï¿½vlauations et observation pour chaque inscription concernï¿½e
 	$requete = "SELECT IDDocEleve from docelevecie where IDCours=$IDCours";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	while($ligne = mysqli_fetch_assoc($resultat)) {
-		// évaluations
+		// ï¿½valuations
 		$requeteDel = "DELETE FROM appcompetencecie where IDDocEleve=".$ligne['IDDocEleve'];
 		mysqli_query($connexionDB,$requeteDel);
 		// observation
@@ -159,7 +169,7 @@ if(<?=$id?>!=0) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 echo "<FORM id='myForm' ACTION='listeCoursCIE.php'  METHOD='POST'>";
 echo "<input type='hidden' name='actionCours' value=''>";
 echo "<input type='hidden' name='cours' value=''>";
@@ -177,11 +187,11 @@ for($cntA=0;$cntA<5;$cntA++) {
 	$optionAnnee .= ">".($annee-$cntA)."</option>";
 }
 // construction de la liste des cours
-echo "<br><table border=0 width='100%'><tr><td><!-- h2>Liste des cours CIE</h2 --></td><td align='right'>Année civile: <select name='annee' onchange='submit();'>".$optionAnnee."</select></td></tr></table>";
+echo "<br><table border=0 width='100%'><tr><td><!-- h2>Liste des cours CIE</h2 --></td><td align='right'>Annï¿½e civile: <select name='annee' onchange='submit();'>".$optionAnnee."</select></td></tr></table>";
 echo "<br><div id='corners'>";
 echo "<div id='legend'>Liste des cours CIE</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
-echo "<tr><th width='250'>Cours</th><th width='80'>Version CC</th><th width='150'>Dates du cours</th><th width='50'>Jours</th><th width='100'>Responsable</th><th>Inscrits</th><th>Scannés</th><th>Eval APP</th><th>Eval MAI</th><th></th></tr>";
+echo "<tr><th width='250'>Cours</th><th width='80'>Version CC</th><th width='150'>Dates du cours</th><th width='50'>Jours</th><th width='100'>Responsable</th><th>Inscrits</th><th>Scannï¿½s</th><th>Eval APP</th><th>Eval MAI</th><th></th></tr>";
 //$requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, sum(if(''=PDFSigne OR PDFSigne is NULL, 0, 1)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours group by cours.IDCours order by TitreCIE, Dates";
 $requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, coalesce(sum(Uploaded)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours where Dates like '%".$anneeTri."' group by cours.IDCours order by TitreCIE, Dates";
 //echo $requeteH;
@@ -202,7 +212,7 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 		echo " style='color:#FF0000'";
 	}
 	echo ">".$ligne['pdf']."</td>";
-	// recherche des éventuelles évaluations présentes
+	// recherche des ï¿½ventuelles ï¿½valuations prï¿½sentes
 	$requeteEval = "select IDEleve from docelevecie as docel join appcompetencecie as app on docel.IDDocEleve=app.IDDocEleve where IDCours=".$ligne['IDCours']." and EvalAPP <> 0 group by IDEleve";
 	$resultEval = mysqli_query($connexionDB,$requeteEval);
 	$num = mysqli_num_rows($resultEval);
@@ -221,20 +231,20 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 	echo ">".$num."</td>";
 	echo "<td align='center'>";
 	if($ligne['pdf']==0) {
-		echo "<a href='listeCoursCIE.php?effacerCours=".$ligne['IDCours']."' onclick='return confirm(\"Supprimer ce cours ainsi que toutes les évaluations déjà saisies?\")'><img src='/iconsFam/book_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce cours')\" onmouseout='UnTip()'></a>";
+		echo "<a href='listeCoursCIE.php?effacerCours=".$ligne['IDCours']."' onclick='return confirm(\"Supprimer ce cours ainsi que toutes les ï¿½valuations dï¿½jï¿½ saisies?\")'><img src='/iconsFam/book_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce cours')\" onmouseout='UnTip()'></a>";
 		if($ligne['Inscrits']!=0) {
-			echo "<a href='listeCoursCIE.php?effacerInscription=".$ligne['IDCours']."' onclick='return confirm(\"Désinscrire la classe et supprimer toutes les évaluations déjà saisies?\")'><img src='/iconsFam/user_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer les inscriptions')\" onmouseout='UnTip()'></a>";
+			echo "<a href='listeCoursCIE.php?effacerInscription=".$ligne['IDCours']."' onclick='return confirm(\"Dï¿½sinscrire la classe et supprimer toutes les ï¿½valuations dï¿½jï¿½ saisies?\")'><img src='/iconsFam/user_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer les inscriptions')\" onmouseout='UnTip()'></a>";
 		}
 	}
 	else if($ligne['pdf']==$ligne['Inscrits']) {
-		// possibilité de purger les évaluations et observations
-		echo "<a href='listeCoursCIE.php?effacerEvaluation=".$ligne['IDCours']."' onclick='return confirm(\"Supprimer les évaluations saisies et ne conserver que les documents scannés?\")'><img src='/iconsFam/folder_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer les évaluations')\" onmouseout='UnTip()'></a>";
+		// possibilitï¿½ de purger les ï¿½valuations et observations
+		echo "<a href='listeCoursCIE.php?effacerEvaluation=".$ligne['IDCours']."' onclick='return confirm(\"Supprimer les ï¿½valuations saisies et ne conserver que les documents scannï¿½s?\")'><img src='/iconsFam/folder_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer les ï¿½valuations')\" onmouseout='UnTip()'></a>";
 	}
 	echo "</td>";
 	echo "</tr>";
 }
 echo "<tr><td colspan='10' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
-echo "<tr><td colspan='3'><b>Total</b></td><td align='center'>".sprintf("%01.1f",$totalJour)."</td><td colspan='5'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un cours')\" onmouseout='UnTip()' onclick='toggle(\"newCours\");' align='absmiddle'><img src='/iconsFam/user_add.png' onmouseover=\"Tip('Inscrire à un cours')\" onmouseout='UnTip()' onclick='toggle(\"insCours\");' align='absmiddle'></td></tr>";
+echo "<tr><td colspan='3'><b>Total</b></td><td align='center'>".sprintf("%01.1f",$totalJour)."</td><td colspan='5'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un cours')\" onmouseout='UnTip()' onclick='toggle(\"newCours\");' align='absmiddle'><img src='/iconsFam/user_add.png' onmouseover=\"Tip('Inscrire ï¿½ un cours')\" onmouseout='UnTip()' onclick='toggle(\"insCours\");' align='absmiddle'></td></tr>";
 echo "<tr newCours='1' style='display:none' ><td colspan='10' valign='bottom' height='30'><b>Ajouter un cours CIE:</b></td></tr>";
 // liste des documents
 $requeteD = "SELECT * from doccie ORDER BY TitreCIE";
@@ -246,13 +256,13 @@ while($li = mysqli_fetch_assoc($resultatD)) {
 
 echo "<tr newCours='1' style='display:none'><td colspan='2'><select name='IDDoc'>".$options."</select></td><td><input name='Dates' value='' size='15'></td><td><input name='Jours' value='' size='1'></td><td colspan='2'><input name='Responsable' value='' size='15'></td><td colspan='4' align='right'><input type='submit' name='ajouterCours' value='Ajouter'></td></tr>";
 echo "<tr insCours='1' style='display:none'><td colspan='10' valign='bottom' height='30'><b>Inscriptions aux cours CIE:</b></td></tr>";
-echo "<tr insCours='1' style='display:none'><td colspan='8'>Inscrire la classe <select name='classe'><option value=''></option><option value='".$app_section." 1'>".$app_section." 1</option><option value='".$app_section." 2'>".$app_section." 2</option><!-- option value='".$app_section." 3'>".$app_section." 3</option --></select> pour le cours sélectionné ci-dessus</td><td colspan='2' align='right'><input type='submit' name='inscrire' value='Inscrire'></td></tr>";
+echo "<tr insCours='1' style='display:none'><td colspan='8'>Inscrire la classe <select name='classe'><option value=''></option><option value='".$app_section." 1'>".$app_section." 1</option><option value='".$app_section." 2'>".$app_section." 2</option><!-- option value='".$app_section." 3'>".$app_section." 3</option --></select> pour le cours sï¿½lectionnï¿½ ci-dessus</td><td colspan='2' align='right'><input type='submit' name='inscrire' value='Inscrire'></td></tr>";
 echo "</table></div><br>";
 
 // construction de la liste des documents
-echo "<br><table border=0 width='100%'><tr><td><!-- h2>Liste des documents \"Contrôle de compétences\" et contenu</h2 --></td><td align='right'></td></tr></table>";
+echo "<br><table border=0 width='100%'><tr><td><!-- h2>Liste des documents \"Contrï¿½le de compï¿½tences\" et contenu</h2 --></td><td align='right'></td></tr></table>";
 echo "<br><div id='corners'>";
-echo "<div id='legend'>Liste des documents \"Contrôle de compétences\" et contenu</div>";
+echo "<div id='legend'>Liste des documents \"Contrï¿½le de compï¿½tences\" et contenu</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250' colspan='3'>Document</th><th width='150'>Version</th><th></th width='10'></tr>";
 // liste des ressources
@@ -305,7 +315,7 @@ while($ligne = mysqli_fetch_assoc($resultatH)) {
 		echo "<tr doc$doc='1' style='display:none'><td width='25'></td><td width='10'></td><td>".$ligne['Numero']." ".$ligne['Description']."</td><td></td>";
 		echo "<td align='right'>";
 		//if($ligne['eval']==0) {
-			echo "<a href='listeCoursCIE.php?effacerCompetence=".$ligne['IDCompetence']."&IDDoc=".$doc."'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette compétence')\" onmouseout='UnTip()'></a>";
+			echo "<a href='listeCoursCIE.php?effacerCompetence=".$ligne['IDCompetence']."&IDDoc=".$doc."'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette compï¿½tence')\" onmouseout='UnTip()'></a>";
 		//}
 		echo "</td></tr>";
 	}
@@ -316,7 +326,7 @@ if($doc!=0) {
 
 echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 echo "<tr><td colspan='4'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un document')\" onmouseout='UnTip()' onclick='toggle(\"newDoc\");' align='absmiddle'></td></tr>";
-echo "<tr newDoc='1' style='display:none' ><td colspan='5' valign='bottom' height='30'><b>Ajouter un document de contrôle de compétences:</b></td></tr>";
+echo "<tr newDoc='1' style='display:none' ><td colspan='5' valign='bottom' height='30'><b>Ajouter un document de contrï¿½le de compï¿½tences:</b></td></tr>";
 echo "<tr newDoc='1' style='display:none' ><td colspan='3'><input type='text' name='NomDoc' size='30'></input></td><td><input type='text' name='VersionDoc' size='10'></td><td><input type='submit' name='ajouterDoc' value='Ajouter'></input></td></tr>";
 echo "</table></div>";
 

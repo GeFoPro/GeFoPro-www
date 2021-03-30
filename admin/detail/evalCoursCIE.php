@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:57
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: evalCoursCIE.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:10
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 $admin = hasAdminRigth();
@@ -42,11 +52,11 @@ if(isset($_SESSION['listeId'])) {
 }
 
 if(isset($_POST['evaluation'])) {
-	// appréciation apprenti
+	// apprï¿½ciation apprenti
 	//print_r($_POST);
 	$IDDocEleve=$_POST['IDDocEleve'];
 	$role = $_POST['Role'];
-	// effacer les évaluations existantes
+	// effacer les ï¿½valuations existantes
 	//$requete = "delete from appcompetencecie where IDDocEleve=".$IDDocEleve;
         //echo $requete."<br>";
 	//mysqli_query($connexionDB,$requete);
@@ -54,7 +64,7 @@ if(isset($_POST['evaluation'])) {
 	foreach ($_POST as $key => $value) {
     		if (strpos($key, $role) === 0) {
 			//echo $key." -> ".substr($key,3)." = ".$value."<br>";
-			// recherche si déja existant
+			// recherche si dï¿½ja existant
 			$requete = "select * from appcompetencecie where IDCompetence=".substr($key,3)." and IDDocEleve=$IDDocEleve";
 			//echo $requete."<br>";
 			$result = mysqli_query($connexionDB,$requete);
@@ -69,7 +79,7 @@ if(isset($_POST['evaluation'])) {
 			mysqli_query($connexionDB,$requete);
     		}
 	}
-	// mise à jour du cours de l'élève
+	// mise ï¿½ jour du cours de l'ï¿½lï¿½ve
 	if($admin) {
 		$requete = "update docelevecie set AbsencesEx=".$_POST['absencesEx'].", AbsencesNonEx=".$_POST['absencesNonEx'].", Encouragement='".addslashes($_POST['encouragement'])."'";
 		if(!empty($_POST['dateDiscussion'])) {
@@ -87,7 +97,7 @@ if(isset($_POST['evaluation'])) {
 		//echo $requete."<br>";
 		mysqli_query($connexionDB,$requete);
 	}
-	// mise à jour des observations
+	// mise ï¿½ jour des observations
 	foreach ($competencesCIE as $key => $value) {
 		$obs = addslashes($_POST['observ'.$key]);
 		if(!empty($obs)) {
@@ -179,7 +189,7 @@ function submitNewCompetence(doc) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 echo "<FORM id='myForm' ACTION='evalCoursCIE.php'  METHOD='POST' enctype='multipart/form-data'>";
 echo "<input type='hidden' name='actionCours' value=''>";
 echo "<input type='hidden' name='IDEleve' value='".$IDEleve."'>";
@@ -208,7 +218,7 @@ if(isset($listeId)&&!empty($listeId)) {
 }
 echo "</h2></td><td align='right'>";
 
-// liste des cours de l'élève si ID renseigné
+// liste des cours de l'ï¿½lï¿½ve si ID renseignï¿½
 if(!empty($IDEleve)) {
 	$requeteH = "SELECT cours.IDCours, doc.TitreCIE FROM docelevecie as el join courscie as cours on el.IDCours=cours.IDCours join doccie as doc on cours.IDDoc=doc.IDDoc WHERE IDEleve=$IDEleve AND pdfSigne is null order by TitreCIE,Dates";
 	//echo $requeteH."<br>";
@@ -237,7 +247,7 @@ $requeteH = "SELECT doc.TitreCIE, doc.IDDoc, el.IDDocEleve, el.AbsencesEx, el.Ab
 $resultatH =  mysqli_query($connexionDB,$requeteH);
 $docinfo = mysqli_fetch_assoc($resultatH);
 echo "<br><div id='corners'>";
-echo "<div id='legend'>Auto-évaluation du cours CIE</div>";
+echo "<div id='legend'>Auto-ï¿½valuation du cours CIE</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250' colspan='2'>".$docinfo['TitreCIE']."</th><th width='10' align='center'>A</th><th width='10' align='center'>B</th><th width='10' align='center'>C</th><th width='10' align='center'>D</th>";
 $colspan = 6;
@@ -267,7 +277,7 @@ while($ligne = mysqli_fetch_assoc($resultatH)) {
 
 	if(!empty($ligne['Numero'])) {
 		if($ressource!=substr($ligne['Numero'], 0, 3 )) {
-			// insertion d'une zone d'observation de la catégorie précédente
+			// insertion d'une zone d'observation de la catï¿½gorie prï¿½cï¿½dente
 			if($admin&&!empty($ressource)) {
 				echo "<tr><td width='10'></td><td valign='top'>Observations:</td><td colspan='9'><textarea name='observ".$ressource."' COLS=40 ROWS=4>".(isset($obsArray[$ressource])?$obsArray[$ressource]:"")."</textarea></td></tr>";
 				echo "<tr><td colspan='".$colspan."' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
@@ -294,14 +304,14 @@ if($admin) {
 	}
 	echo "<tr><td colspan='".$colspan."' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 	echo "<tr><td colspan='2' valign='top'><b>Observations et mesures d'encouragement:</b></td><td colspan='9'><textarea name='encouragement' COLS=40 ROWS=4>".$docinfo['Encouragement']."</textarea></td></tr>";
-	echo "<tr><td colspan='2' valign='top'><b>Absences excusées:</b></td><td colspan='9'><input type='text' name='absencesEx' size='2' value='".$docinfo['AbsencesEx']."'></input></td></tr>";
-	echo "<tr><td colspan='2' valign='top'><b>Absences non excusées:</b></td><td colspan='9'><input type='text' name='absencesNonEx' size='2' value='".$docinfo['AbsencesNonEx']."'></input></td></tr>";
-	echo "<tr><td colspan='2' valign='top'><b>Date de discussion de l'évaluation avec l'apprenti:</b></td><td colspan='9'><input type='text' name='dateDiscussion' size='10' ";
+	echo "<tr><td colspan='2' valign='top'><b>Absences excusï¿½es:</b></td><td colspan='9'><input type='text' name='absencesEx' size='2' value='".$docinfo['AbsencesEx']."'></input></td></tr>";
+	echo "<tr><td colspan='2' valign='top'><b>Absences non excusï¿½es:</b></td><td colspan='9'><input type='text' name='absencesNonEx' size='2' value='".$docinfo['AbsencesNonEx']."'></input></td></tr>";
+	echo "<tr><td colspan='2' valign='top'><b>Date de discussion de l'ï¿½valuation avec l'apprenti:</b></td><td colspan='9'><input type='text' name='dateDiscussion' size='10' ";
 	if($docinfo['DateDiscussion']!=0) {
 		echo "value='".date('d.m.Y', strtotime($docinfo['DateDiscussion']))."'";
 	}
 	echo "></input></td></tr>";
-	echo "<tr><td colspan='2' valign='top'><b>Document signé:</b></td><td colspan='9'><input type='hidden' name='MAX_FILE_SIZE' value='5000000'><input type='file' name='docSigne'>";
+	echo "<tr><td colspan='2' valign='top'><b>Document signï¿½:</b></td><td colspan='9'><input type='hidden' name='MAX_FILE_SIZE' value='5000000'><input type='file' name='docSigne'>";
 	if($docinfo['Uploaded']==1)  {
 		echo " <img src='/iconsFam/tick.png'> <a href='lireScanCIE.php?IDEleve=".$IDEleve."&IDCours=".$IDCours."' target='pdf'><img src='/iconsFam/page_white_acrobat.png'></a>";
 	} else {
@@ -319,15 +329,15 @@ if($admin) {
 
 echo "</table>";
 
-echo "<br><b>Echelle d'évaluation:</b><br><table border=0>";
-echo "<tr><td width='20'><b>A</b></td><td>Exigences dépassées</td></tr>";
+echo "<br><b>Echelle d'ï¿½valuation:</b><br><table border=0>";
+echo "<tr><td width='20'><b>A</b></td><td>Exigences dï¿½passï¿½es</td></tr>";
 echo "<tr><td width='20'><b>B</b></td><td>Exigences atteintes</td></tr>";
-echo "<tr><td width='20'><b>C</b></td><td>Exigences juste atteintes, mesures de soutien nécessaires</td></tr>";
-echo "<tr><td width='20'><b>D</b></td><td>Exigences pas atteintes, mesures particulières nécessaires</td></tr>";
+echo "<tr><td width='20'><b>C</b></td><td>Exigences juste atteintes, mesures de soutien nï¿½cessaires</td></tr>";
+echo "<tr><td width='20'><b>D</b></td><td>Exigences pas atteintes, mesures particuliï¿½res nï¿½cessaires</td></tr>";
 echo "</table></div>";
 }
 //if($cntCours==0) {
-//	echo "<center>Aucune évaluation en cours.</center>";
+//	echo "<center>Aucune ï¿½valuation en cours.</center>";
 //}
 ?>
 

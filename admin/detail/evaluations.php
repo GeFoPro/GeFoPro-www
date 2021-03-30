@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:57
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: evaluations.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:33
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 if(hasAdminRigth()) {
@@ -32,11 +42,11 @@ if(isset($_POST['from'])) {
 	$from = $_POST['from'];
 }
 
-/* année en cours */
+/* annï¿½e en cours */
 $annee = date('Y');
 
 $mois = date('m');
-/* années pour en-tête */
+/* annï¿½es pour en-tï¿½te */
 if($mois<8) {
 	$anneePlus = $annee;
 	$annee = $annee-1;
@@ -69,7 +79,7 @@ if(isset($_POST['IDEvaluation'])) {
 $trpond = -1;
 $prpond = -1;
 $dipond = -1;
-// modification ou ajout d'une évaluation
+// modification ou ajout d'une ï¿½valuation
 if(isset($_POST['action'])&&!empty($_POST['action'])) {
 	$action = $_POST['action'];
 	$trpond = $_POST['travail'];
@@ -85,8 +95,8 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 	$notere = $_POST['rendement'];
 	$notese = $_POST['savoirEtre'];
 	if(!isset($trpond) || !isset($prpond) || !isset($dipond) || empty($trtxt) || empty($prtxt) || empty($ditxt) || empty($amtxt) || empty($notete) || empty($noteap) || empty($notere)  || empty($notese)) {
-		//$msg="<font color='#FF0000'>Tous les champs doivent être renseignés</font><script>alert(\"<font color='#FF0000'>Tous les champs doivent être renseignés!</font>\");</script>";
-		$msg="<script>alert(\"Tous les champs doivent être renseignés!\");</script>";
+		//$msg="<font color='#FF0000'>Tous les champs doivent ï¿½tre renseignï¿½s</font><script>alert(\"<font color='#FF0000'>Tous les champs doivent ï¿½tre renseignï¿½s!</font>\");</script>";
+		$msg="<script>alert(\"Tous les champs doivent ï¿½tre renseignï¿½s!\");</script>";
 		if(!isset($trpond)) {
 			$trpond = -1;
 		}
@@ -104,28 +114,28 @@ if(isset($_POST['action'])&&!empty($_POST['action'])) {
 			$requete = "update evaluation set IDTheme=".$IDTheme.", IDEleve=".$IDEleve.", TravailPond=".$trpond.", TravailRemarque=\"".$trtxt."\", ProgretsPond=".$prpond.", ProgretsRemarque=\"".$prtxt."\", DifficultesPond=".$dipond.", DifficultesRemarque=\"".$ditxt."\", Ameliorations=\"".$amtxt."\", NoteTechnique=".$notete.", NoteApplication=".$noteap.", NoteRendement=".$notere.", NoteSavoirEtre=".$notese." where IDEvaluation=".$IDEvaluation;
 			//echo $requete;
     			$resultat =  mysql_query($requete);
-			$msg = "<font color='#088A08'>Evaluation modifiée avec succès</font>";
+			$msg = "<font color='#088A08'>Evaluation modifiï¿½e avec succï¿½s</font>";
 		} else {
 			$requete = "INSERT INTO evaluation (IDTheme, IDEleve, TravailPond, TravailRemarque, ProgretsPond, ProgretsRemarque, DifficultesPond, DifficultesRemarque, Ameliorations, NoteTechnique, NoteApplication, NoteRendement, NoteSavoirEtre) values ($IDTheme, $IDEleve, $trpond, \"$trtxt\", $prpond, \"$prtxt\", $dipond, \"$ditxt\", \"$amtxt\", $notete, $noteap, $notere, $notese)";
 	    		//echo $requete;
 			$resultat =  mysql_query($requete);
-			$msg = "<font color='#088A08'>Evaluation ajoutée</font>";
+			$msg = "<font color='#088A08'>Evaluation ajoutï¿½e</font>";
 		}
 	}
 }
-// test de la période pour notes
+// test de la pï¿½riode pour notes
 $requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=1 and IDTypeNote=0 and Annee=".$annee;
 //echo $requete;
 $resultat =  mysql_query($requete);
 if(!$resultat || mysql_num_rows($resultat)==0) {
-	$msgNote1 = "La période ainsi que le thème n'existent pas dans la gestion des notes. Les créer avec la pondération de base?";
+	$msgNote1 = "La pï¿½riode ainsi que le thï¿½me n'existent pas dans la gestion des notes. Les crï¿½er avec la pondï¿½ration de base?";
 } else {
-	// test du thème
+	// test du thï¿½me
 	$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$IDTheme." and IDTypeNote=0 and Annee=".$annee;
 	//echo $requete;
 	$resultat =  mysql_query($requete);
 	if(mysql_num_rows($resultat)==0) {
-		$msgNote2 = "Le thème n'existe pas dans la gestion des notes. Le créer avec la pondération de base?";
+		$msgNote2 = "Le thï¿½me n'existe pas dans la gestion des notes. Le crï¿½er avec la pondï¿½ration de base?";
 	}
 }
 if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
@@ -137,18 +147,18 @@ if(isset($_POST['validation'])&&!empty($_POST['validation'])) {
 		$requete = "update evaluation set DateValidationAuto = \"".date('Y-m-d')."\", Annee=".$anneeN.", NoSemestre=".$semestreN." where IDEvaluation = $IDEvaluation";
 		//echo $requete;
 		mysql_query($requete);
-		// ajouts nécessaire à la saisie des notes
+		// ajouts nï¿½cessaire ï¿½ la saisie des notes
 		if(!empty($msgNote1) ) {
-			// créer la période
+			// crï¿½er la pï¿½riode
 			$requete = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, Note, RemarqueNote, IDTheme, Ponderation) values ($IDEleve, $semestreN, $anneeN, 0, null, \"\", 1, 0)";
 			mysql_query($requete);
-			$msg = "<font color='#088A08'>Période ajoutée dans la gestion des notes</font>";
+			$msg = "<font color='#088A08'>Pï¿½riode ajoutï¿½e dans la gestion des notes</font>";
 		}
 		if(!empty($msgNote2) || !empty($msgNote1)) {
-			// créer le thème
+			// crï¿½er le thï¿½me
 			$requete = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, Note, RemarqueNote, IDTheme, Ponderation) values ($IDEleve, $semestreN, $anneeN, 0, null, \"\", $IDTheme, 0)";
 			mysql_query($requete);
-			$msg = "<font color='#088A08'>Période ajoutée dans la gestion des notes</font>";
+			$msg = "<font color='#088A08'>Pï¿½riode ajoutï¿½e dans la gestion des notes</font>";
 		}
 
 	} else {
@@ -209,7 +219,7 @@ function limitEvent(e) {
 </script>
 <?
 include($app_section."/userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 
 function wiki2html($text)
 {
@@ -250,7 +260,7 @@ echo "<div class='post'>";
 if(!empty($msg)) {
 	echo "<center>".$msg."</center>";
 }
-//echo "<center> <font color='#088A08'>Nouveauté: suivi simple de projets (21.03.2013)<br>Seuls les projets attribués à l'élève sont disponibles lors de l'ajour d'un suivi (15.01.2014)<br>Par défaut, seuls les suivi de projets en cours sont affichés. Un filtre de recherche est disponible (15.01.2014)<br>Le suivi est modifiable en cliquant simplement sur la ligne! (21.01.2014)<br>Support d'une syntaxe wiki simplifiée pour écriture en gras, italique et insertion de listes (21.01.2014)</font></center>";
+//echo "<center> <font color='#088A08'>Nouveautï¿½: suivi simple de projets (21.03.2013)<br>Seuls les projets attribuï¿½s ï¿½ l'ï¿½lï¿½ve sont disponibles lors de l'ajour d'un suivi (15.01.2014)<br>Par dï¿½faut, seuls les suivi de projets en cours sont affichï¿½s. Un filtre de recherche est disponible (15.01.2014)<br>Le suivi est modifiable en cliquant simplement sur la ligne! (21.01.2014)<br>Support d'une syntaxe wiki simplifiï¿½e pour ï¿½criture en gras, italique et insertion de listes (21.01.2014)</font></center>";
 echo "<br><table border='0' width='1000'><tr><td width='500'><h2>";
 if(isset($listeId)&&!empty($listeId)) {
 	foreach($listeId as $key => $valeur) {
@@ -268,7 +278,7 @@ if(isset($listeId)&&!empty($listeId)) {
 	}
 }
 
-// si IDTheme pas imposé, prendre celui en cours
+// si IDTheme pas imposï¿½, prendre celui en cours
 if($IDTheme==0) {
 	// recherche du theme en cours selon journal de l'apprenti
 	$requete = "SELECT jo.IDTheme from journal as jo join theme as th on jo.IDTheme=th.IDTheme  where IDEleve=".$IDEleve." and TypeTheme < 2 order by DateJournal desc limit 1";
@@ -281,7 +291,7 @@ if($IDTheme==0) {
 	//echo "Actu: ".$IDTheme;
 }
 
-// recherche des themes à afficher
+// recherche des themes ï¿½ afficher
 $requete = "SELECT th.IDTheme, th.NomTheme, th.TypeTheme FROM theme th left outer join projets pr on pr.IDTheme=th.IDTheme left outer join evaluation ev on (pr.IDTheme=ev.IDTheme and pr.IDEleve=ev.IDEleve) where (IDEtatProjet=1 and pr.IDEleve = $IDEleve) OR (IDEvaluation is not null and pr.IDEleve = $IDEleve) OR (TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (th.IDTheme=".$IDTheme.") group by IDTheme order by TypeTheme, NomTheme";
 //echo $requete;
 $resultat =  mysql_query($requete);
@@ -315,12 +325,12 @@ if(!empty($resultat)) {
 }
 
 
-// définition de l'annee et mois de la date max
+// dï¿½finition de l'annee et mois de la date max
 if($max!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisAct = date('m',strtotime($max));
 	$anneeAct = date('Y',strtotime($max));
-	//echo "date: ".$max.", mois: ".$moisAct.", année: ".$anneeAct;
+	//echo "date: ".$max.", mois: ".$moisAct.", annï¿½e: ".$anneeAct;
 	if($moisAct<8) {
 		if(empty($annee)) {
 			$annee = $anneeAct-1;
@@ -338,12 +348,12 @@ if($max!=0) {
 	$anneeMax=date('Y');
 }
 
-// définition de l'annee et mois min
+// dï¿½finition de l'annee et mois min
 if($min!=0) {
-	// recherche mois et année de la date récupérée
+	// recherche mois et annï¿½e de la date rï¿½cupï¿½rï¿½e
 	$moisActMin = date('m',strtotime($min));
 	$anneeActMin = date('Y',strtotime($min));
-	//echo "date: ".$min.", mois: ".$moisActMin.", année: ".$anneeActMin;
+	//echo "date: ".$min.", mois: ".$moisActMin.", annï¿½e: ".$anneeActMin;
 	if($moisActMin<8) {
 		$anneeMin = $anneeActMin-1;
 	} else {
@@ -354,7 +364,7 @@ if($min!=0) {
 	$anneeMin = date('Y') - 5;
 }
 
-// construction de la liste d'années
+// construction de la liste d'annï¿½es
 $optionAnneeEval = "<select name='anneeAff' onChange='document.getElementById(\"myForm\").submit();'>";
 $anneeToday = date('Y');
 for($cntA=0;$cntA<5;$cntA++) {
@@ -388,14 +398,14 @@ if(!empty($resultat)) {
 	$ligne = array();
 }
 echo "</h2></td>";
-echo "<td width='200'><!-- h2>Auto-évaluation";
+echo "<td width='200'><!-- h2>Auto-ï¿½valuation";
 echo "</h2 --></td><td width='150' align='right'><b>Theme/Projet:</b></td><td><select name='IDTheme' onChange='document.getElementById(\"myForm\").submit();'>".$option."</select></td></tr>";
-echo "<tr><td></td><td></td><td width='150' align='right'><b>Année:</b></td><td>".$optionAnneeEval."</td></tr>";
-echo "<tr><td></td><td></td><td width='150' align='right'><b>Heures consacrées:</b></td><td>".sprintf("%2.1f",$ligne['heures'])."h / ".sprintf("%d",$ligne['jours'])." jours</td></tr>";
+echo "<tr><td></td><td></td><td width='150' align='right'><b>Annï¿½e:</b></td><td>".$optionAnneeEval."</td></tr>";
+echo "<tr><td></td><td></td><td width='150' align='right'><b>Heures consacrï¿½es:</b></td><td>".sprintf("%2.1f",$ligne['heures'])."h / ".sprintf("%d",$ligne['jours'])." jours</td></tr>";
 echo "</table><br>";
 
 if($IDTheme!=0) {
-	// selection de l'évaluation
+	// selection de l'ï¿½valuation
 	if($mois<8) {
 
 		$anneeToday = $anneeToday-1;
@@ -428,40 +438,40 @@ if($IDTheme!=0) {
 		echo "<input type='hidden' name='IDEvaluation' value='".$ligne['IDEvaluation']."'>";
 	} else if($num_rows>0) {
 		// ne devrait pas arriver
-		echo "Oups, plus d'un enregistrement trouvé...";
+		echo "Oups, plus d'un enregistrement trouvï¿½...";
 	}
-	//echo "Pondération travail: ".$trpond;
+	//echo "Pondï¿½ration travail: ".$trpond;
 	echo "<br><div id='corners'>";
-	echo "<div id='legend'>Auto-évaluation du thème/projet</div>";
+	echo "<div id='legend'>Auto-ï¿½valuation du thï¿½me/projet</div>";
 	echo "<br><table border='0' >";
 
 	echo "<tr><td width='300'><b>Mon sentiment sur le travail accompli:</b></td><td width='70' align='right'>bof</td>".ponderation('travail',$trpond,$action) ."<td>super</td></tr>";
 	$styleborder=""; if(!empty($action)&&empty($trtxt)) $styleborder="style='border-color: #ff0000'";
 	echo "<tr><td valign='top'>Parce que:</td><td colspan='7'><textarea name='remarqueTravail' COLS=60 ROWS=4 ".$styleborder.">".$trtxt."</textarea></td></tr>";
 	echo "<tr><td colspan='8' height='30'></td></tr>";
-	echo "<tr><td><b>J'ai progressé et appris de nouvelles choses:</b></td><td width='70' align='right'>pas du tout</td>".ponderation('progrets',$prpond,$action) ."<td>énormément</td></tr>";
+	echo "<tr><td><b>J'ai progressï¿½ et appris de nouvelles choses:</b></td><td width='70' align='right'>pas du tout</td>".ponderation('progrets',$prpond,$action) ."<td>ï¿½normï¿½ment</td></tr>";
 	$styleborder=""; if(!empty($action)&&empty($prtxt)) $styleborder="style='border-color: #ff0000'";
 	echo "<tr><td valign='top'>Ce que j'ai appris:</td><td colspan='7'><textarea name='remarqueProgres' COLS=60 ROWS=4 ".$styleborder.">".$prtxt."</textarea></td></tr>";
 	echo "<tr><td colspan='8' height='30'></td></tr>";
-	echo "<tr><td><b>J'ai rencontré des difficultés:</b></td><td width='70' align='right'>aucune</td>".ponderation('difficultes',$dipond,$action) ."<td>constamment</td></tr>";
+	echo "<tr><td><b>J'ai rencontrï¿½ des difficultï¿½s:</b></td><td width='70' align='right'>aucune</td>".ponderation('difficultes',$dipond,$action) ."<td>constamment</td></tr>";
 	$styleborder=""; if(!empty($action)&&empty($ditxt)) $styleborder="style='border-color: #ff0000'";
 	echo "<tr><td valign='top'>Lesquelles et pourquoi:</td><td colspan='7'><textarea name='remarqueDifficultes' COLS=60 ROWS=4 ".$styleborder.">".$ditxt."</textarea></td></tr>";
 	echo "<tr><td colspan='8' height='30'></td></tr>";
 	$styleborder=""; if(!empty($action)&&empty($amtxt)) $styleborder="style='border-color: #ff0000'";
-	echo "<tr><td valign='top'><b>Ce que je dois encore améliorer:</b></td><td colspan='7'><textarea name='remarqueAmelioration' COLS=60 ROWS=4 ".$styleborder.">".$amtxt."</textarea></td></tr>";
+	echo "<tr><td valign='top'><b>Ce que je dois encore amï¿½liorer:</b></td><td colspan='7'><textarea name='remarqueAmelioration' COLS=60 ROWS=4 ".$styleborder.">".$amtxt."</textarea></td></tr>";
 	echo "<tr><td colspan='8' height='30'></td></tr>";
-	echo "<tr><td><b>J'évalue mon travail avec les notes de:</b></td><td width='70'>";
+	echo "<tr><td><b>J'ï¿½value mon travail avec les notes de:</b></td><td width='70'>";
 	$styleborder=""; if(!empty($action)&&(empty($notete)||!is_numeric($notete) || $notete>6)) $styleborder="style='border-color: #ff0000'";
 	echo "<input type='texte' name='technique' value='".$notete."' size='3' ".$styleborder."></td><td colspan='6'>Technique <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Techniquement parlant, est-ce que je maitrise le sujet?')\" onmouseout='UnTip()'></td></tr>";
 	echo "<tr><td>(au demi-point)</td><td width='70'>";
 	$styleborder=""; if(!empty($action)&&(empty($noteap)||!is_numeric($noteap) || $noteap>6)) $styleborder="style='border-color: #ff0000'";
-	echo "<input type='texte' name='application' value='".$noteap."' size='3' ".$styleborder."></td><td colspan='6'>Application <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Ai-je été capable d\'appliquer ce que je connais?<br>Ai-je mis tout en oeuvre pour parvenir à terminer les exercices, les montages ou le projet?<br>Est-ce complet?<br>Suis-je allé au bout des choses?')\" onmouseout='UnTip()'></td></tr>";
+	echo "<input type='texte' name='application' value='".$noteap."' size='3' ".$styleborder."></td><td colspan='6'>Application <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Ai-je ï¿½tï¿½ capable d\'appliquer ce que je connais?<br>Ai-je mis tout en oeuvre pour parvenir ï¿½ terminer les exercices, les montages ou le projet?<br>Est-ce complet?<br>Suis-je allï¿½ au bout des choses?')\" onmouseout='UnTip()'></td></tr>";
 	echo "<tr><td></td><td width='70'>";
 	$styleborder=""; if(!empty($action)&&(empty($notere)||!is_numeric($notere) || $notere>6)) $styleborder="style='border-color: #ff0000'";
-	echo "<input type='texte' name='rendement' value='".$notere."' size='3' ".$styleborder."></td><td colspan='6'>Rendement <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Ai-je utilisé le temps à ma disposition de manière efficace?<br>Est-ce que j\'ai pu terminé mon travail dans le temps imparti?')\" onmouseout='UnTip()'></td></tr>";
+	echo "<input type='texte' name='rendement' value='".$notere."' size='3' ".$styleborder."></td><td colspan='6'>Rendement <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Ai-je utilisï¿½ le temps ï¿½ ma disposition de maniï¿½re efficace?<br>Est-ce que j\'ai pu terminï¿½ mon travail dans le temps imparti?')\" onmouseout='UnTip()'></td></tr>";
 	echo "<tr><td></td><td width='70'>";
 	$styleborder=""; if(!empty($action)&&(empty($notese)||!is_numeric($notese) || $notese>6)) $styleborder="style='border-color: #ff0000'";
-	echo "<input type='texte' name='savoirEtre' value='".$notese."' size='3' ".$styleborder."></td><td colspan='5'>Savoir-être <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Me suis-je comporté en professionnel?<br>Suis-je capable de rester concentré sur mon travail?<br>Peut-on compter sur moi pour la réalisation de ce qui m\'est demandé de faire?<br>Suis-je en ordre avec mes horaires, journaux, etc.?')\" onmouseout='UnTip()'></td>";
+	echo "<input type='texte' name='savoirEtre' value='".$notese."' size='3' ".$styleborder."></td><td colspan='5'>Savoir-ï¿½tre <img src='/iconsFam/information.png' align='absmiddle' onmouseover=\"Tip('Me suis-je comportï¿½ en professionnel?<br>Suis-je capable de rester concentrï¿½ sur mon travail?<br>Peut-on compter sur moi pour la rï¿½alisation de ce qui m\'est demandï¿½ de faire?<br>Suis-je en ordre avec mes horaires, journaux, etc.?')\" onmouseout='UnTip()'></td>";
 	echo "<td align='right'>";
 	if(!hasAdminRigth()) {
 		if($num_rows==0) {
@@ -471,7 +481,7 @@ if($IDTheme!=0) {
 			if(empty($dateValidation) || $dateValidation=="0000-00-00") {
 				echo "<input type='submit' name='action' value='Modifier'>";
 			} else {
-				echo "<i>Document validé le ".date('d.m.Y', strtotime($dateValidation))."</i>";
+				echo "<i>Document validï¿½ le ".date('d.m.Y', strtotime($dateValidation))."</i>";
 			}
 		}
 	}
@@ -490,21 +500,21 @@ if($IDTheme!=0) {
 				}
 				$optionAnnee .= ">".($annee-$cntA)."/".($annee-$cntA+1)."</option>";
 			}
-			$optionAnnee .= "</select><select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ème semestre</option></select>";
+			$optionAnnee .= "</select><select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ï¿½me semestre</option></select>";
 		} else {
 			$optionAnnee = $anneeEval."/".($anneeEval+1).", semestre ".$semestreEval;
 		}
 
 		if(empty($dateValidation) || $dateValidation=="0000-00-00") {
-			$valTxt = "ouverte </td><td><img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider l\'auto-évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lock\")'>";
+			$valTxt = "ouverte </td><td><img src='/iconsFam/page_go.png' onmouseover=\"Tip('Valider l\'auto-ï¿½valuation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"lock\")'>";
 		} else {
-			$valTxt = "validée le ".date('d.m.Y', strtotime($dateValidation))." </td><td><img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider l\'auto-évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\")'>";
+			$valTxt = "validï¿½e le ".date('d.m.Y', strtotime($dateValidation))." </td><td><img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dï¿½valider l\'auto-ï¿½valuation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlock\")'>";
 		}
 		echo "<br><br><div id='corners'>";
 		echo "<div id='legend'>Evaluation et notes</div>";
 		echo "<br><!-- hr size='1' --><table border='0' width='1000'><tr><td width='200'><!-- h2><nobr>Evaluation et notes</nobr></h2 --></td>";
-		echo "<td align='center' width='400'></td><td width='150' align='right'><b>Auto-évaluation:</b></td><td>".$valTxt."</td></tr>";
-		echo "<tr><td width='200'></td><td align='center' width='400'></td><td width='150' align='right'><b>Période:</b></td><td>".$optionAnnee."</td></tr>";
+		echo "<td align='center' width='400'></td><td width='150' align='right'><b>Auto-ï¿½valuation:</b></td><td>".$valTxt."</td></tr>";
+		echo "<tr><td width='200'></td><td align='center' width='400'></td><td width='150' align='right'><b>Pï¿½riode:</b></td><td>".$optionAnnee."</td></tr>";
 		echo "</table>";
 
 		if(!empty($dateValidation) && $dateValidation!="0000-00-00") {
@@ -528,7 +538,7 @@ if($IDTheme!=0) {
 			echo "<tr><td width='300'></td><td width='70'><input type='texte' name='techniqueP' value='".$notePte."' size='3'></td><td colspan='6'><b>Technique</b><br> ".$remPte."</td></tr>";
 			echo "<tr><td width='300'></td><td width='70'><input type='texte' name='applicationP' value='".$notePap."' size='3'></td><td colspan='6'><b>Application</b><br> ".$remPap."</td></tr>";
 			echo "<tr><td width='300'></td><td width='70'><input type='texte' name='rendementP' value='".$notePre."' size='3'></td><td colspan='6'><b>Rendement</b><br> ".$remPre."</td></tr>";
-			echo "<tr><td width='300'></td><td width='70'><input type='texte' name='savoirEtreP' value='".$notePse."' size='3'></td><td colspan='5'><b>Savoir-être</b><br> ".$remPse."</td></tr>";
+			echo "<tr><td width='300'></td><td width='70'><input type='texte' name='savoirEtreP' value='".$notePse."' size='3'></td><td colspan='5'><b>Savoir-ï¿½tre</b><br> ".$remPse."</td></tr>";
 			echo "</table><br>";
 		}
 		echo "</div>";

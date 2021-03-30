@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:54
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: docEleveCIE.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:93
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 if(isset($_GET['nom'])) {
@@ -25,7 +35,7 @@ if(isset($_GET['effacerCours'])) {
 }
 include("entete.php");
 //if(!hasAdminRigth()) {
-//	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
+//	echo "<br><br><center><b>Contenu non autorisï¿½.</b></center><br><br>";
 //	exit;
 //}
 ?>
@@ -47,7 +57,7 @@ function toggle(thisname) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 
 echo "<FORM id='myForm' ACTION='docEleveCIE.php'  METHOD='POST'>";
 // transfert info
@@ -82,7 +92,7 @@ if(hasAdminRigth()) {
 echo "<br><br><div id='corners'>";
 echo "<div id='legend'>Cours CIE</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
-echo "<tr><th width='250'>Thèmes</th><th width='150'>Dates</th><th width='30'>Jours</th><th align='center'>AE/ANE</th>";
+echo "<tr><th width='250'>Thï¿½mes</th><th width='150'>Dates</th><th width='30'>Jours</th><th align='center'>AE/ANE</th>";
 if(hasAdminRigth()) {
 	echo "<th align='center'>Eval APP</th><th align='center'>Eval MAI</th><th width='10'>Doc</th>";
 } else {
@@ -90,7 +100,7 @@ if(hasAdminRigth()) {
 }
 echo "<th width='10'>Scan</th><th width='10'></th></tr>";
 
-// requete pour liste des cours trouvé pour l'élève
+// requete pour liste des cours trouvï¿½ pour l'ï¿½lï¿½ve
 $requeteH = "SELECT el.IDCours, doc.TitreCIE, cours.Dates, cours.NbrJours, el.PDFSigne, el.AbsencesEx, el.AbsencesNonEx, sum(if(EvalAPP is NULL OR EvalAPP = 0,0,1)) as evalAPP, sum(if(EvalMAI is NULL OR EvalMAI = 0,0,1)) as evalMAI FROM docelevecie as el join courscie as cours on el.IDCours=cours.IDCours join doccie as doc on cours.IDDoc=doc.IDDoc left join appcompetencecie as app on el.IDDocEleve=app.IDDocEleve WHERE IDEleve=$IDEleve group by el.IDCours order by TitreCIE,Dates";
 //echo $requeteH;
 $resultat =  mysqli_query($connexionDB,$requeteH);
@@ -129,7 +139,7 @@ echo "<tr><td colspan='9' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 if(!empty($cntJours)) {
 	echo "<tr><td colspan='2'>Total</td><td align='center'>$cntJours</td><td align='center'>".$absencesEx."/".$absencesNonEx."</td><td colspan='5'></td></tr>";
 } else {
-	echo "<tr><td colspan='9' align='center'>Aucun cours trouvé</td></tr>";
+	echo "<tr><td colspan='9' align='center'>Aucun cours trouvï¿½</td></tr>";
 }
 //echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 

@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:88
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: datasheet.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:64
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 if($action!="Nouveau" && !empty($IDComp) && hasStockRight()) {
 //echo $action;
 ?>

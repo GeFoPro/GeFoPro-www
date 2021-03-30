@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:06
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: lireCours.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:18
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../appHeader.php");
 $IDDocument = "";
 if(isset($_GET['IDDocument'])) {

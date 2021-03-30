@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:10
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: borrow.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:14
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 $scturl = strtoupper(substr($_SERVER['REQUEST_URI'],1,3));
 require("Config_".$scturl.".php");
 $idDevice = "";
@@ -34,7 +44,7 @@ if($result!=null && !empty($result)) {
 		$uid = $user['Userid'];
 		$message = $user['nom']." ".$user['prenom'];
 	} else {
-		// pas trouvé chez APP, on essaie chez prof
+		// pas trouvï¿½ chez APP, on essaie chez prof
 		$result = mysql_query("select abbr,userid from prof where IDCard = 0x".$idUser);
 		if($result!=null && !empty($result)) {
 			if(mysql_num_rows($result)==1) {
@@ -49,18 +59,18 @@ if($result!=null && !empty($result)) {
 $idInventaire = "";
 $idStockage = "";
 if(!empty($uid)) {
-	// utilisateur trouvé, recherche de l'appareil concerné
+	// utilisateur trouvï¿½, recherche de l'appareil concernï¿½
 	$message .= ",";
 	mysql_select_db(DBComp);
 	$result = mysql_query("select IDInventaire,Description,Caracteristiques,NoInventaire from inventaire as inv join composant as comp on inv.IDComposant = comp.IDComposant where IDTag = 0x".$idDevice);
 	if($result!=null && !empty($result)) {
 		if(mysql_num_rows($result)==1) {
-			// appareil inventorié
+			// appareil inventoriï¿½
 			$stock = mysql_fetch_assoc($result);
-			// recherche si l'appareil est déjà emprunté
+			// recherche si l'appareil est dï¿½jï¿½ empruntï¿½
 			$resultEm = mysql_query("select * from emprunt where IDInventaire = ".$stock['IDInventaire']." and DateRetour is null");
 			if($resultEm!=null && !empty($resultEm) && mysql_num_rows($resultEm)!=0 && !$ret) {
-				// l'appareil est déjà emprunté
+				// l'appareil est dï¿½jï¿½ empruntï¿½
 				http_response_code(403);
 				return;
 			} else {
@@ -72,12 +82,12 @@ if(!empty($uid)) {
 			$result = mysql_query("select IDStockage,Description,Caracteristiques,Emplacement,Tirroir from stockage as stg join composant as comp on stg.IDComposant = comp.IDComposant join stock as sto on stg.IDStock = sto.IDStock where IDTag = 0x".$idDevice);
 			if($result!=null && !empty($result)) {
 				if(mysql_num_rows($result)>1) {
-					// plus d'un appareil dans un même endroit (ne peut pas arriver, UNIQUE)
+					// plus d'un appareil dans un mï¿½me endroit (ne peut pas arriver, UNIQUE)
 					$stock = mysql_fetch_assoc($result);
 					$idStockage = $stock['IDStockage'];
 					$message .= $stock['Emplacement'].",".$stock['Tirroir'];
 				} else if(mysql_num_rows($result)==1) {
-					// un seul élément stocké à cet endroit -> on affiche l'appareil
+					// un seul ï¿½lï¿½ment stockï¿½ ï¿½ cet endroit -> on affiche l'appareil
 					$stock = mysql_fetch_assoc($result);
 					$idStockage = $stock['IDStockage'];
 					$message .= $stock['Description'].",".$stock['Caracteristiques'].",".$stock['Emplacement'].",".$stock['Tirroir'];
@@ -87,7 +97,7 @@ if(!empty($uid)) {
 	}
 
 	if(!empty($idInventaire) || !empty($idStockage)) {
-		// appareil trouvé (et utilisateur)
+		// appareil trouvï¿½ (et utilisateur)
 		if(!$ret) {
 			// si pas retour
 			if(!empty($idInventaire)) {
@@ -107,7 +117,7 @@ if(!empty($uid)) {
 		$resultat =  mysql_query($requete);
 		if($resultat) {
 			if($ret && mysql_affected_rows()!=1) {
-					// retour sur prêt non trouvé
+					// retour sur prï¿½t non trouvï¿½
 					http_response_code(404);
 					return;
 			}
@@ -119,11 +129,11 @@ if(!empty($uid)) {
 			http_response_code(500);
 		}
 	} else {
-		// appareil pas trouvé -> erreur
+		// appareil pas trouvï¿½ -> erreur
 		http_response_code(404);
 	}
 } else {
-	// utilisateur pas trouvé -> erreur
+	// utilisateur pas trouvï¿½ -> erreur
 	http_response_code(404);
 }
 ?>

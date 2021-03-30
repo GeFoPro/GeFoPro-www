@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:60
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: impressionSuiviPDF.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:46
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 /* PDF */
@@ -53,7 +63,7 @@ if(empty($IDTheme)) {
 }
 class PDF extends FPDF
 {
-// En-tête
+// En-tï¿½te
 function Header()
 {
     global $strHeures,$annee,$nomThemeTitre,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
@@ -61,7 +71,7 @@ function Header()
     $this->Image("../../images/logoEMT.jpg",20,11,40);
     // Police Arial gras 15
     $this->SetFont('Arial','B',15);
-    // Décalage à droite
+    // Dï¿½calage ï¿½ droite
     $this->Cell(60,16,'',0,0,'C');
     // Titre
 	$this->Cell(60,16,'Suivi',0,0,'C');
@@ -81,13 +91,13 @@ function Header()
 			$txtSem = ", semestre ".$semestreAct;
 		}
 		if($noSemaine>30) {
-			$this->Write(0,"Année: ".$annee."/".($annee+1).$txtSem);
+			$this->Write(0,"Annï¿½e: ".$annee."/".($annee+1).$txtSem);
 		} else {
-			$this->Write(0,"Année: ".($annee-1)."/".$annee.$txtSem);
+			$this->Write(0,"Annï¿½e: ".($annee-1)."/".$annee.$txtSem);
 		}
 	} else {
 		$this->SetXY(130,23.5);
-		$this->Write(0,"Toutes périodes confondues");
+		$this->Write(0,"Toutes pï¿½riodes confondues");
 	}
 
 
@@ -109,11 +119,11 @@ function Header()
 // Pied de page
 function Footer()
 {
-    // Positionnement à 1,5 cm du bas
+    // Positionnement ï¿½ 1,5 cm du bas
     $this->SetY(-15);
     // Police Arial italique 8
     $this->SetFont('Arial','I',8);
-    // Numéro de page
+    // Numï¿½ro de page
     $this->Cell(0,10,'Page '.$this->PageNo(),0,0,'C');
 }
 }
@@ -174,10 +184,10 @@ $PDF->AddPage();
 		$PDF->Write(0,$ligne['abbr']);
 
 		$PDF->SetXY($posCol+40,$posLigne);
-		// remplacer les caractère wiki
+		// remplacer les caractï¿½re wiki
 		$rem = $ligne['Remarque'];
 		$cntBullet = 1;
-		// isoler les différentes lignes du commentaire
+		// isoler les diffï¿½rentes lignes du commentaire
 		$tok = strtok($rem, "\r\n");
 		$found = 0;
 		while ($tok !== false) {

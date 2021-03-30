@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:79
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: listeProjets.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:03
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../../appHeader.php");
 
 $filtre = "1";
@@ -10,10 +20,10 @@ if(isset($_POST['triProjet'])) {
 	}
 }
 
-/* année en cours */
+/* annï¿½e en cours */
 $annee = date('Y');
 $mois = date('m');
-/* années pour en-tête */
+/* annï¿½es pour en-tï¿½te */
 if($mois<8) {
 	$anneePlus = $annee;
 	$annee = $annee-1;
@@ -31,7 +41,7 @@ if(isset($_POST['annee'])) {
 
 
 if(isset($_POST['ajoutProjet'])) {
-	// ajout d'un thème
+	// ajout d'un thï¿½me
 	$projet = $_POST['NomTheme'];
 	// ajout d'un attribut
     $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme) values (\"$projet\",0,1)";
@@ -58,7 +68,7 @@ if(isset($_GET['theme'])&& !empty($_GET['theme'])) {
 	$themeTri = $_GET['theme'];
 }
 if(!empty($themeTri)) {
-	// tri sur theme, toutes années et etat confindus
+	// tri sur theme, toutes annï¿½es et etat confindus
 	$filtre = 10;
 	$anneeTri = '%';
 	$filtreSQL = " and th.IDTheme=". $themeTri;
@@ -72,7 +82,7 @@ if(isset($_POST['actionProjet'])) {
 		$eleve = $_POST['IDEleve'.$theme];
 		$type = $_POST['IDTypeProjet'.$theme];
 		if(in_array($eleve,$configurationATE)) {
-			// si classe entière
+			// si classe entiï¿½re
 			$requeteEl = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$eleve."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
 			$resultatEl =  mysqli_query($connexionDB,$requeteEl);
 			while ($ligneEl = mysqli_fetch_assoc($resultatEl)) {
@@ -90,20 +100,20 @@ if(isset($_POST['actionProjet'])) {
 		$projet = $_POST['projet'];
 		$eleve = $_POST['eleve'];
 		$theme = $_POST['theme'];
-		// mise à jour du projet
+		// mise ï¿½ jour du projet
 		$requete = "update projets set IDEtatProjet=1 where IDProjet=".$projet;
 		//echo $requete;
     		$resultat =  mysqli_query($connexionDB,$requete);
-		// ajout d'une ligne dans le suivi pour début de projet
-		//$requete = "insert into suiviprojet (IDProjet, DateSaisie, RemarqueSuivi) values (".$projet.", \"".date('Y-m-d')."\", \"Début de projet\")";
-		$requete = "insert into remarquesuivi (IDEleve, IDTheme, DateSaisie, Remarque, TypeRemarque) values (".$eleve.", ".$theme.",\"".date('Y-m-d')."\", \"Début de projet\",1)";
+		// ajout d'une ligne dans le suivi pour dï¿½but de projet
+		//$requete = "insert into suiviprojet (IDProjet, DateSaisie, RemarqueSuivi) values (".$projet.", \"".date('Y-m-d')."\", \"Dï¿½but de projet\")";
+		$requete = "insert into remarquesuivi (IDEleve, IDTheme, DateSaisie, Remarque, TypeRemarque) values (".$eleve.", ".$theme.",\"".date('Y-m-d')."\", \"Dï¿½but de projet\",1)";
 		//echo $requete;
     		$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='stop') {
 		$projet = $_POST['projet'];
 		$eleve = $_POST['eleve'];
 		$theme = $_POST['theme'];
-		// mise à jour du projet
+		// mise ï¿½ jour du projet
 		$requete = "update projets set IDEtatProjet=2 where IDProjet=".$projet;
 		//echo $requete;
     		$resultat =  mysqli_query($connexionDB,$requete);
@@ -114,13 +124,13 @@ if(isset($_POST['actionProjet'])) {
     		$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='repeat') {
 		$theme = $_POST['theme'];
-		// mise à jour du projet
+		// mise ï¿½ jour du projet
 		$requete = "update projets set IDEtatProjet=4 where IDTheme=".$theme;
 		//echo $requete;
     	$resultat =  mysqli_query($connexionDB,$requete);
 	} else if($_POST['actionProjet']=='end') {
 		$theme = $_POST['theme'];
-		// mise à jour du projet
+		// mise ï¿½ jour du projet
 		$requete = "update projets set IDEtatProjet=2 where IDTheme=".$theme;
 		//echo $requete;
     	$resultat =  mysqli_query($connexionDB,$requete);
@@ -194,7 +204,7 @@ function submitUpdateProjID(projet,theme, eleve,action) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 echo "<FORM id='myForm' ACTION='listeProjets.php'  METHOD='POST'>";
 echo "<input type='hidden' name='actionProjet' value=''>";
 echo "<input type='hidden' name='theme' value=''>";
@@ -202,13 +212,13 @@ echo "<input type='hidden' name='projet' value=''>";
 echo "<input type='hidden' name='eleve' value=''>";
 echo "<div class='post'>";
 echo "<center> <font color='#088A08'></font>";
-echo "<br><font color='#FF0000'><b>Attention: vérifier avec l'apprenti qu'il ait bien fini de saisir ses journaux ainsi que son auto-évaluation avant de clôturer un projet!</b></font>";
+echo "<br><font color='#FF0000'><b>Attention: vï¿½rifier avec l'apprenti qu'il ait bien fini de saisir ses journaux ainsi que son auto-ï¿½valuation avant de clï¿½turer un projet!</b></font>";
 echo "</center>";
 
 
-// construction de la liste des élèves
+// construction de la liste des ï¿½lï¿½ves
 $listeSCT = "<option value='0'></option>";
-// recherche des élèves
+// recherche des ï¿½lï¿½ves
 $requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
@@ -258,7 +268,7 @@ $havingSQL = "";
 		$optionAnnee .= ">".($annee-$cntA)."/".($annee-$cntA+1)."</option>";
 	}
 	if(empty($themeTri)) {
-		echo "Année: <select name='annee' onchange='submit()'><option value='%'>Tous</option>".$optionAnnee."</select>";
+		echo "Annï¿½e: <select name='annee' onchange='submit()'><option value='%'>Tous</option>".$optionAnnee."</select>";
 	}
 	if($anneeTri!='%') {
 		$havingSQL .= " having DDebut >= '".$anneeTri."-08-01' and DDebut <= '".($anneeTri+1)."-07-31'";
@@ -266,7 +276,7 @@ $havingSQL = "";
 //}
 echo "</td><td align='right'>Tri projets: <select name='triProjet' onchange='submit()'>";
 if(!empty($themeTri)) {
-	echo "<option value='12' selected>Sélection</option>";
+	echo "<option value='12' selected>Sï¿½lection</option>";
 }
 echo "<option value='10'>Tous</option><option value='11'".($filtre==11?'selected':'').">Nouveau</option>".$selectEtat."</select></td></tr></table>";
 echo "<br><div id='corners'>";
@@ -276,8 +286,8 @@ if(empty($themeTri)) {
 	echo "<div id='legend'>Liste des attributions</div>";
 }
 echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
-echo "<tr><th width='300'>Nom projet</th><th width='10'></th><th>Attribué à</th><th width='80'>Début</th><th width='80'>Fin</th><th width='80'>Type</th><th width='80'>Etat</th><th width='10'>Suivi</th><th width='10'>Noté</th><th width='10'></th></tr>";
-// recherche des attributs généraux (1 à 6)
+echo "<tr><th width='300'>Nom projet</th><th width='10'></th><th>Attribuï¿½ ï¿½</th><th width='80'>Dï¿½but</th><th width='80'>Fin</th><th width='80'>Type</th><th width='80'>Etat</th><th width='10'>Suivi</th><th width='10'>Notï¿½</th><th width='10'></th></tr>";
+// recherche des attributs gï¿½nï¿½raux (1 ï¿½ 6)
 $requete = "SELECT th.IDTheme, pr.IDProjet, th.NomTheme, el.Nom, el.Prenom, pr.IDEleve, pr.DebutProjet, pr.FinProjet, ty.LibelleTypeProjet, et.LibelleEtatProjet, et.IDEtatProjet";
 $requete .= ", min(DateSaisie) as DDebut, max(DateSaisie) as DFin";
 $requete .= " FROM theme th left join projets pr on th.IDTheme=pr.IDTheme left join typeprojet ty on pr.IDTypeProjet=ty.IDTypeProjet left join etatprojet et on pr.IDEtatProjet=et.IDEtatProjet left join elevesbk el on pr.IDEleve=el.IDGDN";
@@ -304,12 +314,12 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 
 	//}
 	if($lastID!=$ligne['IDTheme']) {
-		// si nouveau thème
+		// si nouveau thï¿½me
 		echo "<tr bgColor='#DEDEDE'>";
 		echo "<td><a href='listeProjets.php?theme=$ligne[IDTheme]'><b>".$ligne['NomTheme']."</b></a></td><td>";
 		if($ligne['IDEtatProjet']==0||$ligne['IDEtatProjet']==1||$ligne['IDEtatProjet']==4) {
-			// ajout apprenti si attente, en cours ou à reprendre
-			echo "<img src='/iconsFam/user_add.png' align='absmiddle' onmouseover=\"Tip('Attribuer à un élève')\" onmouseout='UnTip()' onclick='toggle(\"newattrib$idTheme\");'>";
+			// ajout apprenti si attente, en cours ou ï¿½ reprendre
+			echo "<img src='/iconsFam/user_add.png' align='absmiddle' onmouseover=\"Tip('Attribuer ï¿½ un ï¿½lï¿½ve')\" onmouseout='UnTip()' onclick='toggle(\"newattrib$idTheme\");'>";
 		}
 		echo "</td>";
 		if(empty($ligne['Nom'])) {
@@ -326,7 +336,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		} else if($ligne['IDEtatProjet']==2) {
 			echo "<img src='/iconsFam/control_repeat.png' align='absmiddle' onmouseover=\"Tip('Reprendre le projet')\" onmouseout='UnTip()' onclick='submitUpdateProj(\"$idTheme\",\"repeat\")'>";
 		} else if($ligne['IDEtatProjet']==4) {
-			echo "<img src='/iconsFam/control_end.png' align='absmiddle' onmouseover=\"Tip('Marquer comme terminé')\" onmouseout='UnTip()' onclick='submitUpdateProj(\"$idTheme\",\"end\")'>";
+			echo "<img src='/iconsFam/control_end.png' align='absmiddle' onmouseover=\"Tip('Marquer comme terminï¿½')\" onmouseout='UnTip()' onclick='submitUpdateProj(\"$idTheme\",\"end\")'>";
 		}
 		echo "</td></tr>";
 		// ligne d'ajout d'attribution
@@ -344,7 +354,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 
 
 	if(!empty($ligne['Nom'])) {
-		// première colonne vide
+		// premiï¿½re colonne vide
 		echo "<td></td><td>";
 		// recherche info suivi et note
 		$vide = 1;
@@ -375,7 +385,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($vide) {
 			echo "<a href='listeProjets.php?IDProjet=$ligne[IDProjet]&theme=$ligne[IDTheme]'><img src='/iconsFam/user_delete.png' align='absmiddle' onmouseover=\"Tip('Enlever cette attribution')\" onmouseout='UnTip()'></a>";
 		}
-		// nom+ prénom
+		// nom+ prï¿½nom
 		echo "</td><td><a href='../detail/activites.php?nom=".$ligne['Nom']."&prenom=".$ligne['Prenom']."&idEleve=".$ligne['IDEleve']."&IDTheme=".$ligne['IDTheme']."'>".$ligne['Nom']." ".$ligne['Prenom']."</a></td><td>";
 		//if($ligne['IDEtatProjet']==1) {
 		//	$requeteF = "SELECT min(DateSaisie) min, max(DateSaisie) max from remarquesuivi where IDTheme=".$ligne['IDTheme']." and IDEleve=".$ligne['IDEleve']." and (DateSaisie between '".$annee."-08-01' and '".$anneePlus."-07-31')";
@@ -414,14 +424,14 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		// actions
 		echo "<td align='right'>";
 		if($ligne['IDEtatProjet']==0) {
-			echo "<img src='/iconsFam/control_play.png' align='absmiddle' onmouseover=\"Tip('Démarrer le projet')\" onmouseout='UnTip()' onclick='submitUpdateProjID(\"$idProjet\",\"$idTheme\",\"$idEleve\",\"start\")'>";
+			echo "<img src='/iconsFam/control_play.png' align='absmiddle' onmouseover=\"Tip('Dï¿½marrer le projet')\" onmouseout='UnTip()' onclick='submitUpdateProjID(\"$idProjet\",\"$idTheme\",\"$idEleve\",\"start\")'>";
 		} else if($ligne['IDEtatProjet']==1) {
 			echo "<img src='/iconsFam/control_stop.png' align='absmiddle' onmouseover=\"Tip('Terminer le projet')\" onmouseout='UnTip()' onclick='submitUpdateProjID(\"$idProjet\",\"$idTheme\",\"$idEleve\",\"stop\")'>";
 		}
 		//if($lastID==$ligne['IDTheme']&&$lastEtat!=$ligne['IDEtatProjet']) {
-			// état différents sur même thème -> on afficher les options pour terminer
+			// ï¿½tat diffï¿½rents sur mï¿½me thï¿½me -> on afficher les options pour terminer
 			//if($ligne['IDEtatProjet']==4) {
-				//echo "<img src='/iconsFam/control_end.png' align='absmiddle' onmouseover=\"Tip('Marquer comme terminé')\" onmouseout='UnTip()' onclick='submitUpdateProj(\"$idTheme\",\"end\")'>";
+				//echo "<img src='/iconsFam/control_end.png' align='absmiddle' onmouseover=\"Tip('Marquer comme terminï¿½')\" onmouseout='UnTip()' onclick='submitUpdateProj(\"$idTheme\",\"end\")'>";
 			//}
 		//}
 		echo "</td></tr>";
@@ -429,7 +439,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 
 
 	if($lastID==$ligne['IDTheme']&&$lastEtat!=$ligne['IDEtatProjet']) {
-		// si état différent dans le même thème, on réinitialise le dernier état afin que le prochain soit affiché
+		// si ï¿½tat diffï¿½rent dans le mï¿½me thï¿½me, on rï¿½initialise le dernier ï¿½tat afin que le prochain soit affichï¿½
 		$lastEtat = 0;
 	} else {
 		$lastEtat = $ligne['IDEtatProjet'];

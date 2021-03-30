@@ -1,7 +1,17 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:06
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: listeCours.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:47
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../appHeader.php");
 
-// catégorie
+// catï¿½gorie
 define ("CatElectro", 56);
 define ("CatSoft", 59);
 define ("CatInfo", 64);
@@ -12,7 +22,7 @@ include("entete.php");
 <div id="page">
 <?php
 include("../userInfo.php");
-/* en-tête */
+/* en-tï¿½te */
 echo "<FORM id='myForm' ACTION='listeCours.php'  METHOD='POST'>";
 echo "<input type='hidden' name='actionCours' value=''>";
 
@@ -24,7 +34,7 @@ echo "</center>";
 // construction de la liste des cours
 echo "<br><table border=0 width='100%'><tr><td><h2>Liste des cours de l'atelier</h2></td><td align='right'></td></tr></table>";
 echo "<table id='hor-minimalist-b'>\n";
-echo "<tr><th width='300'>Cours</th><th width='50'>Version</th><th width='100'>Date mis à jour</th><th width='200'>Référence</th></tr>";
+echo "<tr><th width='300'>Cours</th><th width='50'>Version</th><th width='100'>Date mis ï¿½ jour</th><th width='200'>Rï¿½fï¿½rence</th></tr>";
 $requeteH = "SELECT * FROM document where NoIdentite<>'' order by NoIdentite";
 //echo $requeteH;
 $resultat =  mysqli_query($connexionDB,$requeteH);

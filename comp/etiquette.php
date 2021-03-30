@@ -1,4 +1,14 @@
 <?php
+# @Author: David Girardin <degehi>
+# @Date:   19.03.2021 11:03:91
+# @Email:  david.girardin@gefopro.ch
+# @Project: GeFoPro
+# @Filename: etiquette.php
+# @Last modified by:   degehi
+# @Last modified time: 30.03.2021 13:03:40
+# @License: GPL-3.0 License, please refer to LICENSE file included to this package
+# @Copyright: GeFoPro, 2010
+
 include("../appHeader.php");
 
 /* PDF */
@@ -28,7 +38,7 @@ $resultat =  mysqli_query($connexionDB,$requete);
 /* posistion initial */
 $posLigne = 10;
 $posCol = 10;
-/* hauteur et largeur des étiquettes */
+/* hauteur et largeur des ï¿½tiquettes */
 $hauteurCel=6;
 $largeurCel=47;
 $tailleImage = 10;
@@ -40,9 +50,9 @@ $PDF->AddPage();
 //$PDF->Write(0,$num_rows);
 while ($ligne = mysqli_fetch_assoc($resultat) ) {
 
-	/* recherche des champs à afficher */
+	/* recherche des champs ï¿½ afficher */
 
-	/* créer l'étiquette */
+	/* crï¿½er l'ï¿½tiquette */
 	//$PDF->Image("images/etiquettes/fusible.jpg", $posCol+1, $posLigne+1,$tailleImage,$tailleImage);
 	$PDF->SetFont("Arial","B",12);
 	$PDF->SetXY($posCol,$posLigne+3);
@@ -53,7 +63,7 @@ while ($ligne = mysqli_fetch_assoc($resultat) ) {
 	$PDF->SetXY($posCol,$posLigne);
 	$PDF->Cell($largeurCel,$hauteurCel*2,"",1,'C',0);
 	$cnt++;
-	/* calcul de position pour étiquette suivante */
+	/* calcul de position pour ï¿½tiquette suivante */
 	if($cnt>4) {
 		$posCol=10;
 		$posLigne=$posLigne+$hauteurCel*2;
@@ -62,7 +72,7 @@ while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		$posCol=$posCol+$largeurCel;
 	}
 }
-// effacer les cases à cocher
+// effacer les cases ï¿½ cocher
 $requete = "UPDATE $tableComp set Imprimer=0";
 $resultat =  mysqli_query($connexionDB,$requete);
 $PDF->Output();
