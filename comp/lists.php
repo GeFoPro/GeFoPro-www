@@ -1,11 +1,11 @@
-<?php 
+<?php
 # @Author: David Girardin <degehi>
 # @Date:   19.03.2021 11:03:98
 # @Email:  david.girardin@gefopro.ch
 # @Project: GeFoPro
 # @Filename: lists.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:96
+# @Last modified time: 30.03.2021 16:03:30
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -52,7 +52,7 @@ include("../userInfo.php");
   ?>
   </select>
   </td></tr>
-  <tr><td></td><td align='left'><input type='submit' name='sub' value='Gï¿½nï¿½rer'></td></tr>
+  <tr><td></td><td align='left'><input type='submit' name='sub' value='Générer'></td></tr>
   </table>
 </div> <!-- post -->
 </div>

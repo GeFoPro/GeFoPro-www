@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: inventaire.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:17
+# @Last modified time: 30.03.2021 16:03:41
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -35,7 +35,7 @@ function limitEvent(e) {
 </script>
 <br><br><div id='corners'>
 <div id='legend'>Inventaire</div>
-<table border='0' id="hor-minimalist-b" width='100%'><tr><th width='100'>Nï¿½ inventaire</th><th width='100' align='left'>Nï¿½ de serie</th><th width='50' align='center'>Annï¿½e</th><th width='100' align='center'>RFID</th><th width='300'>Remarque</th><th align='left' width='150'>Utilisï¿½ par</th><th width='20'></th></tr>
+<table border='0' id="hor-minimalist-b" width='100%'><tr><th width='100'>N° inventaire</th><th width='100' align='left'>N° de serie</th><th width='50' align='center'>Année</th><th width='100' align='center'>RFID</th><th width='300'>Remarque</th><th align='left' width='150'>Utilisé par</th><th width='20'></th></tr>
 
 <?php
 $requete = "SELECT inv.IDInventaire, NoInventaire, NoSerie, Annee, IDTag, RemarqueInv, Userid, IDEmprunt, DateEmprunt FROM inventaire inv left join emprunt emp on inv.IDInventaire=emp.IDInventaire and DateRetour is null where IDComposant=$IDComp order by NoInventaire";

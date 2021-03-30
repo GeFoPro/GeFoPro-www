@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: listePrets.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:79
+# @Last modified time: 30.03.2021 16:03:14
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -96,15 +96,15 @@ if(isset($actionEmp)) {
 	}
 }
 
-/* en-tï¿½te */
+/* en-tête */
 echo "<FORM id='myForm' ACTION='listePrets.php'  METHOD='POST'>";
 echo "<input type='hidden' name='IDEmprunt' value=''>";
 echo "<div class='post'>";
 
-// construction de la liste des ï¿½lï¿½ves
+// construction de la liste des élèves
 mysqli_select_db($connexionDB,DBAdmin);
 $listeSCT = "<option value='0'></option>";
-// recherche des ï¿½lï¿½ves
+// recherche des élèves
 $requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
@@ -138,13 +138,13 @@ if(hasAdminRigth() && empty($IDStockage)) {
 }
 
 echo "<br><div id='corners'>";
-echo "<div id='legend'>Liste des prï¿½ts";
+echo "<div id='legend'>Liste des prêts";
 if(!empty($IDStockage)) {
 	echo " de l'appareil";
 }
 echo "</div>";
 echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
-echo "<tr><th width='300'>Appareil</th><th width='100' align='center'>No Inventaire</th><th width='100' align='center'>Emplacement</th><th  width='200'>Utilisï¿½ par</th><th>Depuis</th><th width='10'></th></tr>";
+echo "<tr><th width='300'>Appareil</th><th width='100' align='center'>No Inventaire</th><th width='100' align='center'>Emplacement</th><th  width='200'>Utilisé par</th><th>Depuis</th><th width='10'></th></tr>";
 mysqli_select_db($connexionDB,DBComp);
 $filtreSQLUser = "";
 if(empty($uid)) {

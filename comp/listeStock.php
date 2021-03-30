@@ -1,11 +1,11 @@
-<?php 
+<?php
 # @Author: David Girardin <degehi>
 # @Date:   19.03.2021 11:03:98
 # @Email:  david.girardin@gefopro.ch
 # @Project: GeFoPro
 # @Filename: listeStock.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:38
+# @Last modified time: 30.03.2021 16:03:42
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -45,7 +45,7 @@ $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader = new PHPExcel_Reader_Excel5();
 $objPHPExcel = $objReader->load("../docBase/listeStock.xls");
 
-/* requete pour entï¿½te*/
+/* requete pour entête*/
 if(isset($critere) && !empty($critere)) {
 	$requete = "SELECT * FROM $tableStock where IDStock=$critere";
 	$resultat =  mysqli_query($connexionDB,$requete);
@@ -62,7 +62,7 @@ if(isset($genre) && !empty($genre)) {
 	// remplissage stock
 	$objPHPExcel->getActiveSheet()->setCellValue('D4', formatCell($ligne[1]));
 }
-// date crï¿½ation
+// date création
 // $objPHPExcel->getActiveSheet()->setCellValue('D35', $ajd);
 
 /* requete pour lsite*/
@@ -100,7 +100,7 @@ if(!empty($errorMsg)) {
 	$objPHPExcel->getActiveSheet()->setCellValue('A12', $errorMsg);
 }
 
-// gï¿½nï¿½rer excel
+// générer excel
 $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 
 header('Content-type: application/vnd.ms-excel');

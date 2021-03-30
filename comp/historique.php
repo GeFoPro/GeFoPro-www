@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: historique.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:65
+# @Last modified time: 30.03.2021 16:03:43
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -95,7 +95,7 @@ for($cntA=0;$cntA<5;$cntA++) {
 	$optionAnnee .= ">".($annee-$cntA)."</option>";
 }
 if(!hasAdminRigth()) {
-	echo "<br>Contenu non autorisï¿½.";
+	echo "<br>Contenu non autorisé.";
 } else {
 ?>
 
@@ -106,7 +106,7 @@ if(!hasAdminRigth()) {
 Vue: <select name='vue' onChange='callPage(this)'>
 <option value='1' selected>Par commandes</option><option value='2'>Par articles</option></select></td></tr>
 <tr><td></td>
-<td align='center'>Annï¿½e civile: <select name='annee' onchange='submit();'><?=$optionAnnee?></select></td>
+<td align='center'>Année civile: <select name='annee' onchange='submit();'><?=$optionAnnee?></select></td>
 <td align='right'>
 Fournisseur :
 <select name='fournisseur' onChange='submit();'>
@@ -159,19 +159,19 @@ $totalYearComTPI = 0;
 if(!empty($resultat)) {
 	while ($ligne = mysqli_fetch_assoc($resultat) ) {
 		if($rowCounter==0) {
-			// crï¿½er entï¿½te
+			// créer entête
 			if(empty($critere)) {
 				echo "<th align='left'>Fournisseur</th>";
 			}
 			echo "<th align='left'>Date</th>";
 			echo "<th align='center'>Auteur</th>";
-			echo "<th align='left'>Intitulï¿½</th>";
+			echo "<th align='left'>Intitulé</th>";
 			echo "<th align='center'>Type</th>";
 			echo "<th align='center'>Page</th>";
-			echo "<th align='center'>Reï¿½us</th>";
+			echo "<th align='center'>Reçus</th>";
 			echo "<th align='right'>Montant total</th>";
-			echo "<th align='right'>Nï¿½ commande</th>";
-			echo "<th align='right'>Total facturï¿½</th>";
+			echo "<th align='right'>N° commande</th>";
+			echo "<th align='right'>Total facturé</th>";
 
 			echo"<th></th></tr>";
 		}
@@ -182,14 +182,14 @@ if(!empty($resultat)) {
 		$rem = "<table>";
 		$rem .= "<tr><td><b>Fournisseur: </b></td><td>".$ligne['NomFournisseur']."</td></tr>";
 		if($ligne['NoCommande']!=0) {
-			//$rem.= ", nï¿½ ".$ligne['NoCommande'].", ";
-			$rem.= "<tr><td><b>Nï¿½ de commande: </b></td><td>".$ligne['NoCommande']."</td></tr>";
+			//$rem.= ", n° ".$ligne['NoCommande'].", ";
+			$rem.= "<tr><td><b>N° de commande: </b></td><td>".$ligne['NoCommande']."</td></tr>";
 		}
 		//$rem.=" du ".$dateList;
 		$rem.="<tr><td><b>Date de la commande: </b></td><td>".$dateList."</td></tr>";
 		if(!empty($ligne['Remarque'])) {
 			//$rem.= " - <i>".$ligne['Remarque']."</i>";
-			$rem.= "<tr><td><b>Intitulï¿½: </b></td><td>".$ligne['Remarque']."</td></tr>";
+			$rem.= "<tr><td><b>Intitulé: </b></td><td>".$ligne['Remarque']."</td></tr>";
 		}
 		$rem.="</table>";
 		echo "<tr id='comp".$ligne['IDPageCommande']."' onclick='callDetail(".$ligne['IDPageCommande'].",\"".$rem."\");'><td align='left' height='25' onclick='event.returnValue=false;'>";

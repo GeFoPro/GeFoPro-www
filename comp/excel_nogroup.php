@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: excel_nogroup.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:37
+# @Last modified time: 30.03.2021 16:03:44
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -84,7 +84,7 @@ $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader->setLoadSheetsOnly( array("Sheet 1", "Feuille commande") );
 $objPHPExcel = $objReader->load("../docBase/commande.xls");
 
-// requete pour en-tï¿½te
+// requete pour en-tête
  if(isset($critere) && !empty($critere)) {
 	$requete = "SELECT * FROM $tableFournisseur where IDFournisseur=$critere";
 	$resultat =  mysql_query($requete);
@@ -99,7 +99,7 @@ $objPHPExcel = $objReader->load("../docBase/commande.xls");
 	$objPHPExcel->getActiveSheet()->setCellValue('G8', $ligne[6]);
 	$objPHPExcel->getActiveSheet()->setCellValue('F9', $ligne[7]);
 }
-// date crï¿½ation
+// date création
 $objPHPExcel->getActiveSheet()->setCellValue('D35', $ajd);
 
 // type d'utilisation
@@ -111,7 +111,7 @@ switch($abbreviation) {
 		$objPHPExcel->getActiveSheet()->setCellValue('C35', 'David Girardin');
 		break;
 	case "RGR":
-		$objPHPExcel->getActiveSheet()->setCellValue('C35', iconv("ISO-8859-1", "UTF-8", "Renï¿½ Grossmann"));
+		$objPHPExcel->getActiveSheet()->setCellValue('C35', iconv("ISO-8859-1", "UTF-8", "René Grossmann"));
 		break;
 	case "MRE":
 		$objPHPExcel->getActiveSheet()->setCellValue('C35', 'Marco Retti');
@@ -157,7 +157,7 @@ if(!empty($errorMsg)) {
 	$objPHPExcel->getActiveSheet()->setCellValue('D20', $errorMsg);
 }
 
-// gï¿½nï¿½rer excel
+// générer excel
 $writer = new PHPExcel_Writer_Excel5($objPHPExcel);
 
 

@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: comp.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:73
+# @Last modified time: 30.03.2021 16:03:69
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -340,7 +340,7 @@ if(isset($_POST['actionData'])) {
 	$requete = "UPDATE $tableComp set datasheet = '".mysqli_real_escape_string($connexionDB,$data)."' where IDComposant=$IDComp";
 	$resultat = mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Datasheet ajoutï¿½e");
+		addMEssage("Datasheet ajoutée");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible d'ajouter la datasheet</font>");
@@ -365,13 +365,13 @@ if(isset($_POST['actionDataImg'])) {
 			// uniquement pour cet article -> enregistrer l'image avec son identifiant
 			$target = "../images/articles/".$IDUnique.".".$ext;
 			move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target);
-			addMEssage("Image ajoutï¿½e pour cet article uniquement");
+			addMEssage("Image ajoutée pour cet article uniquement");
 		} else if($imgGrp==2) {
 			// image pour genre/type
 			$target = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_0.".$ext;
 			if(!is_file($target)) {
 				// pas de fichier 0
-				// vï¿½rifier si fichiers 1 ou suivants existent
+				// vérifier si fichiers 1 ou suivants existent
 				$cntImg = 1;
 				$target1 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
 				while(is_file($target1)) {
@@ -381,32 +381,32 @@ if(isset($_POST['actionDataImg'])) {
 				if($cntImg==1) {
 					// encore aucune image pour ce genre/type -> fichier 0
 					move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target);
-					addMEssage("Premiï¿½re image ajoutï¿½e pour cette catï¿½gorie");
+					addMEssage("Première image ajoutée pour cette catégorie");
 				} else {
-					// au moins un fichier dï¿½jï¿½ existant -> on ajoute avec un nouveau numï¿½ro
+					// au moins un fichier déjà existant -> on ajoute avec un nouveau numéro
 					move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target1);
-					addMEssage("Image no ".$cntImg." ajoutï¿½e pour cette catï¿½gorie");
+					addMEssage("Image no ".$cntImg." ajoutée pour cette catégorie");
 				}
 			} else {
-				// fichier 0 existe dï¿½jï¿½ -> renommer en fichier 1
+				// fichier 0 existe déjà -> renommer en fichier 1
 				$target1 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
 				rename($target,$target1);
 				// ajouter le nouveau en 2
 				$target2 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_2.".$ext;
 				move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target2);
-				addMEssage("2ï¿½me image ajoutï¿½e pour cette catï¿½gorie");
+				addMEssage("2ème image ajoutée pour cette catégorie");
 			}
 		} else if($imgGrp==3) {
 			// image pour un boitier
 			$target = "../images/articles/".$nomBoitierImg.".".$ext;
 			move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target);
-			addMEssage("Image ajoutï¿½e pour ce boitier");
+			addMEssage("Image ajoutée pour ce boitier");
 		}
 	}
 	//$requete = "UPDATE $tableComp set image = '".."' where IDComposant=$IDComp";
 	//$resultat = mysqli_query($connexionDB,$requete);
 	//if($resultat) {
-	//	addMEssage("Image ajoutï¿½e");
+	//	addMEssage("Image ajoutée");
 	//	mysqli_query($connexionDB,'COMMIT');
 	//} else {
 	//	addMEssage("<font color=red>Impossible d'ajouter l'image</font>");
@@ -425,7 +425,7 @@ INSERT INTO $tableRefSchema
 REQ;
     $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Nouveau schï¿½ma ajoutï¿½");
+		addMEssage("Nouveau schéma ajouté");
 	} else {
 		addMEssage("<font color=red>Impossible d'ajouter le nouveau le schema</font>");
 	}
@@ -451,7 +451,7 @@ REQ;
 	//echo $requete;
     $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
-	addMEssage("Composant ajoutï¿½");
+	addMEssage("Composant ajouté");
 	mysqli_query($connexionDB,'COMMIT');
     } else {
 	addMEssage("<font color=red>Impossible d'ajouter le composant </font>");
@@ -461,7 +461,7 @@ REQ;
     $requete = "DELETE FROM $tableComp where IDComposant=$IDComp";
     $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
-	addMEssage("Composant supprimï¿½");
+	addMEssage("Composant supprimé");
 	mysqli_query($connexionDB,'COMMIT');
 	 $IDComp = "";
     } else {
@@ -487,18 +487,18 @@ where IDComposant=$IDComp
 REQ;
   $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
-	addMessage("Composant mis ï¿½ jour");
+	addMessage("Composant mis à jour");
 	mysqli_query($connexionDB,'COMMIT');
     } else {
-	addMEssage("<font color=red>Impossible de mettre ï¿½ jour le composant </font>");
+	addMEssage("<font color=red>Impossible de mettre à jour le composant </font>");
     }
-  // test pour action supplï¿½mentaires
+  // test pour action supplémentaires
   if(!empty($IDReferenceNew)) {
-	// nouveau footprint sur les rï¿½fï¿½rence existantes
+	// nouveau footprint sur les référence existantes
 	$actionFoot="Ajouter";
   }
     if(!empty($ReferenceNew)) {
-	// nouveau footprint avec nouvelle rï¿½fï¿½rence
+	// nouveau footprint avec nouvelle référence
 	$actionFoot="AjouterNouveau";
   }
   if(!empty($IDStockNew)) {
@@ -514,7 +514,7 @@ REQ;
 	//echo $requete;
 	$resultat =  mysqli_query($connexionDB,$requete);
     mysqli_query($connexionDB,'COMMIT');
-	addMEssage("Image associï¿½e");
+	addMEssage("Image associée");
   }
   if($action=="RemImage") {
 	$requete = "update $tableComp set image='' where IDComposant=".$IDComp;
@@ -523,13 +523,13 @@ REQ;
     mysqli_query($connexionDB,'COMMIT');
 	// tenter d'effacer le fichier propre
 
-	addMEssage("Image dï¿½sassociï¿½e");
+	addMEssage("Image désassociée");
   }
   if($action=="RemImageProp") {
 	// tenter d'effacer le fichier propre
 	$target = "../images/articles/".$_GET['file'].".png";
 	unlink($target);
-	addMEssage("Image effacï¿½e");
+	addMEssage("Image effacée");
   }
 }
 /* Fin action composant */
@@ -553,7 +553,7 @@ REQ;
 //echo "$requete";
     $resultat =  mysqli_query($connexionDB,$requete);
     mysqli_query($connexionDB,'COMMIT');
-	addMEssage("Fournisseur ajoutï¿½");
+	addMEssage("Fournisseur ajouté");
 
   }
   if($actionFourn=="Modifier") {
@@ -563,7 +563,7 @@ REQ;
 	//echo $requete;
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Fournisseur modifiï¿½");
+		addMEssage("Fournisseur modifié");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le fournisseur</font>");
@@ -573,7 +573,7 @@ REQ;
 	$requete = "DELETE FROM $tableCommande where IDCommande=$IDCommande";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Fournisseur supprimï¿½");
+		addMEssage("Fournisseur supprimé");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le fournisseur</font>");
@@ -599,7 +599,7 @@ REQ;
 //echo "$requete";
     $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Nouveau Footprint ajoutï¿½");
+		addMEssage("Nouveau Footprint ajouté");
 		$actionFoot="Ajouter";
 		$IDReferenceNew = $newId;
 	} else {
@@ -620,7 +620,7 @@ REQ;
 //echo "$requete";
     $resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Footprint ajoutï¿½");
+		addMEssage("Footprint ajouté");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible d'ajouter le footprint </font>");
@@ -631,7 +631,7 @@ REQ;
 	$requete = "DELETE FROM $tableFootprint where IDFootprint=$IDFootprint";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Footprint supprimï¿½");
+		addMEssage("Footprint supprimé");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer le footprint</font>");
@@ -652,7 +652,7 @@ if(isset($actionInv)) {
 		//echo $requete;
 		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
-			addMEssage("Appareil ajoutï¿½");
+			addMEssage("Appareil ajouté");
 			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible d'ajouter l'appareil</font>");
@@ -673,7 +673,7 @@ if(isset($actionInv)) {
 		//echo $requete;
 		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
-			addMEssage("Inventaire modifiï¿½");
+			addMEssage("Inventaire modifié");
 			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible de modifier l'inventaire</font>");
@@ -702,7 +702,7 @@ if(isset($actionEmp)) {
 		//echo $requete;
 		$resultat =  mysqli_query($connexionDB,$requete);
 		if($resultat) {
-			addMEssage("Emprunt modifiï¿½");
+			addMEssage("Emprunt modifié");
 			mysqli_query($connexionDB,'COMMIT');
 		} else {
 			addMEssage("<font color=red>Impossible de modifier l'emprunt</font>");
@@ -732,7 +732,7 @@ REQ;
 	//echo $requete;
     $resultat =  mysqli_query($connexionDB,$requete);
     if($resultat) {
-	addMEssage("Emplacement ajoutï¿½");
+	addMEssage("Emplacement ajouté");
 	mysqli_query($connexionDB,'COMMIT');
     } else {
 	addMEssage("<font color=red>Impossible d'ajouter l'emplacement</font>");
@@ -744,7 +744,7 @@ REQ;
 	$requete = "DELETE FROM $tableStockage where IDStockage=$IDStockage";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Emplacement supprimï¿½");
+		addMEssage("Emplacement supprimé");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de supprimer l'emplacement</font>");
@@ -766,7 +766,7 @@ REQ;
 	//echo $requete;
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($resultat) {
-		addMEssage("Stock modifiï¿½");
+		addMEssage("Stock modifié");
 		mysqli_query($connexionDB,'COMMIT');
 	} else {
 		addMEssage("<font color=red>Impossible de modifier le stock</font>");
@@ -782,7 +782,7 @@ function getFieldToPrint($value, $ligne, $pos) {
 			if($pos!=0) {
 				return substr($ligne['Description'],0,18);
 			} else {
-				// si une seule position utilisï¿½e, on coupe ï¿½ 45
+				// si une seule position utilisée, on coupe à 45
 				return substr($ligne['Description'],0,45);;
 			}
 		case 2: return $ligne['Valeur'];
@@ -790,7 +790,7 @@ function getFieldToPrint($value, $ligne, $pos) {
 			if($pos!=0) {
 				return substr($ligne['Caracteristiques'],0,25);
 			} else {
-				// si une seule position utilisï¿½e, on coupe ï¿½ 45
+				// si une seule position utilisée, on coupe à 45
 				return substr($ligne['Caracteristiques'],0,45);
 			}
 		case 4: return $ligne['LibelleBoitier'];
@@ -823,7 +823,7 @@ REQ;
 		$IDBoitierSel = $ligne['IDBoitier'];
 		$IDSchemaSel = $ligne['IDSchema'];
 	}
-	/* selection des lignes d'impression pour ï¿½tiquettes */
+	/* selection des lignes d'impression pour étiquettes */
 	$selected11 = "";
 	$selected21 = "";
 	$selected31 = "";
@@ -908,9 +908,9 @@ REQ;
 <FORM ACTION="<?php echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
 <div class='post'>
 <div align='center' width='100%' id='hideMe'><font size="2" color="green" align='center'><i><?=getMessage()?></i></font></div>
-<!--br><h2>Dï¿½tail de l'article</h2-->
+<!--br><h2>Détail de l'article</h2-->
 <br><div id='corners'>
-<div id='legend'>Dï¿½tail de l'article</div>
+<div id='legend'>Détail de l'article</div>
 
 
 <table border='0' align="center" width='100%'>
@@ -984,14 +984,14 @@ echo "</td></tr>";
 <tr><td>Valeur:</td><td><input type="texte" name="Valeur" value="<?= htmlspecialchars($ligne['Valeur']) ?>" size="30"></td>
 <?php if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='2' $selectedC21></td><td align='left'><input type='radio' name='printC2' value='2' $selectedC22></td><td align='right'><input type='radio' name='print1' value='2' $selected21></td><td align='left'><input type='radio' name='print2' value='2' $selected22></td>"; ?>
 </tr>
-<tr><td>Caractï¿½ristiques:</td><td><input type="texte" name="Caracteristiques" value="<?= htmlspecialchars($ligne['Caracteristiques']) ?>" size="60"></td>
+<tr><td>Caractéristiques:</td><td><input type="texte" name="Caracteristiques" value="<?= htmlspecialchars($ligne['Caracteristiques']) ?>" size="60"></td>
 <?php if($action!="Nouveau") echo "<td align='right'><input type='radio' name='printC1' value='3' $selectedC31></td><td align='left'><input type='radio' name='printC2' value='3' $selectedC32></td><td align='right'><input type='radio' name='print1' value='3' $selected31></td><td align='left'><input type='radio' name='print2' value='3' $selected32></td>"; ?>
 </tr>
 <?php
 if($action!="Nouveau") {
 	if($app_section=='ELT') {
 	  /* Boitier */
-	  echo "<tr><td>Boï¿½tier:</td><td ><select id='IDBoitier' name='IDBoitier' onChange='updateImg()'><option></option>";
+	  echo "<tr><td>Boîtier:</td><td ><select id='IDBoitier' name='IDBoitier' onChange='updateImg()'><option></option>";
 
 	  $requete = "SELECT * FROM $tableBoitier order by LibelleBoitier";
 	  $resultat =  mysqli_query($connexionDB,$requete);
@@ -1067,7 +1067,7 @@ if($action!="Nouveau") {
   echo "<div id='legend'>Fournisseurs</div>";
   echo "<table border='0' width='100%' id='hor-minimalist-b'>";
   //echo "<tr><td colspan='6'>&nbsp;</td></tr>";
-  echo "<tr><th>Rï¿½fï¿½rence fournisseur</th><th>Fournisseur</th><th>Fabriquant</th><th>Prix/pce</th><th align='center'>Derniï¿½re commande</th><th align='center'>Quantitï¿½</th><th></th></tr>";
+  echo "<tr><th>Référence fournisseur</th><th>Fournisseur</th><th>Fabriquant</th><th>Prix/pce</th><th align='center'>Dernière commande</th><th align='center'>Quantité</th><th></th></tr>";
   $requete = <<<FOURN
 SELECT com.IDCommande, four.LienArticle, four.LienDatasheet, com.NoArticle, com.PrixPce, four.NomFournisseur, fab.NomFabriquant, cext.DateReception, cext.Nombre, com.IDFournisseur FROM $tableCommande com
 join $tableFournisseur four on com.IDFournisseur=four.IDFournisseur

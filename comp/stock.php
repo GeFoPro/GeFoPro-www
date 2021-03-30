@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: stock.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:68
+# @Last modified time: 30.03.2021 16:03:37
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -14,9 +14,9 @@ if($action!="Nouveau") {
 
 <br><br><div id='corners'>
 <div id='legend'>Stock</div>
-<table border='0' id="hor-minimalist-b" width='100%'><tr><th>Emplacement</th><th align='center'>Tirroir/ï¿½tagï¿½re -<br>Boï¿½te/rangement</th><th align='center'>Emplacement<br>RFID</th><th align='center'>Quantitï¿½<br>actuelle</th><th align='center'>Quantitï¿½<br>prï¿½tï¿½e</th><th align='center'>Quantitï¿½<br>minimale</th><th align='center'>Quantitï¿½<br>commande</th><th></th></tr>
+<table border='0' id="hor-minimalist-b" width='100%'><tr><th>Emplacement</th><th align='center'>Tirroir/étagère -<br>Boîte/rangement</th><th align='center'>Emplacement<br>RFID</th><th align='center'>Quantité<br>actuelle</th><th align='center'>Quantité<br>prêtée</th><th align='center'>Quantité<br>minimale</th><th align='center'>Quantité<br>commande</th><th></th></tr>
 <!--tr><td colspan='6'>&nbsp;</td></tr -->
-<!--tr><td colspan='2'><b>Stock</b> (Emplacement)</td><td><b>Quantitï¿½</b></td><td colspan='3'></td></tr-->
+<!--tr><td colspan='2'><b>Stock</b> (Emplacement)</td><td><b>Quantité</b></td><td colspan='3'></td></tr-->
 <?php
 $requete = "SELECT * FROM $tableStockage stg
 join $tableStock st on stg.IDStock=st.IDStock
@@ -30,7 +30,7 @@ where IDComposant=$IDComp";
     $numbInv = mysqli_num_rows($resultatInv);
   }
     while ($footLigne = mysqli_fetch_assoc($resultat)) {
-    // recherche des prï¿½ts
+    // recherche des prêts
     $requetePre = "select * from emprunt emp left join inventaire inv on emp.IDInventaire=inv.IDInventaire where (IDStockage=$footLigne[IDStockage] OR IDComposant=$IDComp) and DateRetour is null";
     $resultatPre =  mysqli_query($connexionDB,$requetePre);
     $numbPre = mysqli_num_rows($resultatPre);
@@ -98,7 +98,7 @@ where IDComposant=$IDComp";
 </select></td><td align='center'><input type='text' name='EmplacementNew' value='' size="4" style='text-align: right'><img src="/iconsFam/help.png" align='absmiddle' onmouseover="TagToTip('tooltipInv')" onmouseout="UnTip()"></td>
   <span id="tooltipInv">
   <dl><dt><b>Syntaxe :</b></dt>
-  <dd>[Tirroir/ï¿½tagï¿½re]-[Boï¿½te/rangement]</dd>
+  <dd>[Tirroir/étagère]-[Boîte/rangement]</dd>
   <dd>Exemple: 02-48</dd>
   </dl>
   </span>

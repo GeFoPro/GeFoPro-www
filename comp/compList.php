@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: compList.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:22
+# @Last modified time: 30.03.2021 16:03:79
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -101,7 +101,7 @@ if($tri=="LibelleType")
 /* Impression */
 $countImp = 0;
 if(isset($_GET['imp']) && !empty($_GET['imp'])) {
-	// recherche si composant cochï¿½s
+	// recherche si composant cochés
 	$requete = "select * from composant where Imprimer <> 0";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	$countImp = mysqli_num_rows($resultat);
@@ -204,7 +204,7 @@ $rowcnt = 0;
 $lastIDComp="";
 $colorLine = "";
 while ($ligne = mysqli_fetch_assoc($resultat) ) {
-	// prï¿½sent en stock?
+	// présent en stock?
 	$requeteStock = "SELECT count(*) FROM $tableStockage stg
 	join $tableStock st on stg.IDStock=st.IDStock
 	where IDComposant=$ligne[IDComposant]";
@@ -387,7 +387,7 @@ include("../userInfo.php");
 <?php
 echo "<div class='post'>";
 //if(isset($critere) && !empty($critere)) {
-//	echo "<br><h2>Rï¿½sultat trouvï¿½ pour '$critere'</h2><br>";
+//	echo "<br><h2>Résultat trouvé pour '$critere'</h2><br>";
 //} else {
 //	echo "<br><h2>Liste des composants</h2><br>";
 //}
@@ -402,7 +402,7 @@ echo "<div id='compImgDiv' style='display:none'><img src='' id='compImg'></div>"
 <br><div id='corners'>
 <?php
 if(isset($critere) && !empty($critere)) {
-	echo "<div id='legend'>Rï¿½sultat trouvï¿½ pour '$critere'</div>";
+	echo "<div id='legend'>Résultat trouvé pour '$critere'</div>";
 } else {
 	echo "<div id='legend'>Liste des articles</div>";
 }
@@ -411,11 +411,11 @@ if(isset($critere) && !empty($critere)) {
 <th align="left" width="25"><?=$impTxt?></th>
 <th align="left" width="130"><a href="compList.php?tri=Description&sens=<?=$newSens?>">Identifiant<?=$affSensDir?></a></th>
 <?php if($app_section=='ELT') { ?>
-<th align="left" width="250"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractï¿½risitiques</th>
+<th align="left" width="250"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractérisitiques</th>
 <?php } else { ?>
-<th align="left" width="430"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractï¿½risitiques</th>
+<th align="left" width="430"><a href="compList.php?tri=Valeur&sens=<?=$newSens?>">Valeur<?=$affSensVal?></a> / Caractérisitiques</th>
 <?php } ?>
-<!-- th align="left" width="20"><a href="compList.php?tri=Caracteristiques&sens=<?=$newSens?>">Caractï¿½ristiques<?=$affSensCar?></a></th -->
+<!-- th align="left" width="20"><a href="compList.php?tri=Caracteristiques&sens=<?=$newSens?>">Caractéristiques<?=$affSensCar?></a></th -->
 <!-- th align="left"><a href="compList.php?tri=LibelleGenre&sens=<?=$newSens?>">Genre<?=$affSensGen?></a></th -->
 <th align="left" width="120"><select name="IDGenre" onChange='resetType();submit();' style="font-size: 9px;"><option value=''>&lt;Genre&gt;</option>
 
@@ -479,7 +479,7 @@ while ($listeLigne = mysqli_fetch_array($resultatTri)) {
 <?php } else { ?>
 <td colspan="7">
 <?php } ?>
-<a href="compList.php?limit=<?=$limit-50?>"><< Prï¿½cï¿½dents</a></td></tr>
+<a href="compList.php?limit=<?=$limit-50?>"><< Précédents</a></td></tr>
 <?php } ?>
 <?php
 echo $pageOut;
