@@ -5,21 +5,21 @@
 # @Project: GeFoPro
 # @Filename: dossiers.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:32
+# @Last modified time: 30.03.2021 16:03:81
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
 include("../appHeader.php");
 
 //if(!isset($login)) {
-//	// utilisateur par dï¿½faut -> invitï¿½
+//	// utilisateur par défaut -> invité
 //	$login = DBUser;
 //	$mdp = DBPwd;
-//	$_SESSION['user_nom'] = "Invitï¿½";
+//	$_SESSION['user_nom'] = "Invité";
 //	$_SESSION['user_type'] = "Anonyme";
 //}
 include("checkURL.php");
-// catï¿½gorie
+// catégorie
 define ("CatElectro", 56);
 define ("CatSoft", 59);
 define ("CatInfo", 64);
@@ -324,9 +324,9 @@ function display_children($parent, $level, $cat, $filtre) {
 					echo "<b>$soft[Nom]</b> <img src='/iconsFam/link_break.png'> - <font color='#5C5C5C'>$soft[LienSite]</font> -";
 				}
 				if($soft['StatusLienDirect']) {
-					echo "<a href='$soft[LienDirect]'>Tï¿½lï¿½charger</a>";
+					echo "<a href='$soft[LienDirect]'>Télécharger</a>";
 				} else {
-					echo "Tï¿½lï¿½chargement indisponible <img src='/iconsFam/link_break.png'>";
+					echo "Téléchargement indisponible <img src='/iconsFam/link_break.png'>";
 				}
 				echo "</span><p style='margin: 0px 0px 0px 20px;display:inline-block;'>$soft[Description]";
 				echo"</p>";
@@ -343,7 +343,7 @@ function display_children($parent, $level, $cat, $filtre) {
 
 		   //echo "Debug - ".$row['Nom'].": ".$existDoc."/".$child."<br>\n";
 		   if(!$existDoc && !$child && !hasAdminRigth()) {
-				// aucuns documents, on cache le bloc concernï¿½
+				// aucuns documents, on cache le bloc concerné
 				//echo "<script>div = document.getElementById('block$row[IDDossier]');div.style.display='none';</script>\n";
 				echo "<script>div = document.getElementById('block$parent'); rem = document.getElementById('block$row[IDDossier]');div.removeChild(rem);</script>\n";
 
@@ -411,7 +411,7 @@ function submitNewDossier(IDParent) {
 <FORM id="myForm" ACTION="dossiers.php"  METHOD="GET">
 <input type="hidden" name="cat" value="<?=$cat?>">
 <div class="post">
-	<br>Catï¿½gorie: <select name="niveau1" onChange='submit();'><option value="">Tous</option><?=getOptionsCat($cat,$niveau1)?></select>
+	<br>Catégorie: <select name="niveau1" onChange='submit();'><option value="">Tous</option><?=getOptionsCat($cat,$niveau1)?></select>
 	<?php
 	$root = $cat;
 	$filtre = '';
@@ -427,8 +427,8 @@ function submitNewDossier(IDParent) {
 		$filtre = $niveau2;
 	}
 	if(hasAdminRigth()) {
-       	echo "<img src='/iconsFam/folder_add.png' align='absmiddle' onmouseover=\"Tip('Ajouter catï¿½gorie')\" onmouseout='UnTip()' onClick='toggle(\"newDossier$cat\")'>";
-       	echo "<div style='background-color: #EEEEEE; padding:10px 5px 10px 10px;' id='newDossier$cat'><input type='texte' name='newDossier' id='name$cat' value=''><input type='button' name='AjouterDossier' value='Ajouter catï¿½gorie' onclick='submitNewDossier(\"$cat\")'></div><script>document.getElementById(\"newDossier$cat\").style.display = \"none\"</script>";
+       	echo "<img src='/iconsFam/folder_add.png' align='absmiddle' onmouseover=\"Tip('Ajouter catégorie')\" onmouseout='UnTip()' onClick='toggle(\"newDossier$cat\")'>";
+       	echo "<div style='background-color: #EEEEEE; padding:10px 5px 10px 10px;' id='newDossier$cat'><input type='texte' name='newDossier' id='name$cat' value=''><input type='button' name='AjouterDossier' value='Ajouter catégorie' onclick='submitNewDossier(\"$cat\")'></div><script>document.getElementById(\"newDossier$cat\").style.display = \"none\"</script>";
 	}
 	 ?>
 	<br><br>

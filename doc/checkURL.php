@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: checkURL.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:46
+# @Last modified time: 30.03.2021 16:03:88
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -15,7 +15,7 @@ function http_check_url($url, $timeout = 10){
 	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
 	curl_setopt($ch, CURLOPT_NOBODY, TRUE);
 	if (strpos($url, 'https://') === 0) {
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // On ne vï¿½rifie que l'existence de la page
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // On ne vérifie que l'existence de la page
 	}
 	if (!curl_exec($ch)) {
 		return FALSE;

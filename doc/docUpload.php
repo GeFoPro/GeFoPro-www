@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: docUpload.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:23
+# @Last modified time: 30.03.2021 16:03:79
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -24,7 +24,7 @@ if(isset($_GET['nomDossier'])) {
 }
 
 
-// catï¿½gorie
+// catégorie
 define ("CatElectro", 56);
 define ("CatSoft", 59);
 define ("CatInfo", 64);
@@ -39,7 +39,7 @@ include("../userInfo.php");
 
 <?php
 
-/* dï¿½tail */
+/* détail */
 if(!empty($IDDocument)) {
 	$requete = "SELECT * FROM document doc";
 	$requete .= " join dossier dos on doc.IDDossier = dos.IDDossier";
@@ -64,12 +64,12 @@ if(!empty($IDDocument)) {
 
 <div class="post">
 <FORM id="myForm" ACTION="dossiers.php"  METHOD="POST" enctype="multipart/form-data">
-<h2>Dï¿½tail du cours</h2>
+<h2>Détail du cours</h2>
 <table border="0">
 <tr><td>Dossier</td><td><input type='text' name='NomRD' value="<?=$ligne['Nom']?>" readonly id='readOnly' size='40'><input type='hidden' name='IDDossier' value='<?=$ligne['IDDossier']?>'></input></td></tr>
 <tr><td>Description</td><td><input type='text' name='Libelle' value="<?=$ligne['Libelle']?>" size='40'></input> * </td></tr>
 <tr><td>Version</td><td><input type='text' name='Version' value='<?=$ligne['Version']?>' size='4'></input></td></tr>
-<tr><td>Identitï¿½</td><td><input type='text' name='NoIdentite' value='<?=$ligne['NoIdentite']?>' size='40'></input></td></tr>
+<tr><td>Identité</td><td><input type='text' name='NoIdentite' value='<?=$ligne['NoIdentite']?>' size='40'></input></td></tr>
 <tr><td>Document</td><td><input type="hidden" name="MAX_FILE_SIZE" value="5000000"><input type="file" name="cours">
 <?php if(!empty($ligne['document']))  {
 	echo " (<a href='lireCours.php?IDDocument=".$IDDocument."' target='pdf'>document actuel</a>)";
