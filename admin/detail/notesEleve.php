@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: notesEleve.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:30
+# @Last modified time: 30.03.2021 15:03:67
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -82,7 +82,7 @@ if(isset($_GET['expand'])) {
 if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 	$noteAuto = 0;
 	if($_POST['actionNote']=='update') {
-		// maj: rï¿½cupï¿½ration de l'id et des attributs
+		// maj: récupération de l'id et des attributs
 		$IDNote = $_POST['idNote'];
 		$remarque = $_POST['RemarqueNote'.$IDNote];
 		if(!empty($_POST['Note'.$IDNote])) {
@@ -94,7 +94,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 			// maj de la note en DB
 	    		$requete = "UPDATE notes set Note=".$note.", RemarqueNote=\"".$remarque."\", Ponderation=".$ponderation." where IDNote=".$IDNote;
 		} else {
-			// modification de la remarque gï¿½nï¿½rale
+			// modification de la remarque générale
 			$requete = "UPDATE notes set RemarqueNote=\"".$remarque."\" where IDNote=".$IDNote;
 		}
     		//echo $requete;
@@ -104,14 +104,14 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 		$IDNote = $_POST['idNote'];
 		$requete = "DELETE FROM notes where IDNote=$IDNote";
 	} else if($_POST['actionNote']=='deleteTheme') {
-		// effacer les notes du thï¿½me
+		// effacer les notes du thème
 		$annee = $_POST['anneeNote'];
 		$semestre = $_POST['semestreNote'];
 		$theme = $_POST['themeNote'];
 		$requete = "DELETE FROM notes where IDTheme=".$theme." and Annee=".$annee." and Nosemestre=".$semestre." and IDEleve=".$IDEleve;
 		//echo $requete;
 	} else if($_POST['actionNote']=='deletePeriode') {
-		// effacer les notes du thï¿½me
+		// effacer les notes du thème
 		$annee = $_POST['anneeNote'];
 		$semestre = $_POST['semestreNote'];
 		$requete = "DELETE FROM notes where Annee=".$annee." and Nosemestre=".$semestre." and IDEleve=".$IDEleve;
@@ -126,30 +126,30 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 		$requete = "SELECT * from notes where IDEleve=".$IDEleve." and IDTheme=".$theme." and IDTypeNote=0 and Annee=".$annee." and NoSemestre=".$semestre;
 		$resultat =  mysqli_query($connexionDB,$requete);
 		if(mysqli_num_rows($resultat)==0) {
-			// l'entrï¿½e avec IDTypeNote=0 n'existe pas pour stocker la pondï¿½ration, on l'ajoute
+			// l'entrée avec IDTypeNote=0 n'existe pas pour stocker la pondération, on l'ajoute
 			$requete = "insert into notes (Note, IDEleve, IDTheme, IDTypeNote, NoSemestre, Annee, RemarqueNote, Ponderation) values (NULL, ".$IDEleve.", ".$theme.", 0, ".$semestre.", ".$annee.", '', ".$updPond.")";
 		} else {
-			// mise ï¿½ jour de la pondï¿½ration pour le thï¿½me (ligne avec IDTypeNote =0)
+			// mise à jour de la pondération pour le thème (ligne avec IDTypeNote =0)
 			$requete = "update notes set ponderation=".$updPond." where IDEleve=".$IDEleve." and IDTheme=".$theme." and IDTypeNote=0 and NoSemestre=".$semestre." and Annee=".$annee;
 		}
 		//echo $requete;
 	} else {
-		// ajout: rï¿½cupï¿½ration des donnï¿½es de base et construction de l'identifiant unique
+		// ajout: récupération des données de base et construction de l'identifiant unique
 		$annee = $_POST['anneeNote'];
 		$semestre = $_POST['semestreNote'];
 		$theme = $_POST['themeNote'];
 		if(empty($theme)) {
-			// crï¿½ation de thï¿½me ou nouvelle remarque
+			// création de théme ou nouvelle remarque
 			$idTypeNote = $_POST['typeNote'];
 			if($idTypeNote == 0) {
-				// crï¿½ation d'une note fictive pour nouvelle annï¿½e ou nouveau thï¿½me (IDTypeNote=0)
+				// création d'une note fictive pour nouvelle année ou nouveau thème (IDTypeNote=0)
 				if(isset($_POST['IDTheme'.$annee.$semestre])) {
-					// utilisation du nouveau thï¿½me
+					// utilisation du nouveau thème
 					$theme = $_POST['IDTheme'.$annee.$semestre];
 					// activation d'ajout de notes automatique
 					$noteAuto=2;
 				} else {
-					// pour nouvelle annï¿½e, thï¿½me fictif ï¿½ 1
+					// pour nouvelle année, thème fictif à 1
 					$theme = 1;
 				}
 				if(isset($_POST['PonderationTheme'.$annee.$semestre])&&!empty($_POST['PonderationTheme'.$annee.$semestre])) {
@@ -159,33 +159,33 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 				}
 				$remarque = '';
 			} else if($idTypeNote == 6) {
-				// crï¿½ation de remarque
+				// création de remarque
 				$theme = 1; // ligne pour ajout remarque
 				$ponderation = 0;
 				$remarque = $_POST['RemarqueNote'.$annee.$semestre];
 			}
 		} else {
 			$idChamp = $annee.$semestre.$theme;
-			// rï¿½cupï¿½ration des valeurs
+			// récupération des valeurs
 			$idTypeNote = $_POST['IDTypeNote'.$idChamp];
 			$note = $_POST['Note'.$idChamp];
 
 			if($idTypeNote==1) {
-				// TE -> ponderation par dï¿½faut: 1
+				// TE -> ponderation par défaut: 1
 				$ponderation = $_POST['Ponderation'.$idChamp];
 				if(empty($ponderation)) {
 					$ponderation = 1;
 				}
 			} else {
-				// on laisse ï¿½ zï¿½ro -> utiliser la pondï¿½ration du thï¿½me
+				// on laisse à zéro -> utiliser la pondération du thème
 				$ponderation = 0;
-				// pour les notes autres que TE, tester si pas dï¿½jï¿½ existante pour le thï¿½me
+				// pour les notes autres que TE, tester si pas déjà existante pour le thème
 				$requete = "SELECT count(IDNote) from notes where IDEleve=$IDEleve and NoSemestre=$semestre and Annee=$annee and IDTheme=$theme and IDTypeNote=$idTypeNote";
 				$result =  mysqli_query($connexionDB,$requete);
 				$resultat=mysqli_fetch_row($result);
 				if($resultat[0]!=0) {
-					// la note existe dï¿½jï¿½
-					$messageErreur = "La note existe dï¿½jï¿½!";
+					// la note existe déjà
+					$messageErreur = "La note existe déjà!";
 				}
 
 			}
@@ -201,7 +201,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 	    	$requete = "INSERT INTO notes (IDEleve, NoSemestre, Annee, IDTypeNote, Note, RemarqueNote, IDTheme, Ponderation) values ($IDEleve, $semestre, $annee, $idTypeNote, $note, \"$remarque\", $theme, $ponderation)";
     		//echo $requete;
 		} else {
-			// mode sans theme - > crï¿½ation automatique des notes pour le theme 10
+			// mode sans theme - > création automatique des notes pour le theme 10
 			$theme = 10;
 			$noteAuto=2;
 		}
@@ -231,7 +231,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 }
 include("entete.php");
 if(!hasAdminRigth()) {
-	echo "<br><br><center><b>Contenu non autorisï¿½.</b></center><br><br>";
+	echo "<br><br><center><b>Contenu non autorisé.</b></center><br><br>";
 	exit;
 }
 ?>
@@ -357,7 +357,7 @@ function limitEvent(e) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tï¿½te */
+/* en-tête */
 
 function niveauMoy($moyenne) {
 	return chr(round($moyenne,0,PHP_ROUND_HALF_DOWN)+64);
@@ -410,7 +410,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 }
 */
 
-// construction de la liste dï¿½roulante pour ajout Theme
+// construction de la liste déroulante pour ajout Theme
 //$requete = "SELECT th.IDTheme, pr.IDProjet, pr.IDEleve, th.NomTheme, th.TypeTheme FROM theme th left join projets pr on th.IDTheme=pr.IDTheme where th.IDTheme >= 10 and th.TypeTheme < 2 order by th.TypeTheme,th.NomTheme";
 $requete = "SELECT th.IDTheme, pr.IDProjet, pr.IDEleve, th.NomTheme, th.TypeTheme FROM theme th left join projets pr on th.IDTheme=pr.IDTheme where (th.TypeTheme=0 and '".$classe."' LIKE CONCAT(ClasseTheme, '%')) OR (th.TypeTheme = 1 and pr.IDEleve=$IDEleve) group by th.IDTheme order by th.TypeTheme,th.NomTheme";
 $resultat =  mysqli_query($connexionDB,$requete);
@@ -421,14 +421,14 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($ligne['TypeTheme']==1) {
 			$texte = "Projet - ".$texte;
 		} else {
-			$texte = "Thï¿½me - ".$texte;
+			$texte = "Thème - ".$texte;
 		}
 		$optionThemes .= "<option value=".$ligne['IDTheme'].">".$texte."</option>";
 	}
 }
 
-// construction des 5 derniï¿½res annï¿½es
-/* annï¿½e en cours */
+// construction des 5 dernières années
+/* année en cours */
 $anneeEncours = date('Y');
 $optionAnnee = "";
 
@@ -447,8 +447,8 @@ echo "<div id='legend'>Notes  <a href='notesEleve.php?nom=$nom&prenom=$prenom&id
 echo "<br><table id='hor-minimalist-b' border='0' width='100%'>\n";
 
 // ligne d'ajout d'un semestre
-echo "<tr newSemestre='1' style='display:none'><td colspan='9'>Nouvelle pï¿½riode: <br><select name='anneeNew'>".$optionAnnee."</select>\n";
-echo "<select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ï¿½me semestre</option></select>\n";
+echo "<tr newSemestre='1' style='display:none'><td colspan='9'>Nouvelle période: <br><select name='anneeNew'>".$optionAnnee."</select>\n";
+echo "<select name='semestreNew'><option value='1'>1er semestre</option><option value='2'>2ème semestre</option></select>\n";
 echo "&nbsp;<img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitNewGen(document.getElementsByName(\"anneeNew\")[0].value,document.getElementsByName(\"semestreNew\")[0].value,\"0\")'>";
 echo "&nbsp;<img src='/iconsFam/cross.png' align='absmiddle' onmouseover=\"Tip('Annuler')\" onmouseout='UnTip()' onclick='toggle(\"newSemestre\")'></td>";
 echo "</tr>";
@@ -514,14 +514,14 @@ function clotureTE() {
 
 function clotureTheme() {
 	global $theme, $semestre, $annee, $nomTheme, $pondTheme, $notesComp, $cntNoteTheme, $displayDefault, $displayExpand, $compAbbr, $compPond, $modeEvaluation;
-	// ajouter ligne rï¿½cap pour affichage sans dï¿½tail
+	// ajouter ligne récap pour affichage sans détail
 	$iconSuppr = "";
 	if($cntNoteTheme==0) {
-		// theme vide -> possibilitï¿½ de le supprimer
-		$iconSuppr = "<img src='/iconsFam/cross.png' align='absmiddle' onmouseover=\"Tip('Supprimer le thï¿½me')\" onmouseout='UnTip()' onclick='submitDeleteTheme(\"".$theme."\", \"".$annee."\", \"".$semestre."\")'> ";
+		// theme vide -> possibilité de le supprimer
+		$iconSuppr = "<img src='/iconsFam/cross.png' align='absmiddle' onmouseover=\"Tip('Supprimer le thème')\" onmouseout='UnTip()' onclick='submitDeleteTheme(\"".$theme."\", \"".$annee."\", \"".$semestre."\")'> ";
 	}
 	if($theme!=0 && $theme>=10) {	// ne pas afficher les lignes fictives
-		// calcule moyenne du thï¿½me
+		// calcule moyenne du thème
 		$moyPnd = 0;
 		$cntPnd = 0;
 		foreach ($compPond as $key => $value) {
@@ -530,7 +530,7 @@ function clotureTheme() {
 		}
 		$moyTheme = sprintf("%01.1f",($moyPnd/$cntPnd));
 		if($cntNoteTheme!=0&&$moyTheme!=0&&$modeEvaluation=="theme") {
-			echo "\n<tr block$annee$semestre$theme='1' style='display:".$displayExpand."'><td width='15'></td><td width='250'><i>Moyenne Thï¿½me</i></td><td width='40'></td><td width='40' align='center'>".$moyTheme."</td><td width='660' colspan='5'></td></tr>";
+			echo "\n<tr block$annee$semestre$theme='1' style='display:".$displayExpand."'><td width='15'></td><td width='250'><i>Moyenne Thème</i></td><td width='40'></td><td width='40' align='center'>".$moyTheme."</td><td width='660' colspan='5'></td></tr>";
 		}
 		echo "\n<tr block$annee$semestre$theme='1' id='hidethis' style='display:".$displayDefault."' onclick='toggle(\"block$annee$semestre$theme\");'><td colspan='2' width='265'><font size='2' face='Verdana'><img src='/iconsFam/bullet_arrow_down.png'> ".$nomTheme."</font></td><td width='40' align='center'><b>Pond</b><br>".$pondTheme."</td>";
 		foreach ($compAbbr as $key => $value) {
@@ -561,11 +561,11 @@ function clotureSemestre() {
 
 	if(!empty($libellePeriode)  && (array_sum($cntNotesComp)!=0) ) {
 
-		// avant prochain bloc, calculer la moyenne du semestre prï¿½cï¿½dant
+		// avant prochain bloc, calculer la moyenne du semestre précédant
 		$ligneMoy = "<tr><td colspan='9' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 
 
-		$ligneMoy .= "<tr><td colspan='3' width='305'><i>Moyenne calculï¿½e ".$libellePeriode."</i></td>";
+		$ligneMoy .= "<tr><td colspan='3' width='305'><i>Moyenne calculée ".$libellePeriode."</i></td>";
 		$cntNoteTot = 0;
 		foreach ($compAbbr as $key => $value) {
 			if($cntNotesComp[$key]!=0) {
@@ -635,7 +635,7 @@ function clotureSemestre() {
 				echo "<tr><td colspan='9' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 				echo "<tr><td colspan='3' width='305'><font size='2' face='Verdana'><b>Moyenne bulletin</b></font></td><td align='center' width='40'><font size='2' face='Verdana'><b>".$moyenneSemDix."</b></font></td><td colspan='5'><font size='2' face='Verdana'>(".$moyenneSemCent.")</font></td></tr>";			//}
 		}
-		// remise ï¿½ zï¿½ro
+		// remise à zéro
 		$moyennesComp = array_fill(1, 4, 0);
 		$cntNotesComp = array_fill(1, 4, 0);
 		/*
@@ -650,10 +650,10 @@ function clotureSemestre() {
 		*/
 
 	}
-		// afficher la remarque gï¿½nï¿½rale si prï¿½sente
+		// afficher la remarque générale si présente
 		if(empty($remGen)) {
-			// si aucune remarque prï¿½sent, ajouter les champs de crï¿½ation
-			$remGen = "<tr onclick='toggleEdit(\"tdRem$annee$semestre\");'><td tdRem$annee$semestre='1' id='hidethis' style='display:none' colspan='3' valign='top' width=305><b>Remarque sur la pï¿½riode</b></td>";
+			// si aucune remarque présent, ajouter les champs de création
+			$remGen = "<tr onclick='toggleEdit(\"tdRem$annee$semestre\");'><td tdRem$annee$semestre='1' id='hidethis' style='display:none' colspan='3' valign='top' width=305><b>Remarque sur la période</b></td>";
 			$remGen .= "<td tdRem$annee$semestre='1' id='hidethis' style='display:none' colspan='6'><textarea name='RemarqueNote$annee$semestre' COLS=60 ROWS=2 onclick='limitEvent(event)'></textarea>\n";
 			$remGen .= "&nbsp;<img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Ajouter la remarque')\" onmouseout='UnTip()' onClick='submitNewGen(\"$annee\",\"$semestre\",\"6\")'>";
 			$remGen .= "&nbsp;<img src='/iconsFam/cross.png' align='absmiddle' onmouseover=\"Tip('Annuler')\" onmouseout='UnTip()' onClick='toggleEdit(\"tdRem$annee$semestre\");'></td>";
@@ -669,17 +669,16 @@ function clotureSemestre() {
 		} else {
 			$dateReq = "and Date > '".($annee+1)."-01-31' and Date <= '".($annee+1)."-07-31'";
 		}
-		// recherche des attributs gï¿½nï¿½raux (1 ï¿½ 6)
+		// recherche des attributs généraux (1 à 6)
 		$requete = "SELECT * FROM AttribEleves el join Attribut att on el.IDAttribut=att.IDAttribut where IDEleve = $IDEleve and el.IDAttribut in (102,103,104,105)  ".$dateReq." order by Date";
 		//echo $requete;
-
 		$resultat =  mysqli_query($connexionDB,$requete);
 		$histo = "";
 		while ($ligne = mysqli_fetch_assoc($resultat)) {
 			$histo .= date('d.m.Y', strtotime($ligne['Date']))." [".$ligne['Nom']."] ".$ligne['Remarque']."<br>";
 		}
 		if(!empty($histo)&&$annee!=0) {
-			echo "<tr><td colspan='3'><b>Historique pï¿½riode</b></td><td colspan='6'>".$histo."</td></tr>";
+			echo "<tr><td colspan='3'><b>Historique période</b></td><td colspan='6'>".$histo."</td></tr>";
 		}
 		// ligne d'espacement
 		if(!empty($libellePeriode)) {
@@ -693,23 +692,23 @@ function clotureSemestre() {
 
 while ($ligne = mysqli_fetch_assoc($resultat)) {
 	if($ligne['Annee'] != $annee || $ligne['NoSemestre'] != $semestre) {
-		// nouvelle annï¿½e
-		// clï¿½ture de la ligne des TE si nï¿½cessaire
+		// nouvelle année
+		// clôture de la ligne des TE si nécessaire
 		clotureTE();
-		// clï¿½ture du thï¿½me prï¿½cï¿½dent si nï¿½cessaire
+		// clôture du théme précédent si nécessaire
 		clotureTheme();
-		// clï¿½turer la pï¿½riode avec le calcul de la moyenne et l'ï¿½ventuelle remarque sur la pï¿½riode
+		// clôturer la période avec le calcul de la moyenne et l'éventuelle remarque sur la période
 		clotureSemestre();
 
 		switch($ligne['NoSemestre']) {
 			case 1: $libellePeriode = "1er semestre";
 					break;
-			case 2: $libellePeriode = "2ï¿½me semestre";
+			case 2: $libellePeriode = "2ème semestre";
 					break;
 		}
 		$annee = $ligne['Annee'];
 		$semestre = $ligne['NoSemestre'];
-		// recherche systï¿½me d'ï¿½valuation en fonction du semestre et de l'annï¿½e
+		// recherche système d'évaluation en fonction du semestre et de l'année
 		$compEval = $competencesEvaluation;
 		$compAbbr = $competencesAbbr;
 		$compPond = $competencesPonderation;
@@ -732,20 +731,20 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		}
 		*/
 		echo "\n<tr><td colspan='9' bgColor='#5C5C5C'></td></tr>";
-		echo "<tr><td colspan='2' width='265'><font size='2' face='Verdana'><nobr><b>Annï¿½e ".$ligne['Annee']."/".($ligne['Annee']+1)." - ".$libellePeriode."</b></nobr></font></td><td width='40'></td><td width='40'></td><td colspan='5' width='660' align='right'>";
+		echo "<tr><td colspan='2' width='265'><font size='2' face='Verdana'><nobr><b>Année ".$ligne['Annee']."/".($ligne['Annee']+1)." - ".$libellePeriode."</b></nobr></font></td><td width='40'></td><td width='40'></td><td colspan='5' width='660' align='right'>";
 		if($modeEvaluation=="theme") {
-			echo "<img src='/iconsFam/folder_add.png' onmouseover=\"Tip('Ajouter un thï¿½me pour la pï¿½riode')\" onmouseout='UnTip()' onclick='limitEvent(event);toggle(\"newTheme$annee$semestre\");'>";
+			echo "<img src='/iconsFam/folder_add.png' onmouseover=\"Tip('Ajouter un thème pour la période')\" onmouseout='UnTip()' onclick='limitEvent(event);toggle(\"newTheme$annee$semestre\");'>";
 		}
-		echo "&nbsp;<img src='/iconsFam/comment_add.png' onmouseover=\"Tip('Ajouter une remaque sur la pï¿½riode')\" onmouseout='UnTip()' onclick='toggleEdit(\"tdRem$annee$semestre\");'>";
-		//echo "&nbsp;<img src='/iconsFam/page_add.png' onmouseover=\"Tip('Ajouter le bulletin de la pï¿½riode')\" onmouseout='UnTip()' onclick='toggleEdit(\"tdBul$annee$semestre\");'>";
+		echo "&nbsp;<img src='/iconsFam/comment_add.png' onmouseover=\"Tip('Ajouter une remaque sur la période')\" onmouseout='UnTip()' onclick='toggleEdit(\"tdRem$annee$semestre\");'>";
+		//echo "&nbsp;<img src='/iconsFam/page_add.png' onmouseover=\"Tip('Ajouter le bulletin de la période')\" onmouseout='UnTip()' onclick='toggleEdit(\"tdBul$annee$semestre\");'>";
 
-		if($ligne['IDTheme']<10 && $ligne['IDTypeNote']==0) { // il ne reste que l'annï¿½e -> on peut effacer la ligne
-			echo "&nbsp;<img src='/iconsFam/cross.png' onmouseover=\"Tip('Supprimer la pï¿½riode')\" onmouseout='UnTip()' onclick='submitDeletePeriode(\"".$annee."\", \"".$semestre."\")'>";
+		if($ligne['IDTheme']<10 && $ligne['IDTypeNote']==0) { // il ne reste que l'année -> on peut effacer la ligne
+			echo "&nbsp;<img src='/iconsFam/cross.png' onmouseover=\"Tip('Supprimer la période')\" onmouseout='UnTip()' onclick='submitDeletePeriode(\"".$annee."\", \"".$semestre."\")'>";
 		}
 		echo "</td></tr>";
 
 		echo "<tr newTheme$annee$semestre='1' id='hidethis' style='display:none'><td colspan='2' width='265'><select name='IDTheme$annee$semestre'>".$optionThemes."</select></td>\n";
-		echo "<td width='40' align='center'><input type='text' size='1' name='PonderationTheme$annee$semestre' value='' onmouseover=\"Tip('Pondï¿½ration du thï¿½me, laisser vide pour utiliser la pondï¿½ration de base de ce thï¿½me')\" onmouseout='UnTip()'></td>";
+		echo "<td width='40' align='center'><input type='text' size='1' name='PonderationTheme$annee$semestre' value='' onmouseover=\"Tip('Pondération du thème, laisser vide pour utiliser la pondération de base de ce thème')\" onmouseout='UnTip()'></td>";
 		echo "<td width='40'><input type='hidden' name='IDTypeNote$annee$semestre' value='0'></td>\n";
 		echo "<td colspan='5' width='660'>\n";
 		echo "&nbsp;<img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Enregister')\" onmouseout='UnTip()' onclick='submitNewGen(\"$annee\",\"$semestre\",\"0\")'>";
@@ -753,11 +752,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		echo "</tr>";
 	}
 	if($ligne['IDTheme']>=10 && $ligne['IDTheme']!=$theme) {
-		// clï¿½ture de la ligne des TE si nï¿½cessaire
+		// clôture de la ligne des TE si nécessaire
 		clotureTE();
-		// clï¿½ture du thï¿½me prï¿½cï¿½dent si nï¿½cessaire
+		// clôture du théme précédent si nécessaire
 		clotureTheme();
-		// nouveau thï¿½me pour la mï¿½me pï¿½riode
+		// nouveau thème pour la même période
 		$cntNoteTheme = 0;
 		$moyenneTE = 0;
 		$cntThemeSem++;
@@ -768,7 +767,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			$nomTheme = "Projet - ".$nomTheme;
 		}
 
-		// recherche du nombre de semaine selon journaux pour pondï¿½ration automatique
+		// recherche du nombre de semaine selon journaux pour pondération automatique
 		$dateCalc=mktime(0,0,0,1,4,($ligne['Annee']+1));
 		$jour_semaine=date("N",$dateCalc);
 		$lundisem2=$dateCalc-86400*($jour_semaine-1)+604800*($noSemaineSem2-1);
@@ -799,11 +798,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 
 		echo "<tr><td colspan='9' valign='bottom' bgColor='#DEDEDE'></td></tr>";
 		echo "\n<tr block$annee$semestre$theme='1' id='hidethis' onclick='toggle(\"block$annee$semestre$theme\");' style='display:".$displayExpand."'><td colspan='2' width='265'><font size='2' face='Verdana'><img src='/iconsFam/bullet_arrow_up.png'> ".$nomTheme."</font></td>";
-		echo "<td width='40' align='center' pond$annee$semestre$theme='1' onclick='toggleTD(\"pond$annee$semestre$theme\");limitEvent(event);' onmouseover=\"Tip('Pondï¿½ration calculï¿½e: ".$pondAuto."')\" onmouseout='UnTip()'><b>Pond</b><br>".$pondTheme."</td>";
+		echo "<td width='40' align='center' pond$annee$semestre$theme='1' onclick='toggleTD(\"pond$annee$semestre$theme\");limitEvent(event);' onmouseover=\"Tip('Pondération calculée: ".$pondAuto."')\" onmouseout='UnTip()'><b>Pond</b><br>".$pondTheme."</td>";
 		echo "<td width='40' align='center' style='display:none' pond$annee$semestre$theme='1' onclick='toggleTD(\"pond$annee$semestre$theme\");limitEvent(event);'><input type='text' size='2' maxlength='2' name='NewPond$annee$semestre$theme' style='text-align:center;' value='".$pondTheme."' onClick='limitEvent(event);' onChange='submitUpdatePond(\"$annee\",\"$semestre\",\"$theme\")'></td>";
-		echo "<td width='40' align='center'><b>Note</b><br>&nbsp;</td><td colspan='5' align='right' width='660'><img src='/iconsFam/script_add.png' onmouseover=\"Tip('Ajouter une note au thï¿½me')\" onmouseout='UnTip()' onclick='limitEvent(event);toggle(\"new$annee$semestre$theme\",\"focus$annee$semestre$theme\");'></td></tr>";
+		echo "<td width='40' align='center'><b>Note</b><br>&nbsp;</td><td colspan='5' align='right' width='660'><img src='/iconsFam/script_add.png' onmouseover=\"Tip('Ajouter une note au thème')\" onmouseout='UnTip()' onclick='limitEvent(event);toggle(\"new$annee$semestre$theme\",\"focus$annee$semestre$theme\");'></td></tr>";
 		// ajouter une ligne d'insertion
-		$optionTypeNote = "<option value='1'>TE</option>"; // construction de la liste dï¿½roulante pour ajout Note
+		$optionTypeNote = "<option value='1'>TE</option>"; // construction de la liste déroulante pour ajout Note
 		foreach ($compEval as $key => $value) {
 			$optionTypeNote .= "<option value=".($key+1).">".$value."</option>";
 		}
@@ -817,11 +816,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 
 	}
 	if($ligne['IDTypeNote'] > 1) {
-		// clï¿½ture de la ligne des TE si nï¿½cessaire
+		// clôture de la ligne des TE si nécessaire
 		clotureTE();
 	}
 	if($ligne['IDTypeNote']>1 && $ligne['IDTypeNote']<6 ) { //&& empty($ligne['Note'])) {
-		// recherche des moyennes des ï¿½valuations du thï¿½me concernï¿½
+		// recherche des moyennes des évaluations du thème concerné
 		$requeteMoy = "SELECT AVG(Note) as NoteMoyenne, AVG(Niveau) as NiveauMoyen, GROUP_CONCAT(Remarque SEPARATOR '\n') as RemarqueConcat FROM evalhebdo where IDEleve = $IDEleve and IDTheme=$theme and IDCompetence=".($ligne['IDTypeNote']-1)." and IDTypeEval=2";
 		//$requeteMoy .= " and (Annee between ".$ligne['Annee']." and ".($ligne['Annee']+1).")";
 		if($ligne['NoSemestre']==1) {
@@ -896,7 +895,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			echo "<td tdT$idNote='1' id='hidethis' align='center' width='60'";
 			if(!empty($ligne['Note'])) {
 				if(!empty($moyEstimee)) {
-					echo " onmouseover=\"Tip('Moyenne des ï¿½valuations: ".$moyEstimee.", yc non validï¿½es: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
+					echo " onmouseover=\"Tip('Moyenne des évaluations: ".$moyEstimee.", yc non validées: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
 				}
 				echo "><b>".$ligne['Note']."</b></td>\n";
 			} else {
@@ -945,7 +944,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			echo "<td tdA$idNote='1' id='hidethis' align='center' width='60'";
 			if(!empty($ligne['Note'])) {
 				if(!empty($moyEstimee)) {
-					echo " onmouseover=\"Tip('Moyenne des ï¿½valuations: ".$moyEstimee.", yc non validï¿½es: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
+					echo " onmouseover=\"Tip('Moyenne des évaluations: ".$moyEstimee.", yc non validées: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
 				}
 				echo "><b>".$ligne['Note']."</b></td>\n";
 			} else {
@@ -983,7 +982,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			echo "<td tdR$idNote='1' id='hidethis' align='center' width='60'";
 			if(!empty($ligne['Note'])) {
 				if(!empty($moyEstimee)) {
-					echo " onmouseover=\"Tip('Moyenne des ï¿½valuations: ".$moyEstimee.", yc non validï¿½es: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
+					echo " onmouseover=\"Tip('Moyenne des évaluations: ".$moyEstimee.", yc non validées: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
 				}
 				echo "><b>".$ligne['Note']."</b></td>\n";
 			} else {
@@ -1015,13 +1014,13 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			}
 			break;
 		case 5:
-			// Savoir-ï¿½tre
+			// Savoir-être
 			echo "<tr block$annee$semestre$theme='1' style='display:".$displayExpand."' onclick='toggleEdit(\"tdS$idNote\");'><td width='15'></td><td width='250'><b>".$compEval[$ligne['IDTypeNote']-1]."</b></td>\n";
 			echo "<td width='40' align='center'><input type='hidden' name='Ponderation$idNote' value='".$ligne['Ponderation']."'></td>";
 			echo "<td tdS$idNote='1' id='hidethis' align='center' width='60'";
 			if(!empty($ligne['Note'])) {
 				if(!empty($moyEstimee)) {
-					echo " onmouseover=\"Tip('Moyenne des ï¿½valuations: ".$moyEstimee.", yc non validï¿½es: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
+					echo " onmouseover=\"Tip('Moyenne des évaluations: ".$moyEstimee.", yc non validées: ".$moyEstimeeNoValid."')\" onmouseout='UnTip()'";
 				}
 				echo "><b>".$ligne['Note']."</b></td>\n";
 			} else {
@@ -1053,11 +1052,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			}
 			break;
 		case 6:
-			// Remarque gï¿½nï¿½rale
+			// Remarque générale
 			//echo "edfgdfgdfg ";
 			$remGen = "";
 			$remGen .= "<tr><td colspan='9' valign='bottom' bgColor='#DEDEDE'></td></tr>";
-			$remGen .= "<tr onclick='toggleEdit(\"tdRem$annee$semestre\");'><td colspan='3' valign='top' width=305><b>Remarque sur la pï¿½riode</b></td>";
+			$remGen .= "<tr onclick='toggleEdit(\"tdRem$annee$semestre\");'><td colspan='3' valign='top' width=305><b>Remarque sur la période</b></td>";
 			$remGen .= "<td tdRem$annee$semestre='1' id='hidethis' colspan='6'>".nl2br($ligne['RemarqueNote'])."</td>";
 			$remGen .= "<td tdRem$annee$semestre='1' id='hidethis' style='display:none' colspan='6'><textarea name='RemarqueNote$idNote' COLS=60 ROWS=2 onclick='limitEvent(event)'>".$ligne['RemarqueNote']."</textarea>\n";
 			$remGen .= "&nbsp;<img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Appliquer les modifications')\" onmouseout='UnTip()' onClick='submitUpdate(".$idNote.",\"\")'>";
@@ -1077,11 +1076,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 	}
 	$cnt++;
 }
-// clï¿½ture de la ligne des TE si nï¿½cessaire
+// clôture de la ligne des TE si nécessaire
 clotureTE();
-// clï¿½ture du thï¿½me prï¿½cï¿½dent si nï¿½cessaire
+// clôture du théme précédent si nécessaire
 clotureTheme();
-// clï¿½turer la pï¿½riode avec le calcul de la moyenne et l'ï¿½ventuelle remarque sur la pï¿½riode
+// clôturer la période avec le calcul de la moyenne et l'éventuelle remarque sur la période
 clotureSemestre();
 
 // aucun enregistrement: afficher la situation
@@ -1098,8 +1097,8 @@ for($loopAnnee=4;$loopAnnee>=0;$loopAnnee--) {
 	$optionAnnee .= "<option value='".($anneAct-$loopAnnee)."'>".($anneAct-$loopAnnee)."/".($anneAct-$loopAnnee+1)."</option>";
 }
 /*
-echo "<tr><td colspan='12' height='30'></td></tr><tr><td colspan='12' valign='bottom'><b>Nouvelle note pour (annï¿½e, no semestre):<b></td></tr>";
-echo "<td valign='top' colspan='12'><select name='Annee'>".$optionAnnee."</select><select name='NoSemestre'><option value='1'>1er timester</option><option value='2'>1er semestre</option><option value='3'>3ï¿½me trimestre</option><option value='4'>2ï¿½me semestre</option></select></td></tr>";
+echo "<tr><td colspan='12' height='30'></td></tr><tr><td colspan='12' valign='bottom'><b>Nouvelle note pour (année, no semestre):<b></td></tr>";
+echo "<td valign='top' colspan='12'><select name='Annee'>".$optionAnnee."</select><select name='NoSemestre'><option value='1'>1er timester</option><option value='2'>1er semestre</option><option value='3'>3ème trimestre</option><option value='4'>2ème semestre</option></select></td></tr>";
 echo "<tr><td></td><td>Type de note</td><td colspan='3'>Note</td><td colspan='8'>Remarque</td></tr>";
 echo "<tr><td></td><td valign='top'><select name='IDTypeNote'>".$option."</select></td>";
 echo "<td valign='top' colspan='3'><input name='Note' size='4' maxlength='3' value=''></input></td>";
@@ -1112,7 +1111,7 @@ echo "</table><input type='submit' name='ajoutNote' value='Ajouter'></input>";
 <?php
 $postExpand = isset($_SESSION['expand'])?$_SESSION['expand']:"";
 if(isset($_POST['idBlock']) && !empty($_POST['idBlock'])&&$postExpand!="expand") {
-	// ouvrir le thï¿½me prï¿½cï¿½demment ouvert
+	// ouvrir le thème précédemment ouvert
 	echo "<script>toggle(\"block".$_POST['idBlock']."\");</script>";
 	//echo "<script>alert(\"hello\");</script>";
 }

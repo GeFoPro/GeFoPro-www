@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: impressionJournalPDF.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:49
+# @Last modified time: 30.03.2021 15:03:51
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -42,33 +42,33 @@ $vendredi = $lundi + 86400*4;
 
 $semestreAct = 1;
 if($noSemaine<30) {
-	// de janvier ï¿½ juillet
-	// calcul du lundi du 2ï¿½me semestre
+	// de janvier à juillet
+	// calcul du lundi du 2ème semestre
 	$lundisem2=$dateCalc-86400*($jour_semaine-1)+604800*($noSemaineSem2-1);
 	if($noSemaine>=$noSemaineSem2) {
-		// uniquement 2ï¿½me semestre
+		// uniquement 2ème semestre
 		$betweenSQLSem = "between '".date("Y-m-d",$lundisem2)."' and '".($annee)."-07-31'";
 		$semestreAct = 2;
 	} else {
-		// fin du premier semestre en dï¿½but d'annï¿½e civile
+		// fin du premier semestre en début d'année civile
 		$betweenSQLSem = "between '".($annee-1)."-08-01' and '".date("Y-m-d",$lundisem2-86400)."'";
 	}
 	// requete pour annee en cours
 	$betweenSQLAnn = "between '".($annee-1)."-08-01' and '".$annee."-07-31'";
 } else {
-	// semestre 1 - aoï¿½t ï¿½ dï¿½cembre
+	// semestre 1 - août à décembre
 	$dateCalcPlus=mktime(0,0,0,1,4,($annee+1));
 	$jour_semainePlus=date("N",$dateCalcPlus);
 	$lundisem2=$dateCalcPlus-86400*($jour_semainePlus-1)+604800*($noSemaineSem2-1);
 	// requete pour semestre en cours
 	$betweenSQLSem = "between '".($annee)."-08-01' and '".date("Y-m-d",($lundisem2-86400))."'";
-	// requete pour annï¿½e en cours
+	// requete pour année en cours
 	$betweenSQLAnn = "between '".$annee."-08-01' and '".($annee+1)."-07-31'";
 }
 
 
 if(!empty($IDTheme)) {
-	// recherche derniï¿½re date d'ï¿½valuation pour le thï¿½me donnï¿½
+	// recherche dernière date d'évaluation pour le thème donné
 	$requete = "SELECT noSemaine, annee FROM evalhebdo where IDEleve = $IDEleve and IDTheme=$IDTheme and Datevalidation is not null order by annee desc ,noSemaine desc LIMIT 1";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	$ligne = mysqli_fetch_assoc($resultat);
@@ -80,7 +80,7 @@ if(!empty($IDTheme)) {
 	} else {
 		if($tri==3) $tri=2;
 	}
-	// recherche des heures / jour travaillï¿½s sur le thï¿½me
+	// recherche des heures / jour travaillés sur le thème
 	$requeteH = "SELECT IDTheme, NomTheme, sum( heures ) AS heures, count( heures ) AS jours
 	FROM (
 	SELECT  jo.IDTheme as IDTheme, NomTheme, sum( Heures ) AS heures
@@ -128,7 +128,7 @@ if(!empty($IDTheme)) {
 
 class PDF extends FPDF
 {
-// En-tï¿½te
+// En-tête
 function Header()
 {
     global $strHeures,$annee,$nomTheme,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
@@ -136,7 +136,7 @@ function Header()
     $this->Image("../../images/logoEMT.jpg",20,11,40);
     // Police Arial gras 15
     $this->SetFont('Arial','B',15);
-    // Dï¿½calage ï¿½ droite
+    // Décalage à droite
     $this->Cell(60,16,'',0,0,'C');
     // Titre
 	if($only=="eval") {
@@ -162,17 +162,17 @@ function Header()
 			$txtSem = ", semestre ".$semestreAct;
 		}
 		if($tri==3) {
-			$txtSem = ", non ï¿½valuï¿½";
+			$txtSem = ", non évalué";
 		}
 		if($noSemaine>30) {
-			$this->Write(0,"Annï¿½e: ".$annee."/".($annee+1).$txtSem);
+			$this->Write(0,"Année: ".$annee."/".($annee+1).$txtSem);
 		} else {
-			$this->Write(0,"Annï¿½e: ".($annee-1)."/".$annee.$txtSem);
+			$this->Write(0,"Année: ".($annee-1)."/".$annee.$txtSem);
 		}
 	}
     $this->SetXY(130,23.5);
 	if($only!="eval") {
-		$this->Write(0,"Heures consacrï¿½es: ".$strHeures);
+		$this->Write(0,"Heures consacrées: ".$strHeures);
 	} else {
 		$this->Write(0,"Evaluation: semaine ".$noSemaine);
 	}
@@ -197,11 +197,11 @@ function Header()
 // Pied de page
 function Footer()
 {
-    // Positionnement ï¿½ 1,5 cm du bas
+    // Positionnement à 1,5 cm du bas
     $this->SetY(-15);
     // Police Arial italique 8
     $this->SetFont('Arial','I',8);
-    // Numï¿½ro de page
+    // Numéro de page
     $this->Cell(0,10,'Page '.$this->PageNo(),0,0,'C');
 }
 }
@@ -250,7 +250,7 @@ if($only!="eval") {
 			$PDF->Cell(177,4,$nomTheme,1,1,'L',1);
 			//$PDF->Write(0,$nomTheme);
 
-			// recherche du nombre d'heures dï¿½jï¿½ effectuï¿½es pour le thï¿½me sur l'annï¿½e scolaire entiï¿½re
+			// recherche du nombre d'heures déjà effectuées pour le thème sur l'année scolaire entière
 			$requeteTot = "SELECT IDTheme, sum( heures ) AS heures, count( heures ) AS jours FROM (SELECT  jo.IDTheme as IDTheme, sum( Heures ) AS heures FROM elevesbk JOIN journal jo ON IDGDN = IDEleve JOIN theme th ON jo.IDTheme=th.IDTheme";
 			if($noSemaine>30) {
 				$requeteTot .= " where (DateJournal between '".$annee."-08-01' and '".date('Y-m-d', $vendredi)."') and IDGDN=".$IDEleve." and jo.IDTheme=".$ligne['IDTheme'];
@@ -284,12 +284,12 @@ if($only!="eval") {
 		$PDF->SetXY($posCol+32,$posLigne);
 		$PDF->Write(0,$ligne['Heures']."h");
 		$PDF->SetXY($posCol+45,$posLigne);
-		// remplacer les caractï¿½re wiki
+		// remplacer les caractère wiki
 		$tok = $ligne['Commentaires'];
 		$tok = preg_replace("/'''(.*?)'''/", '$1', $tok);
 		$tok = preg_replace('/\* (.*?)\n/', '- $1', $tok);
 		$tok = preg_replace('/# (.*?)\n/', '- $1', $tok);
-		// isoler les diffï¿½rentes lignes du commentaire
+		// isoler les différentes lignes du commentaire
 		$tok = strtok($tok, "\r\n");
 		$found = 0;
 		while ($tok !== false) {
@@ -335,7 +335,7 @@ if(!empty($lastAnneeEvalOld) && !empty($lastSemestreEvalOld)) {
 		$compPond = $competencesPonderationOld;
 	}
 }
-// ï¿½valuation: si vue semaine et config eval hebdo ou si vue theme et impression eval activï¿½e
+// évaluation: si vue semaine et config eval hebdo ou si vue theme et impression eval activée
 if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 	$posLigne += 10;
 	$PDF->SetFont("Arial","B",8);
@@ -355,7 +355,7 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 	$posLigne += 5;
 
 	if(empty($IDTheme)) {
-		// vue par semaine -> recherche par noSemaine/annï¿½e
+		// vue par semaine -> recherche par noSemaine/année
 		$requete = "SELECT * FROM evalhebdo left outer join prof on Responsable=userid where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $annee order by IDCompetence, IDTypeEval";
 	} else {
 		$requete = "SELECT * FROM evalhebdo left outer join prof on Responsable=userid where IDEleve = $IDEleve and NoSemaine = $noSemaine and Annee = $annee and IDTheme=$IDTheme order by IDCompetence, IDTypeEval";
@@ -366,7 +366,7 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 	$respValidation = "";
 	if(!empty($resultat)&&mysqli_num_rows($resultat)>0) {
 		while ($ligne = mysqli_fetch_assoc($resultat)) {
-			// ne pas afficher les entrï¿½es non validï¿½es pour l'apprenti
+			// ne pas afficher les entrées non validées pour l'apprenti
 			if(hasAdminRigth() || !empty($ligne['DateValidation']) || $ligne['IDTypeEval']==1 ) {
 				if($idcomp!=$ligne['IDCompetence']) {
 					$idcomp=$ligne['IDCompetence'];
@@ -401,12 +401,12 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 					if(!empty($ligne['Niveau'])) $PDF->Write(0,chr($ligne['Niveau']+64));
 				}
 				$PDF->SetXY($posCol+45,$posLigne);
-					// remplacer les caractï¿½re wiki
+					// remplacer les caractère wiki
 				$tok = $ligne['Remarque'];
 				$tok = preg_replace("/'''(.*?)'''/", '$1', $tok);
 				$tok = preg_replace('/\* (.*?)\n/', '- $1', $tok);
 				$tok = preg_replace('/# (.*?)\n/', '- $1', $tok);
-				// isoler les diffï¿½rentes lignes du commentaire
+				// isoler les différentes lignes du commentaire
 				$tok = strtok($tok, "\r\n");
 				$found = 0;
 				while ($tok !== false) {
@@ -447,7 +447,7 @@ if((empty($IDTheme)&&$modeEvaluation=="hebdo")||$only=="eval") {
 	}
 	if(!empty($dateValidation)) {
 		$PDF->SetXY(130,$posLigne+10);
-		$PDF->Write(0,"Evaluation validï¿½e le ".date('d.m.Y', strtotime($dateValidation))." par ".$respValidation);
+		$PDF->Write(0,"Evaluation validée le ".date('d.m.Y', strtotime($dateValidation))." par ".$respValidation);
 	}
 }
 $PDF->Output('journal.pdf','I');

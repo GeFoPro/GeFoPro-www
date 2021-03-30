@@ -5,7 +5,7 @@
 # @Project: GeFoPro
 # @Filename: infoEleve.php
 # @Last modified by:   degehi
-# @Last modified time: 30.03.2021 13:03:77
+# @Last modified time: 30.03.2021 15:03:54
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
@@ -54,14 +54,14 @@ function toggle(thisname) {
 </script>
 <?php
 include("../../userInfo.php");
-/* en-tï¿½te */
+/* en-tête */
 
 echo "<FORM id='myForm' ACTION='infoEleve.php'  METHOD='POST'>";
 
 
 echo "<div class='post'>";
 
-echo "<center> <font color='#088A08'>Veuillez signaler au responsable de section les ï¿½ventuelles erreurs ou changements ï¿½ effectuer</font></center><br>";
+echo "<center> <font color='#088A08'>Veuillez signaler au responsable de section les éventuelles erreurs ou changements à effectuer</font></center><br>";
 
 
 $requete = "SELECT * FROM elevesbk bk join eleves el on el.IDGDN=bk.IDGDN left join entreprise ent on el.IDEntreprise=ent.IDEntreprise left join cleatelier ca on el.IDCle=ca.IDCle where bk.IDGDN = $IDEleve";
@@ -70,15 +70,15 @@ $resultat =  mysqli_query($connexionDB,$requete);
 $ligne = mysqli_fetch_assoc($resultat);
 //echo $ligne['Nom'];
 echo "<br><div id='corners'>";
-echo "<div id='legend'>Donnï¿½es personnelles</div>";
+echo "<div id='legend'>Données personnelles</div>";
 echo "<table border='0'><tr>";
 
 echo "<td><table border='0'>\n";
-echo "<tr><td>NOM</td><td>Prï¿½nom</td><td></td></tr>";
+echo "<tr><td>NOM</td><td>Prénom</td><td></td></tr>";
 echo "<tr><td><input type='texte' name='NomNew' value='".htmlentities($ligne['Nom'], ENT_QUOTES)."'></input></td><td><input type='texte' name='PrenomNew' value='".$ligne['Prenom']."'></input></td><td></td></tr>\n";
 echo "<tr><td>Adresse</td><td></td><td></td></tr>";
 echo "<tr><td colspan='2'><input type='texte' name='AdresseNew' value=\"".$ligne['Adresse']."\" size='45'></input></td><td></td></tr>\n";
-echo "<tr><td>NPA</td><td>Localitï¿½</td><td></td></tr>";
+echo "<tr><td>NPA</td><td>Localité</td><td></td></tr>";
 echo "<tr><td><input type='texte' name='NPANew' value='".$ligne['NPA']."' size='4'></input></td><td><input type='texte' name='LocaliteNew' value='".$ligne['Localite']."'></input></td><td></td></tr>\n";
 echo "<tr><td>Date de naissance</td><td>Lieu d'origine</td><td></td><td></td></tr>";
 $date = date('d.m.Y', strtotime($ligne['DateNaissance']));
@@ -86,7 +86,7 @@ if(empty($ligne['DateNaissance'])) {
 	$date = '';
 }
 echo "<tr><td><input type='texte' name='DateNaissanceNew' value='".$date."' size='10'></input></td><td><input type='texte' name='OrigineNew' value=\"".$ligne['Origine']."\"></input></td><td></td></tr>\n";
-echo "<tr><td>Tï¿½lï¿½phone</td><td>Portable</td><td></td></tr>";
+echo "<tr><td>Téléphone</td><td>Portable</td><td></td></tr>";
 echo "<tr><td><input type='texte' name='NoTelNew' value='".$ligne['NoTel']."' size='13'></input></td><td><input type='texte' name='NoMobileNew' value='".$ligne['NoMobile']."' size='13'></input></td><td></td></tr>\n";
 echo "<tr><td colspan='3'>Email</td></td></tr>";
 echo "<tr><td colspan='3'><input type='texte' name='EmailNew' value='".$ligne['Email']."' size='45'></input></td></tr>\n";
@@ -100,9 +100,9 @@ echo "<tr><td colspan='2'><input type='texte' name='IDEntrepriseNew' value='".$l
 echo "<tr><td>Vestiaire</td><td>Jeton</td></tr>";
 echo "<tr><td><input type='texte' name='NoVestiaireNew' value='".$ligne['NoVestiaire']."' size='3'></input></td><td><input type='texte' name='NoJetonNew' value='".$ligne['NoJeton']."' size='2'></input></td></tr>\n";
 
-echo "<tr><td>Clï¿½ layette</td><td>Badge</td></tr>";
+echo "<tr><td>Clé layette</td><td>Badge</td></tr>";
 echo "<tr><td><input type='texte' name='NoCleNew' value='".$ligne['NumeroCle']."' size='15'></input></td><td><input type='texte' name='NoBadgeNew' value='".$ligne['NoBadge']."' size='5'></input></td></tr>\n";
-//echo "<tr><td>PC - No. sï¿½rie</td><td>PC - Nom</td></tr>";
+//echo "<tr><td>PC - No. série</td><td>PC - Nom</td></tr>";
 //echo "<tr><td><input type='texte' name='NoSeriePCNew' value='".$ligne['NoSeriePC']."' size='15'></input></td><td><input type='texte' name='NomPCNew' value='".$ligne['NomPC']."' size='15'></input></td></tr>\n";
 echo "<tr height='25'><td></td><td></td></tr>";
 echo "<tr height='25'><td></td><td></td></tr>\n";
