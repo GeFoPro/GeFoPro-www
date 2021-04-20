@@ -507,7 +507,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/camera.png' onmouseover=\"Tip('Délégué numérique')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/camera_small.png' onmouseover=\"Tip('Délégué numérique')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -639,7 +639,7 @@ if(!$modeHTML) {
 <br><table border='0'>
 <!-- tr><td colspan><b>Légendes:</b></td></tr -->
 <tr><td width='5'></td><td>Formation 3 + 1</td><td><img src='/iconsFam/award_star_gold_1.png'></td><td width='100'></td><td>Délégué de classe</td><td><img src='/iconsFam/rosette.png'></td><td width='100'></td><td>Horaire bloqué</td><td><img src='/iconsFam/clock_error.png'></td><td width='100'></td><td>Stage</td><td><img src='/iconsFam/building_go.png'></td></tr>
-<tr><td width='5'></td><td>Inscrit(e) 3 + 1</td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td>Cours d'appui</td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('Anglais')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('Allemand')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('Maths')" onmouseout='UnTip()'></td><td width='100'></td><td>Hors liste tâches</td><td><img src='/iconsFam/cog_delete.png'></td></tr>
+<tr><td width='5'></td><td>Inscrit(e) 3 + 1</td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td>Cours d'appui</td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('Anglais')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('Allemand')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('Maths')" onmouseout='UnTip()'></td><td width='100'></td><td>Hors liste tâches</td><td><img src='/iconsFam/cog_delete.png'></td><td width='100'></td><td>Délégué numérique</td><td><img src='/iconsFam/camera_small.png'></td></tr>
 <tr><td width='5'></td><td>Inscrit(e) 3 + 1, prép. MPT</td><td><img src='/iconsFam/award_star_silver_3.png'></td><td width='100'></td><td>Cours prép. MPT</td><td><img src='/iconsFam/medal_silver_3.png'></td><td width='100'></td><td>Formation dual</td><td><img src='/iconsFam/building.png'></td></tr>
 </table></div>
 </div> <!-- post -->
