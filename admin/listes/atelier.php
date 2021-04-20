@@ -31,6 +31,7 @@ $attribALL = 10;
 $attribMAT = 11;
 
 $attribHOR = 12;
+$attribNum = 14;
 
 // liste des ids des apprentis, triées par classe et par nom
 $listeIds = array();
@@ -496,6 +497,17 @@ foreach ($configurationATE as $pos => $value) {
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
 							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Délégué de classe')\" onmouseout='UnTip()'>";
+							$cntIcon++;
+						}
+						if($cntIcon==3) {
+							echo "<br>";
+							$cntIcon = 0;
+						}
+						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribNum";
+						$resultat =  mysqli_query($connexionDB,$requete);
+						$ico = mysqli_fetch_assoc($resultat);
+						if($ico!=null) {
+							echo "<img src='/iconsFam/camera.png' onmouseover=\"Tip('Délégué numérique')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
