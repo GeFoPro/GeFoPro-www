@@ -20,7 +20,11 @@
 <link href="<?=$_SESSION['home']?>default.css" rel="stylesheet" type="text/css" />
 <link rel="icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
 <link rel="shortcut icon" href='<?=$_SESSION['home'].Logo?>' type="image/x-icon" />
-
+<script>
+function callPage(sel) {
+	document.location.href='<?=$_SESSION['home']?>/../../'+sel.value+'/comp/compList.php';
+}
+</script>
 </head>
 <body>
 
@@ -34,7 +38,21 @@
 	<div id="logo">
 		<br>
 		<table border='0' width="100%"><tr><td>
-		<h1><?=$app_section?> - Gestion du consommable et équipement</h1>
+		<h1>
+		<?php
+		if(!empty($configurationAPP)&&hasAdminRigth()) {
+			echo "<select name='app' id='selapp' onChange='callPage(this)'>";
+			foreach($configurationAPP as $app_name) {
+				echo "<option value='".$app_name."' ";
+				if($app_name===$app_section) echo " selected";
+				echo " id='selapp'>".$app_name."</option>";
+			}
+			echo "</select>";
+		} else {
+				echo $app_section;
+		}
+		?>
+		- Gestion du consommable et équipement</h1>
 		</td>
 		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
 		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
