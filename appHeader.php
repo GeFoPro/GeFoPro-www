@@ -15,6 +15,7 @@ if(isset($_SESSION['section']) && !empty($_SESSION['section'])) {
 	$login = $_SESSION['login'];
 	$mdp = $_SESSION['mdp'];
 	$app_section = $_SESSION['section'];
+	$app_instance = $_SESSION['instance'];
 } else {
 	// pas en session ou expirée
 	header('Location: index.php');
@@ -35,7 +36,7 @@ $app_id = explode("/",$subs)[1];
 //echo "<br>Home: ".$_SESSION['home'];
 
 /* inclure les paramètres de connexion */
-require("Config_".$app_section.".php");
+require("Config_".$app_section.$app_instance.".php");
 
 /* connexion */
 $connexionDB=null;

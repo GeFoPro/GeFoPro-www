@@ -16,8 +16,17 @@ session_start();
 //$scturl = strtoupper(substr($_SERVER['REQUEST_URI'],strrpos($_SERVER['REQUEST_URI'],'/')-3,3));
 //echo "<br>URI: ".$_SERVER['REQUEST_URI'];
 $subs = explode("/",$_SERVER['REQUEST_URI']);
+//$numb = 0;
+//foreach($subs as $val) {
+//	echo $numb+":".$val."<br>";
+//	$numb++;
+//}
 $scturl = $subs[count($subs)-2];
 $_SESSION['section'] = $scturl;
+if(count($subs)>3) {
+	// sous répertoire présent, on le mémorise
+	$_SESSION['instance'] = $subs[count($subs)-3];	
+}
 //echo "<br>SCT: ".$_SESSION['section'];
 if(empty($subs[count($subs)-1])) {
 	$_SESSION['home'] = $_SERVER['REQUEST_URI'];
