@@ -8,7 +8,7 @@
 # @Last modified time: 30.03.2021 13:03:31
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
-
+ini_set( 'default_charset', "iso-8859-1" );
 session_start();
 //if (isset($_SESSION['login'])) {
 //	$login = $_SESSION['login'];
@@ -16,15 +16,10 @@ session_start();
 //$scturl = strtoupper(substr($_SERVER['REQUEST_URI'],strrpos($_SERVER['REQUEST_URI'],'/')-3,3));
 //echo "<br>URI: ".$_SERVER['REQUEST_URI'];
 $subs = explode("/",$_SERVER['REQUEST_URI']);
-//$numb = 0;
-//foreach($subs as $val) {
-//	echo $numb+":".$val."<br>";
-//	$numb++;
-//}
 $scturl = $subs[count($subs)-2];
 $_SESSION['section'] = $scturl;
 if(count($subs)>3) {
-	// sous rÃ©pertoire prÃ©sent, on le mÃ©morise
+	// sous répertoire présent, on le mémorise
 	$_SESSION['instance'] = $subs[count($subs)-3];	
 }
 //echo "<br>SCT: ".$_SESSION['section'];
@@ -35,13 +30,13 @@ if(empty($subs[count($subs)-1])) {
 }
 //echo "<br>Home: ".$_SESSION['home'];
 
-require("Config_".$scturl.".php");
+require("Config_".$scturl.$_SESSION['instance'].".php");
 checkEOL();
 
 $loginMsg = "";
 if(isset($_GET['logout'])) {
 	// effacer la session
-	$loginMsg = "DÃ©connectÃ© avec succÃ¨s";
+	$loginMsg = "Déconnecté avec succès";
 	session_destroy();
 	unset($_COOKIE[$scturl.'login']);
     unset($_COOKIE[$scturl.'mdp']);
@@ -54,7 +49,7 @@ if(isset($_GET['logout'])) {
 		$user_mdp = $_POST['mdp'];
 	//Test si le login ou le password est vide
 	} else {
-		// on essaie de rÃ©cupÃ©rer les informations dans le cookie
+		// on essaie de récupérer les informations dans le cookie
 		if (ISSET($_COOKIE[$scturl.'login'])) {
 			$user_login=$_COOKIE[$scturl.'login'];
 			$user_mdp=convert($_COOKIE[$scturl.'mdp'],"srvcookie");
@@ -64,53 +59,82 @@ if(isset($_GET['logout'])) {
 		//session_destroy();
 		$loginMsg = "Saisissez le nom d'utilisateur et le mot de passe (domaine ".AD_DOMAIN_NAME.")";
 	} else {
-		// Tentative de connexion au serveur LDAP
-		if (!($ldap_cnx=ldap_connect(AD_SERVER))) {
-			//session_destroy();
-			$loginMsg = "Connexion au serveur de domaine impossible !";
-		} else {
-			// Tentative d'authentification au serveur LDAP
-			ldap_set_option($ldap_cnx, LDAP_OPT_PROTOCOL_VERSION, 3);
-			if(!empty(AD_LOGIN)) {
-					$bind=ldap_bind($ldap_cnx, AD_LOGIN.$user_login, $user_mdp);
-			} else {
-					$bind=ldap_bind($ldap_cnx);
-			}
-			//if (!($bind=ldap_bind($ldap_cnx, AD_DOMAIN_NAME."\\".$user_login, $user_mdp))) {
-
-			if (!$bind){
+		if(!empty(AD_SERVER)) {
+			// si server LDAP -> Tentative de connexion au serveur LDAP
+			if (!($ldap_cnx=ldap_connect(AD_SERVER))) {
 				//session_destroy();
-				$loginMsg = "Utilisateur ou mot de passe incorrect !";
-			}  else {
-				// test droits
-				readLDAP($ldap_cnx,$user_login);
-
-				//Test si l'utilisateur Ã  au moins le droit de lecture (APP ou MAI avec droits)
-				if(!isAPP()&&!hasReadRigth()) {
-					//Droits de connxion insuffisant
-					$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nÃ©cessaires pour cette application!<br>";
-					$loginMsg = $loginMsg . printLDAPInfo($ldap_cnx,$user_login);
+				$loginMsg = "Connexion au serveur de domaine impossible !";
+			} else {
+				// Tentative d'authentification au serveur LDAP
+				ldap_set_option($ldap_cnx, LDAP_OPT_PROTOCOL_VERSION, 3);
+				if(!empty(AD_LOGIN)) {
+						$bind=ldap_bind($ldap_cnx, AD_LOGIN.$user_login, $user_mdp);
 				} else {
-					// test de connexion avec l'utilisateur DB rÃ©cupÃ©rÃ©
-					$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
-					if(!isset($connexion)) {
-						//DB inaccessible
-						//session_destroy();
-						$loginMsg ="Connexion Ã  la base de donnÃ©e impossible ou manque de droits!";
-					} else {
-						// user ok, mÃ©morisation dans session et cookie
-						$_SESSION['user_login'] = $user_login;
-						$_SESSION['user_mdp'] = $user_mdp;
-						Setcookie($scturl.'login',$user_login,time()+60*60*24*7);
-						Setcookie($scturl.'mdp',convert($user_mdp,"srvcookie"),time()+60*60*24*7);
-						//sendSUMailEWS($scturl." cookie",$_SESSION['user_login']."/".convert($_SESSION['user_mdp'],"srvcookie"));
-						// redirection sur page en fonction des droits
+						$bind=ldap_bind($ldap_cnx);
+				}
+				//if (!($bind=ldap_bind($ldap_cnx, AD_DOMAIN_NAME."\\".$user_login, $user_mdp))) {
 
-						if(isMAI()) {
-							header('Location: admin/listes/atelier.php?modeHTML');
+				if (!$bind){
+					//session_destroy();
+					$loginMsg = "Utilisateur ou mot de passe incorrect !";
+				}  else {
+					// test droits
+					readLDAP($ldap_cnx,$user_login);
+
+					//Test si l'utilisateur à au moins le droit de lecture (APP ou MAI avec droits)
+					if(!isAPP()&&!hasReadRigth()) {
+						//Droits de connxion insuffisant
+						$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
+						$loginMsg = $loginMsg . printLDAPInfo($ldap_cnx,$user_login);
+					} else {
+						// test de connexion avec l'utilisateur DB récupéré
+						$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
+						if(!isset($connexion)) {
+							//DB inaccessible
+							//session_destroy();
+							$loginMsg ="Connexion à la base de donnée impossible ou manque de droits!";
 						} else {
-							header('Location: admin/detail/activites.php');
+							// user ok, mémorisation dans session et cookie
+							$_SESSION['user_login'] = $user_login;
+							$_SESSION['user_mdp'] = $user_mdp;
+							Setcookie($scturl.'login',$user_login,time()+60*60*24*7);
+							Setcookie($scturl.'mdp',convert($user_mdp,"srvcookie"),time()+60*60*24*7);
+							//sendSUMailEWS($scturl." cookie",$_SESSION['user_login']."/".convert($_SESSION['user_mdp'],"srvcookie"));
+							// redirection sur page en fonction des droits
+
+							if(isMAI()) {
+								header('Location: admin/listes/atelier.php?modeHTML');
+							} else {
+								header('Location: admin/detail/activites.php');
+							}
 						}
+					}
+				}
+			}
+		} else {
+			// pas de LDAP -> on utilise la DB
+			readUser($user_login,convert($user_mdp,"srv_owned"));
+			//Test si l'utilisateur à au moins le droit de lecture (APP ou MAI avec droits)
+			if(!isAPP()&&!hasReadRigth()) {
+				//Droits de connxion insuffisant
+				$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
+			} else {
+				// test de connexion avec l'utilisateur DB récupéré
+				$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
+				if(!isset($connexion)) {
+					//DB inaccessible
+					$loginMsg ="Connexion à la base de donnée impossible ou manque de droits!";
+				} else {
+					// user ok, mémorisation dans session et cookie
+					$_SESSION['user_login'] = $user_login;
+					$_SESSION['user_mdp'] = $user_mdp;
+					Setcookie($scturl.'login',$user_login,time()+60*60*24*7);
+					Setcookie($scturl.'mdp',convert($user_mdp,"srvcookie"),time()+60*60*24*7);
+					// redirection sur page en fonction des droits
+					if(isMAI()) {
+						header('Location: admin/listes/atelier.php?modeHTML');
+					} else {
+						header('Location: admin/detail/activites.php');
 					}
 				}
 			}
@@ -123,7 +147,7 @@ if(isset($_GET['logout'])) {
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
 <title>Section <?=$scturl?></title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
@@ -153,7 +177,7 @@ if(isset($_GET['logout'])) {
   <tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Login"></td></tr>
   <? if(empty($_SERVER['HTTPS'])) { ?>
   <!--  tr><td>&nbsp;</td></tr>
-  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisÃ© n'est pas sÃ©curisÃ©! Veuillez utiliser de prÃ©fÃ©rence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr -->
+  <tr><td colspan=2><b><font color='red'>Attention: le lien utilisé n'est pas sécurisé! Veuillez utiliser de préférence ce lien-ci: <a href='https://<?=$_SERVER['SERVER_NAME']?>/<?=$scturl?>'>https://<?=$_SERVER['SERVER_NAME']?><?=$_SERVER['REQUEST_URI']?></a>. </font></b></td></tr -->
   <? } ?>
   </table>
 <script language="javascript">document.getElementsByName("login")[0].focus();</script>

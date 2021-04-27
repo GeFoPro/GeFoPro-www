@@ -8,7 +8,7 @@
 # @Last modified time: 30.03.2021 15:03:83
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
-
+ini_set( 'default_charset', "iso-8859-1" );
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -41,9 +41,6 @@ function readKey(event) {
 		ref.click();
 	}
 }
-function callPage(sel) {
-	document.location.href='<?=$_SESSION['home']?>/../../'+sel.value+'/';
-}
 </script>
 </head>
 <body onkeydown="readKey(event);" >
@@ -58,26 +55,12 @@ function callPage(sel) {
 	<div id="logo">
 		<br>
 		<table border='0' width="100%"><tr><td>
-		<h1>
-		<?php
-			if(!empty($configurationAPP)&&hasAdminRigth()) {
-				echo "<select name='app' id='selapp' onChange='callPage(this)'>";
-				foreach($configurationAPP as $app_name) {
-					echo "<option value='".$app_name."' ";
-					if($app_name===$app_section) echo " selected";
-					echo " id='selapp'>".$app_name."</option>";
-				}
-				echo "</select>";
-			} else {
-					echo $app_section;
-			}
-		?>
 		<?php if(hasAdminRigth()) { ?>
-		 - Gestion atelier
+		<h1><?=$app_section?> - Gestion atelier</h1>
 		<?php } else { ?>
-		 - Gestion personnelle
+		<h1><?=$app_section?> - Gestion personnelle</h1>
 		<?php } ?>
-		</h1></td>
+		</td>
 		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
 		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
 		<?php if(hasAdminRigth()) { ?>
