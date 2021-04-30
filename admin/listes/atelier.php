@@ -84,7 +84,7 @@ if(!$modeHTML) {
 	require_once 'PHPExcel/Writer/Excel5.php';
 	$objReader = PHPExcel_IOFactory::createReader('Excel5');
 	//$objReader->setReadDataOnly(true);
-	$liste = "../../docBase/liste.xls";
+	$liste = "../../docBase/liste_".$_SESSION['user_lang'].".xls";
 	$objPHPExcel = $objReader->load($liste);
 } else {
 	include("entete.php");
@@ -115,6 +115,7 @@ if(!$modeHTML) {
 			document.location.href='../detail/detailEleve.php?idEleve='+id+'&nom='+nom+'&prenom='+prenom;
 		}
 	}
+
 	</script>
 	<?php
 	include("../../userInfo.php");
@@ -179,15 +180,15 @@ if(!$modeHTML) {
 	// form
 	echo "<FORM id='myForm' ACTION='atelier.php'  METHOD='GET'>";
 	echo "<input type='hidden' name='modeHTML'>";
-	echo "<br><table width='100%'><tr><td><!-- h2>&nbsp;Liste élèves $app_section $annee - $anneePlus</h2 --></td><td align='right'>Mode d'affichage <select id='modeAff' name='modeAff' onChange='submit();'>";
+	echo "<br><table width='100%'><tr><td><!-- h2>&nbsp;Liste élèves $app_section $annee - $anneePlus</h2 --></td><td align='right'>".libelleTradUpd('modeaffichage')." <select id='modeAff' name='modeAff' onChange='submit();'>";
 	if($modeAff==0) {
-		echo "<option value='".$attribNormal."' selected='selected'>Normal</option><option value='".$attribCarnet."'>Carnets</option>";
+		echo "<option value='".$attribNormal."' selected='selected'>".libelleTrad('normal')."</option><option value='".$attribCarnet."'>".libelleTrad('carnets')."</option>";
 	} else {
-		echo "<option value='".$attribNormal."'>Normal</option><option value='".$attribCarnet."' selected='selected'>Carnets</option>";
+		echo "<option value='".$attribNormal."'>".libelleTrad('normal')."</option><option value='".$attribCarnet."' selected='selected'>".libelleTrad('carnets')."</option>";
 	}
 	echo "</select><select id='classe' name='classe' onChange='submit();'>";
 	if(empty($classe) || $classe==0) {
-		echo "<option value='0' selected='selected'>Atelier</option>";
+		echo "<option value='0' selected='selected'>".libelleTrad('atelier')."</option>";
 	} else {
 		echo "<option value='0'>Atelier</option>";
 	}
@@ -209,7 +210,7 @@ if(!$modeHTML) {
 	if(isset($classe) && $classe==100) {
 		echo "<option value='100' selected='selected'>Anciens</option>";
 	} else {
-		echo "<option value='100'>Anciens</option>";
+		echo "<option value='100'>".libelleTrad('anciens')."</option>";
 	}
 	echo "</select></td></tr></table><br>\n";
 	/*
@@ -219,9 +220,9 @@ if(!$modeHTML) {
 	} else {
 		$linkDB = "<a href='atelier.php?modeHTML&modeLocal=0'><img src='/iconsFam/database_refresh.png' onmouseover=\"Tip('Activer GDN')\" onmouseout='UnTip()'></a>";
 	} */
-	echo "<div class='post'><div id='corners'><div id='legend'>Liste élèves $app_section $annee - $anneePlus</div><table id='hor-minimalist-b' width='100%'><tr><th colspan='2'><a href='atelier.php'><img src='/iconsFam/page_excel.png' onmouseover=\"Tip('Liste Excel')\" onmouseout='UnTip()'></a>";
+	echo "<div class='post'><div id='corners'><div id='legend'>".libelleTradUpd('liste_eleve')." ".$app_section." $annee - $anneePlus</div><table id='hor-minimalist-b' width='100%'><tr><th colspan='2'><a href='atelier.php'><img src='/iconsFam/page_excel.png' onmouseover=\"Tip('".libelleTrad('listexcel')."')\" onmouseout='UnTip()'></a>";
 	//echo "<a href='syncGDN.php'><img src='/iconsFam/arrow_refresh.png' onmouseover=\"Tip('Synchro local-GDN')\" onmouseout='UnTip()'></a> $linkDB ";
-	echo "<a href='../detail/detailEleve.php'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter élève')\" onmouseout='UnTip()'></a></th><th></th><th align='center'>Vestiaire</th><th align='center'>Jetons</th><th align='center' width='100'>Clé</th><th width='100'>Utilisateur/<br>Nom PC</th><!-- th align='center' width='100'>Chaise/<br>Banc</th --><th>Adresse</th><th align='center' width='120'>Tel. Parents/<br>Personnel</th><th></th><th width='100' align='center'>Date de naissance</th><!-- <th>ID GDN</th> --></tr>\n";
+	echo "<a href='../detail/detailEleve.php'><img src='/iconsFam/add.png' onmouseover=\"Tip('".libelleTrad('ajout')."')\" onmouseout='UnTip()'></a></th><th></th><th align='center'>".libelleTradUpd('vestiaire')."</th><th align='center'>".libelleTradUpd('jeton')."</th><th align='center' width='100'>".libelleTradUpd('cle')."</th><th width='100'>".libelleTradUpd('utilisateur')."/<br>".libelleTradUpd('nompc')."</th><!-- th align='center' width='100'>Chaise/<br>Banc</th --><th>".libelleTradUpd('adresse')."</th><th align='center' width='120'>".libelleTradUpd('telparent')."/<br>".libelleTradUpd('telpers')."</th><th></th><th width='100' align='center'>".libelleTradUpd('datenaissance')."</th><!-- <th>ID GDN</th> --></tr>\n";
 }
 
 // gestion des modification sur élève
@@ -454,14 +455,14 @@ foreach ($configurationATE as $pos => $value) {
 						}
 
 						if($ligne['IDEntreprise']!=1) {
-							echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('".libelleTrad('dual')."')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						} else {
 							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
 							$resultat =  mysqli_query($connexionDB,$requete);
 							$ico = mysqli_fetch_assoc($resultat);
 							if($ico!=null) {
-								echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('En stage')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('".libelleTrad('stage')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							}
 						}
@@ -471,19 +472,19 @@ foreach ($configurationATE as $pos => $value) {
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null || $troisplusun) {
 							if($ico['IDAttribut']==$attribtroisplusun || $troisplusun) {
-								echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('3+1')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('".libelleTrad('form31')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribfuturtrois) {
-								echo "<img src='/iconsFam/award_star_bronze_2.png' onmouseover=\"Tip('Inscrit 3+1')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/award_star_bronze_2.png' onmouseover=\"Tip('".libelleTrad('insc31')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMPTtrois) {
-								echo "<img src='/iconsFam/award_star_silver_3.png' onmouseover=\"Tip('Inscrit 3+1, MPT')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/award_star_silver_3.png' onmouseover=\"Tip('".libelleTrad('insc31mpt')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMPT) {
-								echo "<img src='/iconsFam/medal_silver_3.png' onmouseover=\"Tip('MPT')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/medal_silver_3.png' onmouseover=\"Tip('".libelleTrad('prepmpt')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribPAS) {
-								echo "<img src='/iconsFam/arrow_switch.png' onmouseover=\"Tip('Passerelle')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/arrow_switch.png' onmouseover=\"Tip('".libelleTrad('passerelle')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							}
 						}
@@ -496,7 +497,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('Délégué de classe')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('".libelleTrad('delclasse')."')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -507,7 +508,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/camera_small.png' onmouseover=\"Tip('Délégué numérique')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/camera_small.png' onmouseover=\"Tip('".libelleTrad('delnum')."')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -520,13 +521,13 @@ foreach ($configurationATE as $pos => $value) {
 						while(($ico = mysqli_fetch_assoc($resultat))!=null) {
 							//if($ico!=null) {
 							if($ico['IDAttribut']==$attribANG) {
-								echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('Anglais')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('".libelleTrad('anglais')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribALL) {
-								echo "<img src='/iconsFam/flag-german.png' onmouseover=\"Tip('Allemand')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/flag-german.png' onmouseover=\"Tip('".libelleTrad('allemand')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else if($ico['IDAttribut']==$attribMAT) {
-								echo "<img src='/iconsFam/calculator.png' onmouseover=\"Tip('Maths')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/calculator.png' onmouseover=\"Tip('".libelleTrad('math')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							}
 							if($cntIcon==3) {
@@ -539,7 +540,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('Horaire bloqué')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('".libelleTrad('blochoraire')."')\" onmouseout='UnTip()'>";
 							$cntIcon++;
 						}
 						if($cntIcon==3) {
@@ -551,7 +552,7 @@ foreach ($configurationATE as $pos => $value) {
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('Hors liste tâches')\" onmouseout='UnTip()'>";
+							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('".libelleTrad('horstaches')."')\" onmouseout='UnTip()'>";
 						}
 
 					} else {
@@ -635,12 +636,12 @@ if(!$modeHTML) {
 } else {
 ?>
 </table></div><br><br>
-<div id='corners'><div id='legend'>Légende</div>
+<div id='corners'><div id='legend'><?=libelleTradUpd('legende')?></div>
 <br><table border='0'>
-<!-- tr><td colspan><b>Légendes:</b></td></tr -->
-<tr><td width='5'></td><td>Formation 3 + 1</td><td><img src='/iconsFam/award_star_gold_1.png'></td><td width='100'></td><td>Délégué de classe</td><td><img src='/iconsFam/rosette.png'></td><td width='100'></td><td>Horaire bloqué</td><td><img src='/iconsFam/clock_error.png'></td><td width='100'></td><td>Stage</td><td><img src='/iconsFam/building_go.png'></td></tr>
-<tr><td width='5'></td><td>Inscrit(e) 3 + 1</td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td>Cours d'appui</td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('Anglais')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('Allemand')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('Maths')" onmouseout='UnTip()'></td><td width='100'></td><td>Hors liste tâches</td><td><img src='/iconsFam/cog_delete.png'></td><td width='100'></td><td>Délégué numérique</td><td><img src='/iconsFam/camera_small.png'></td></tr>
-<tr><td width='5'></td><td>Inscrit(e) 3 + 1, prép. MPT</td><td><img src='/iconsFam/award_star_silver_3.png'></td><td width='100'></td><td>Cours prép. MPT</td><td><img src='/iconsFam/medal_silver_3.png'></td><td width='100'></td><td>Formation dual</td><td><img src='/iconsFam/building.png'></td></tr>
+<!-- tr><td colspan><b>".libelleTradUpd('liste_eleve').":</b></td></tr -->
+<tr><td width='5'></td><td><?=libelleTradUpd('form31')?></td><td><img src='/iconsFam/award_star_gold_1.png'></td><td width='100'></td><td><?=libelleTradUpd('delclasse')?></td><td><img src='/iconsFam/rosette.png'></td><td width='100'></td><td><?=libelleTradUpd('blochoraire')?></td><td><img src='/iconsFam/clock_error.png'></td><td width='100'></td><td><?=libelleTradUpd('stage')?></td><td><img src='/iconsFam/building_go.png'></td></tr>
+<tr><td width='5'></td><td><?=libelleTradUpd('insc31')?></td><td><img src='/iconsFam/award_star_bronze_2.png'></td><td width='100'></td><td><?=libelleTradUpd('appui')?></td><td><img src='/iconsFam/flag-english.png' onmouseover="Tip('<?=libelleTrad('anglais')?>')" onmouseout='UnTip()'> <img src='/iconsFam/flag-german.png' onmouseover="Tip('<?=libelleTrad('allemand')?>')" onmouseout='UnTip()'> <img src='/iconsFam/calculator.png' onmouseover="Tip('<?=libelleTrad('math')?>')" onmouseout='UnTip()'></td><td width='100'></td><td><?=libelleTradUpd('horstaches')?></td><td><img src='/iconsFam/cog_delete.png'></td><td width='100'></td><td><?=libelleTradUpd('delnum')?></td><td><img src='/iconsFam/camera_small.png'></td></tr>
+<tr><td width='5'></td><td><?=libelleTradUpd('insc31mpt')?></td><td><img src='/iconsFam/award_star_silver_3.png'></td><td width='100'></td><td><?=libelleTradUpd('prepmpt')?></td><td><img src='/iconsFam/medal_silver_3.png'></td><td width='100'></td><td><?=libelleTradUpd('dual')?></td><td><img src='/iconsFam/building.png'></td></tr>
 </table></div>
 </div> <!-- post -->
 </form>

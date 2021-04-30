@@ -48,7 +48,7 @@ function callPage(sel) {
 </script>
 </head>
 <body onkeydown="readKey(event);" >
-
+<script type="text/javascript" src="/js/traduction.js"></script>
 <script type="text/javascript" src="/js/wz_tooltip.js"></script>
 <script type="text/javascript" src="/js/msg.js"></script>
 <link rel="stylesheet" media="all" href="/js/msg.css" />
@@ -72,13 +72,13 @@ if(!empty($configurationAPP)) {
 } else {
 		echo $app_section;
 }
-?> - Gestion atelier</h1>
+?> - <?=libelleTradUpdAll('gestionatelier')?></h1>
 		</td>
-		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
-		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
-		<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
+		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'><?=libelleTrad('menuconso')?></a>
+		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'><?=libelleTrad('menudoc')?></a>
+		<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'><?=libelleTrad('gestionatelier')?></a>
 		<?php if(!empty($teamsURL)) { ?>
-			<br><a href='<?=$teamsURL?>' target='teams'>Teams atelier</a>
+			<br><a href='<?=$teamsURL?>' target='teams'>Teams</a>
 		<?php } ?>
 		</td></tr></table>
 	</div>
@@ -87,20 +87,20 @@ if(!empty($configurationAPP)) {
 
 		<ul>
 			<?php if(hasAdminRigth()) { ?>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/horaire.php">Horaires</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML">Elèves</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeCoursCIE.php">CIE</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeProjets.php">Projets</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php">Suivis</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeNotes.php">Notes</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML">Tâches</a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/todo.php">Todo</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/horaire.php"><?=libelleTrad('menuhoraires')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML"><?=libelleTrad('menueleves')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeCoursCIE.php"><?=libelleTrad('menucie')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeProjets.php"><?=libelleTrad('menuprojets')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php"><?=libelleTrad('menusuivis')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeNotes.php"><?=libelleTrad('menunotes')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML"><?=libelleTrad('menutaches')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/todo.php"><?=libelleTrad('menutodo')?></a></li>
 			<?php  } ?>
-			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out"><?=libelleTrad('menulogout')?></a></li>
 			<?php
 			if(!empty($modeAff) && $modeAff==$attribCarnet) {
-				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&reset=Effacer'>Effacer carnets</a></li>";
-				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&resetAndSet=Effacer'>Effacer + oublis</a></li>";
+				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&reset=Effacer'>".libelleTrad('menueffacer')."</a></li>";
+				echo "<li class='last'>&nbsp;</li><li class='context'><a href='".$_SESSION['home']."admin/listes/atelier.php?modeHTML=&modeAff=100&resetAndSet=Effacer'>".libelleTrad('menuoublis')."</a></li>";
 			} ?>
 		</ul>
 

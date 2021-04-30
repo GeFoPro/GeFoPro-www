@@ -33,10 +33,49 @@ if(empty($subs[count($subs)-1])) {
 require("Config_".$scturl.$_SESSION['instance'].".php");
 checkEOL();
 
+if(isset($_GET['lang'])) {
+	$_SESSION['user_lang'] = $_GET['lang'];
+	Setcookie('user_lang',$_GET['lang'],time()+60*60*24*7);
+} else {
+	if(isset($_POST['lang'])) {
+		$_SESSION['user_lang'] = $_POST['lang'];
+		Setcookie('user_lang',$_POST['lang'],time()+60*60*24*7);
+	} else {
+		if(!isset($_SESSION['user_lang'])) {
+			$_SESSION['user_lang'] = 'fr';
+			Setcookie('user_lang','fr',time()+60*60*24*7);
+		}
+	}
+}
+
+$traductions['user']['fr'] = 'Utilisateur';
+$traductions['user']['de'] = 'Benutzer';
+$traductions['passwd']['fr'] = 'Mot de passe';
+$traductions['passwd']['de'] = 'Passwort';
+$traductions['lang']['fr'] = 'Langue';
+$traductions['lang']['de'] = 'Sprache';
+$traductions['conn']['fr'] = 'Connexion';
+$traductions['conn']['de'] = 'Einloggen';
+$traductions['sct']['fr'] = 'Section';
+$traductions['sct']['de'] = 'Bereich';
+$traductions['msg']['fr'] = "Saisissez le nom d'utilisateur et le mot de passe (domaine ".AD_DOMAIN_NAME.")";
+$traductions['msg']['de'] = "Bitte geben Sie Benutzername und Passwort ein (Gebiet ".AD_DOMAIN_NAME.")";
+$traductions['deconn']['fr'] = "Déconnecté avec succès";
+$traductions['deconn']['de'] = "Erfolgreich ausgelogt";
+$traductions['nocred']['fr'] = "Utilisateur ou mot de passe incorrect!";
+$traductions['nocred']['de'] = "Falscher Benutzer oder Passwort!";
+$traductions['adserver']['fr'] = "Connexion au serveur de domaine impossible!";
+$traductions['adserver']['de'] = "Verbindung zum Domänenserver unmöglich!";
+$traductions['nocredapp']['fr'] = "Vous n'avez pas les droits nécessaires pour cette application!";
+$traductions['nocredapp']['de'] = "Sie haben nicht die notwendigen Rechte für diese Anwendung!";
+$traductions['dbcred']['fr'] = "Connexion à la base de donnée impossible ou manque de droits!";
+$traductions['dbcred']['de'] = "Verbindung zur Datenbank unmöglich oder mangelnde Rechte!";
+
+
 $loginMsg = "";
 if(isset($_GET['logout'])) {
 	// effacer la session
-	$loginMsg = "Déconnecté avec succès";
+	$loginMsg = $traductions['deconn'][$_SESSION['user_lang']];
 	session_destroy();
 	unset($_COOKIE[$scturl.'login']);
     unset($_COOKIE[$scturl.'mdp']);
@@ -57,26 +96,26 @@ if(isset($_GET['logout'])) {
 	}
 	if (empty($user_login) || empty($user_mdp)) {
 		//session_destroy();
-		$loginMsg = "Saisissez le nom d'utilisateur et le mot de passe (domaine ".AD_DOMAIN_NAME.")";
+		$loginMsg = $traductions['msg'][$_SESSION['user_lang']]; //"Saisissez le nom d'utilisateur et le mot de passe (domaine ".AD_DOMAIN_NAME.")";
 	} else {
 		if(!empty(AD_SERVER)) {
 			// si server LDAP -> Tentative de connexion au serveur LDAP
 			if (!($ldap_cnx=ldap_connect(AD_SERVER))) {
 				//session_destroy();
-				$loginMsg = "Connexion au serveur de domaine impossible !";
+				$loginMsg = $traductions['adserver'][$_SESSION['user_lang']];
 			} else {
 				// Tentative d'authentification au serveur LDAP
 				ldap_set_option($ldap_cnx, LDAP_OPT_PROTOCOL_VERSION, 3);
 				if(!empty(AD_LOGIN)) {
-						$bind=ldap_bind($ldap_cnx, AD_LOGIN.$user_login, $user_mdp);
+						$bind=@ldap_bind($ldap_cnx, AD_LOGIN.$user_login, $user_mdp);
 				} else {
-						$bind=ldap_bind($ldap_cnx);
+						$bind=@ldap_bind($ldap_cnx);
 				}
 				//if (!($bind=ldap_bind($ldap_cnx, AD_DOMAIN_NAME."\\".$user_login, $user_mdp))) {
 
 				if (!$bind){
 					//session_destroy();
-					$loginMsg = "Utilisateur ou mot de passe incorrect !";
+					$loginMsg = $traductions['nocred'][$_SESSION['user_lang']];
 				}  else {
 					// test droits
 					readLDAP($ldap_cnx,$user_login);
@@ -84,15 +123,15 @@ if(isset($_GET['logout'])) {
 					//Test si l'utilisateur à au moins le droit de lecture (APP ou MAI avec droits)
 					if(!isAPP()&&!hasReadRigth()) {
 						//Droits de connxion insuffisant
-						$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
-						$loginMsg = $loginMsg . printLDAPInfo($ldap_cnx,$user_login);
+						$loginMsg = $traductions['nocredapp'][$_SESSION['user_lang']]; //"L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
+						$loginMsg = $loginMsg . "<br>" . printLDAPInfo($ldap_cnx,$user_login);
 					} else {
 						// test de connexion avec l'utilisateur DB récupéré
 						$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
 						if(!isset($connexion)) {
 							//DB inaccessible
 							//session_destroy();
-							$loginMsg ="Connexion à la base de donnée impossible ou manque de droits!";
+							$loginMsg = $traductions['dbcred'][$_SESSION['user_lang']]; 
 						} else {
 							// user ok, mémorisation dans session et cookie
 							$_SESSION['user_login'] = $user_login;
@@ -160,19 +199,31 @@ if(isset($_GET['logout'])) {
 <div id="header">
 	<div id="logo" style='border-bottom: 1px solid #ccc'>
 		<br>
-		<h1>GeFoPro - Section <?=$scturl?></h1>
+		<h1>GeFoPro - <?=$traductions['sct'][$_SESSION['user_lang']]?> <?=$scturl?></h1>
 	</div>
 </div>
 <div id="page">
-<form action="index.php"  METHOD="POST">
+<form action="index.php"  id='myForm' METHOD="POST">
 <div id='corners' style='width: 500px'>
-<div id='legend'>Connexion</div><br>
+<div id='legend'><?=$traductions['conn'][$_SESSION['user_lang']]?></div><br>
   <table border="0" align="center">
   <tr><td colspan=2><b><?=$loginMsg?></b></td></tr>
 
   <tr><td colspan=2>&nbsp;</td></tr>
-  <tr><td>Utilisateur:</td><td><input type="texte" name="login" value=""></td></tr>
-  <tr><td>Mot de passe:</td><td><input type="password" name="mdp" value=""></td></tr>
+  <tr><td><?=$traductions['user'][$_SESSION['user_lang']]?>:</td><td><input type="texte" name="login" value=""></td></tr>
+  <tr><td><?=$traductions['passwd'][$_SESSION['user_lang']]?>:</td><td><input type="password" name="mdp" value=""></td></tr>
+<?php 
+	if(!empty($configurationLAG)) {
+		echo "<tr><td>".$traductions['lang'][$_SESSION['user_lang']].":</td><td>";
+		echo "<select name='lang' onChange='location.href=\"index.php?lang=\"+this.value'>";
+		foreach($configurationLAG as $langsel) {
+			echo "<option value='".$langsel."' ";
+			if($langsel===$_SESSION['user_lang']) echo " selected";
+			echo " >".$langsel."</option>";
+		}
+		echo "</select></td></tr>";
+	} 
+?>	
   <tr><td colspan=2>&nbsp;</td></tr>
   <tr><td>&nbsp;</td><td><input type="submit" name="submit" value="Login"></td></tr>
   <? if(empty($_SERVER['HTTPS'])) { ?>

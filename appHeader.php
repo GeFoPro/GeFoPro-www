@@ -33,6 +33,8 @@ $subs = explode($app_section,$_SERVER['REQUEST_URI'])[1];
 //echo "<br>sub: ".$subs;
 $app_id = explode("/",$subs)[1];
 //echo "<br>APPID: ".$app_id;
+$pagesubs = explode("/",$_SERVER['PHP_SELF']);
+$nomPage = substr(end($pagesubs),0,-4);
 //echo "<br>Home: ".$_SESSION['home'];
 
 /* inclure les paramètres de connexion */
@@ -58,5 +60,69 @@ if($connexionDB==null) {
 
 } else {
 	mysqli_set_charset($connexionDB, "latin1");
+	// maj traduction si nécessaire
+	if(isset($_GET['actionTrad'])) {
+		if($_GET['actionTrad']==='ModifierTous') {
+			//$requeteTradREP = "UPDATE traduction set Texte='".$_GET['TexteTrad']."' where Libelle='".$_GET['LibelleTrad']."' and Langue='".$_GET['langTrad']."'";
+			$requeteTradREP = "REPLACE into traduction (NomPage,Libelle,Langue,Texte) values ('*','".$_GET['LibelleTrad']."','".$_GET['langTrad']."','".utf8_decode(mysqli_real_escape_string($connexionDB,$_GET['TexteTrad']))."')";
+			//echo $requeteTrad;
+			mysqli_query($connexionDB,$requeteTradREP);
+		} else if($_GET['actionTrad']==='Modifier') {
+			//echo "->".utf8_decode($_GET['TexteTrad']);
+			$requeteTradREP = "REPLACE into traduction (NomPage,Libelle,Langue,Texte) values ('".$nomPage."','".$_GET['LibelleTrad']."','".$_GET['langTrad']."','".utf8_decode(mysqli_real_escape_string($connexionDB,$_GET['TexteTrad']))."')";
+			//echo $requeteTrad;
+			mysqli_query($connexionDB,$requeteTradREP);
+		}
+	}
+	// récupération des traductions
+	$requeteTrad = "SELECT Libelle,Langue,Texte FROM traduction where NomPage = '".$nomPage."' OR NomPage='*'"; //  and Langue = '".$_SESSION['user_lang']."'";
+	//echo $requeteTrad;
+	$resultatTrad =  mysqli_query($connexionDB,$requeteTrad);
+	while($resultatTrad!=null && $row =mysqli_fetch_assoc($resultatTrad)){
+     $traductions[$row['Libelle']][$row['Langue']] = $row['Texte'];
+	}
+	//print_r($traductions);
+}
+
+function libelleTrad($libelle) {
+	global $traductions;
+	if(isset($traductions[$libelle][$_SESSION['user_lang']])) {
+		$trad = $traductions[$libelle][$_SESSION['user_lang']];
+	} else {
+		if(isset($traductions[$libelle]['fr'])) {
+			$trad = $traductions[$libelle]['fr'];
+		} else {
+			$trad = '???';
+		}
+	}
+	return $trad;
+}
+
+function libelleTradUpd($libelle) {
+	global $configTraducteur;
+	$trad = libelleTrad($libelle);
+	if($_SESSION['user_login']===$configTraducteur) {
+		$returnedTxt =  "<div idTrad_".$libelle."='1' onclick='toggleTrad(\"idTrad_".$libelle."\")' style='display: inline-block;'>".$trad."</div>";
+		$returnedTxt .= "<div idTrad_".$libelle."='1' style='display:none' onclick='toggleTrad(\"idTrad_".$libelle."\")'>";
+		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraduction(\"".$libelle."\",\"".$_SERVER['PHP_SELF']."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
+		$returnedTxt .= "</div>";
+	} else {
+		$returnedTxt = $trad;
+	}		
+	return $returnedTxt;
+}
+
+function libelleTradUpdAll($libelle) {
+	global $configTraducteur;
+	$trad = libelleTrad($libelle);
+	if($_SESSION['user_login']===$configTraducteur) {
+		$returnedTxt =  "<div idTrad_".$libelle."='1' onclick='toggleTrad(\"idTrad_".$libelle."\")' style='display: inline-block;'>".$trad."</div>";
+		$returnedTxt .= "<div idTrad_".$libelle."='1' style='display:none' onclick='toggleTrad(\"idTrad_".$libelle."\")'>";
+		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraductionAll(\"".$libelle."\",\"".$_SERVER['PHP_SELF']."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
+		$returnedTxt .= "</div>";
+	} else {
+		$returnedTxt = $trad;
+	}		
+	return $returnedTxt;
 }
 ?>
