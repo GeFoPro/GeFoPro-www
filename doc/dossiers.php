@@ -262,7 +262,7 @@ function display_children($parent, $level, $cat, $filtre) {
 		   if($cat==CatElectro || $cat==CatAtelier) {
 			// afficher les documents
 			   $resultDoc = mysqli_query($connexionDB,'SELECT * FROM document, typedoc '.
-					  'WHERE IDDossier="'.$row['IDDossier'].'" AND document.IDType=type.IDType ORDER BY Libelle;');
+					  'WHERE IDDossier="'.$row['IDDossier'].'" AND document.IDType=typedoc.IDType ORDER BY Libelle;');
 			if(!empty($resultDoc)) {
 				while ($doc = mysqli_fetch_array($resultDoc)) {
 					//echo "<span style='margin: ".(($level+1)*5)."px'>";
