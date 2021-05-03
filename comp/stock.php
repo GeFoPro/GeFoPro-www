@@ -65,13 +65,13 @@ where IDComposant=$IDComp";
 	  if(hasStockRight()) {
 		  echo "<input type='text' name='QuantiteMin$footLigne[IDStockage]' value='$footLigne[QuantiteMin]' size='4' onChange='updateStock($footLigne[IDStockage],\"QuantiteMin\",this.value)' style='text-align: right'>";
 	  } else {
-		  echo $footLigne[QuantiteMin];
+		  echo $footLigne['QuantiteMin'];
 	  }
 	  echo "</td><td align='center'>";
 	  if(hasStockRight()) {
 		  echo "<input type='text' name='QuantiteComm$footLigne[IDStockage]' value='$footLigne[QuantiteComm]' size='4' onChange='updateStock($footLigne[IDStockage],\"QuantiteComm\",this.value)' style='text-align: right'>";
 	  } else {
-		  echo $footLigne[QuantiteComm];
+		  echo $footLigne['QuantiteComm'];
 	  }
 	  echo "</td>";
 	  echo "<td align='right'>";

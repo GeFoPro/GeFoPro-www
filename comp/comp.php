@@ -1098,7 +1098,7 @@ $lastIDCom = 0;
 			if(hasStockRight()) {
 				echo "<input type='text' name='noArticle$fournLigne[IDCommande]' value='$fournLigne[NoArticle]' size='15' onChange='updateFournisseur($fournLigne[IDCommande],\"noArticle\",this.value)'>";
 			} else {
-				echo $fournLigne[NoArticle];
+				echo $fournLigne['NoArticle'];
 			}
 			echo "</td>";
 			echo "<td>$fournLigne[NomFournisseur]</td>";
