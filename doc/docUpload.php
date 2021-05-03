@@ -82,7 +82,7 @@ if(!empty($IDDocument)) {
   <option selected> </option>
   <?php
   /* Construction liste type document */
-  $requete = "SELECT * FROM type";
+  $requete = "SELECT * FROM typedoc";
   $resultat =  mysqli_query($connexionDB,$requete);
   while ($listeLigne = mysqli_fetch_array($resultat)) {
 	if($ligne['IDType']==$listeLigne[0]) {

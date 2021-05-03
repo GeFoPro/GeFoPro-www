@@ -261,7 +261,7 @@ function display_children($parent, $level, $cat, $filtre) {
 		   //echo "cat:".$cat;
 		   if($cat==CatElectro || $cat==CatAtelier) {
 			// afficher les documents
-			   $resultDoc = mysqli_query($connexionDB,'SELECT * FROM document, type '.
+			   $resultDoc = mysqli_query($connexionDB,'SELECT * FROM document, typedoc '.
 					  'WHERE IDDossier="'.$row['IDDossier'].'" AND document.IDType=type.IDType ORDER BY Libelle;');
 			if(!empty($resultDoc)) {
 				while ($doc = mysqli_fetch_array($resultDoc)) {

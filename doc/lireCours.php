@@ -15,7 +15,7 @@ if(isset($_GET['IDDocument'])) {
 	$IDDocument = $_GET['IDDocument'];
 }
 
-$requete = "SELECT Document, Libelle, Taille, mime FROM document doc join type ty on doc.IDType=ty.IDType WHERE IDDocument=".$IDDocument;
+$requete = "SELECT Document, Libelle, Taille, mime FROM document doc join typedoc ty on doc.IDType=ty.IDType WHERE IDDocument=".$IDDocument;
 $result=mysqli_query($connexionDB,$requete);
 $data=mysqli_fetch_array($result);
 //echo $pdfdata[0];

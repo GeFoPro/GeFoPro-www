@@ -61,7 +61,7 @@ function callPage(sel) {
 		<table border='0' width="100%"><tr><td>
 		<h1>
 <?php
-if(!empty($configurationAPP)) {
+if(!empty($configurationAPP)&&hasAdminRigth()) {
 	echo "<select name='app' id='selapp' onChange='callPage(this)'>";
 	foreach($configurationAPP as $app_name) {
 		echo "<option value='".$app_name."' ";
