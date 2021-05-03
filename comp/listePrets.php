@@ -173,7 +173,7 @@ if(empty($uid)) {
 	if(!empty($IDStockage)) {
 			$filtreSQL .= " and stg.IDStockage=".$IDStockage; //." or stg2.IDStock=".$IDStock;
 	}
-	$requete = "select Userid, DateEmprunt, Tirroir, Emplacement, emp.IDInventaire as IDInv, emp.IDEmprunt as IDEmp, NoInventaire, Stg.IDComposant as IDComp, Stg.IDStockage as IDStockage, Description, Caracteristiques from stockage stg";
+	$requete = "select Userid, DateEmprunt, Tirroir, Emplacement, emp.IDInventaire as IDInv, emp.IDEmprunt as IDEmp, NoInventaire, stg.IDComposant as IDComp, stg.IDStockage as IDStockage, Description, Caracteristiques from stockage stg";
 	$requete .= " left join stock sto on stg.IDStock=sto.IDStock";
 	$requete .= " join composant comp on stg.IDComposant=comp.IDComposant";
 	$requete .= " left join inventaire inv on comp.IDComposant=inv.IDComposant";
