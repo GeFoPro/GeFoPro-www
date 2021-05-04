@@ -76,7 +76,11 @@ if(!empty($configurationAPP)&&hasAdminRigth()) {
 		</td>
 		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'><?=libelleTrad('menuconso')?></a>
 		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'><?=libelleTrad('menudoc')?></a>
-		<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'><?=libelleTrad('gestionatelier')?></a>
+		<?php if(hasAdminRigth()) { ?>
+			<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'><?=libelleTrad('gestionatelier')?></a>
+		<?php } else { ?>
+			<br><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('gestionpersonnelle')?></a>
+		<?php } ?>
 		<?php if(!empty($teamsURL)) { ?>
 			<br><a href='<?=$teamsURL?>' target='teams'>Teams</a>
 		<?php } ?>

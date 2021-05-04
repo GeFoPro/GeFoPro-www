@@ -47,7 +47,7 @@ function callPage(sel) {
 </script>
 </head>
 <body>
-
+<script type="text/javascript" src="/js/traduction.js"></script>
 <script type="text/javascript" src="/js/wz_tooltip.js"></script>
 <script type="text/javascript" src="/js/msg.js"></script>
 <link rel="stylesheet" media="all" href="/js/msg.css" />
@@ -72,14 +72,14 @@ function callPage(sel) {
 					echo $app_section;
 			}
 		?>
-		 - Gestion du consommable et équipement
+		 - <?=libelleTradUpdAll('menuconso')?></h1>
 		</h1></td>
-		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'>Gestion du consommable et équipement</a>
-		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'>Gestion des documents</a>
+		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'><?=libelleTrad('menuconso')?></a>
+		<br><a href='<?=$_SESSION['home']?>doc/dossiers.php'><?=libelleTrad('menudoc')?></a>
 		<?php if(hasAdminRigth()) { ?>
-			<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'>Gestion de l'atelier</a>
+			<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'><?=libelleTrad('gestionatelier')?></a>
 		<?php } else { ?>
-			<br><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Gestion personnelle</a>
+			<br><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('gestionpersonnelle')?></a>
 		<?php } ?>
 		<?php if(!empty($teamsURL)) { ?>
 			<br><a href='<?=$teamsURL?>' target='teams'>Teams atelier</a>
