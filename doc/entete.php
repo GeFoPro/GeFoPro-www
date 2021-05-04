@@ -14,7 +14,7 @@ ini_set( 'default_charset', "iso-8859-1" );
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-<title><?=$app_section?> - Gestion atelier</title>
+<title><?=$app_section?> - <?=libelleTrad('menudoc')?></title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="<?=$_SESSION['home']?>default.css" rel="stylesheet" type="text/css" />
@@ -89,14 +89,14 @@ if(!empty($configurationAPP)&&hasAdminRigth()) {
 	<div id="menu">
 
 		<ul>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatAtelier?>">Cours Atelier</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatAtelier?>"><?=libelleTrad('coursate')?></a></li>
 			<?php if(hasAdminRigth()) { ?>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/listeCours.php">Liste des cours</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/listeCours.php"><?=libelleTrad('listecours')?></a></li>
 			<?php } ?>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatElectro?>">Références</a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatElectro?>"><?=libelleTrad('reference')?></a></li>
 			<!--li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatInfo?>">Informatique</a></li-->
 			<!--li class="current_page_item"><a href="<?=$_SESSION['home']?>doc/dossiers.php?cat=<?=CatSoft?>">Logiciels</a></li-->
-			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out"><?=libelleTrad('menulogout')?></a></li>
 
 		</ul>
 
