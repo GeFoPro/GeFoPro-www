@@ -14,7 +14,7 @@ ini_set( 'default_charset', "iso-8859-1" );
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title><?=$app_section?> - Gestion du consommable et équipement</title>
+<title><?=$app_section?> - <?=libelleTrad('menuconso')?></title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="<?=$_SESSION['home']?>default.css" rel="stylesheet" type="text/css" />
@@ -89,15 +89,15 @@ function callPage(sel) {
 	</div>
 	<div id="menu">
 		<ul>
-			<li class="current_page_item"><a href="compList.php">Articles</a></li>
-			<li class="current_page_item"><a href="listePrets.php">Prêts</a></li>
-			<li class="current_page_item"><a href="commande.php">Commandes en cours</a></li>
+			<li class="current_page_item"><a href="compList.php"><?=libelleTrad('article')?></a></li>
+			<li class="current_page_item"><a href="listePrets.php"><?=libelleTrad('pret')?></a></li>
+			<li class="current_page_item"><a href="commande.php"><?=libelleTrad('commande')?></a></li>
 			<?php if(hasAdminRigth()) { ?>
-			<li class="current_page_item"><a href="historique.php">Historique commandes</a></li>
-			<li class="current_page_item"><a href="lists.php">Listes</a></li>
-			<li class="current_page_item"><a href="etiquette.php" target="_pdf">Etiquettes</a></li>
+			<li class="current_page_item"><a href="historique.php"><?=libelleTrad('historique')?></a></li>
+			<li class="current_page_item"><a href="lists.php"><?=libelleTrad('liste')?></a></li>
+			<li class="current_page_item"><a href="etiquette.php" target="_pdf"><?=libelleTrad('etiquette')?></a></li>
 			<?php } ?>
-			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out">Déconnecter</a></li>
+			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out"><?=libelleTrad('menulogout')?></a></li>
 		</ul>
 	</div>
 </div>
