@@ -75,7 +75,7 @@ function callPage(sel) {
 		<?php if(hasAdminRigth()) { ?>
 		 - <?=libelleTradUpdAll('gestionatelier')?>
 		<?php } else { ?>
-		 - <?=libelleTradUpdAll('gestionpersionnelle')?>
+		 - <?=libelleTradUpdAll('gestionpersonnelle')?>
 		<?php } ?>
 		</h1></td>
 		<td align="right"><a href='<?=$_SESSION['home']?>comp/compList.php'><?=libelleTrad('menuconso')?></a>
@@ -83,7 +83,7 @@ function callPage(sel) {
 		<?php if(hasAdminRigth()) { ?>
 			<br><a href='<?=$_SESSION['home']?>admin/listes/atelier.php?modeHTML'><?=libelleTrad('gestionatelier')?></a>
 		<?php } else { ?>
-			<br><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('gestionpersionnelle')?></a>
+			<br><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('gestionpersonnelle')?></a>
 		<?php } ?>
 		<?php if(!empty($teamsURL)) { ?>
 			<br><a href='<?=$teamsURL?>' target='teams'>Teams atelier</a>
