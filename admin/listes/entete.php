@@ -14,7 +14,7 @@ ini_set( 'default_charset', "iso-8859-1" );
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1" />
-<title><?=$app_section?> - Gestion atelier</title>
+<title><?=$app_section?> - <?=libelleTrad('gestionatelier')?></title>
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="<?=$_SESSION['home']?>default.css?rdn=123" rel="stylesheet" type="text/css" />
