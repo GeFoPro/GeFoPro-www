@@ -9,7 +9,11 @@
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 
-	$release = "<br><b><i>2.5</i></b>";
+	$release = "<br><b><i>2.5.1</i></b>";
+	$release .= "<br>- Sélection possible de différents métiers dans l\'entête";
+	$release .= "<br>- Fonctionnement possible de l\'application sans ActiveDirectory/LDAP";
+	$release .= "<br>- Interface utilisateur multilingue";
+	$release .= "<br><b><i>2.5</i></b>";
 	$release .= "<br>- migration vers php7 (utilisation de mysqli)";
 	$release .= "<br>- corrections pour fonctionnement sur systèmes linux (LAMP)";
 	$release .= "<br>- paramétrage amélioré pour utilisation de LDAP";
@@ -76,7 +80,7 @@
 	$release .= "<br>- Problème de création globale des périodes pour les notes, pour le système d\'évaluation hebdomadaire";
 ?>
 <div id="footer">
-	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5, 2010 &copy; Designed by DGI</p>
+	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5.1, 2010 &copy; Designed by DGI</p>
 
 </div>
 <!-- end footer -->
