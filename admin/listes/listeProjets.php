@@ -44,19 +44,19 @@ if(isset($_POST['ajoutProjet'])) {
 	// ajout d'un thème
 	$projet = $_POST['NomTheme'];
 	// ajout d'un attribut
-    $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme) values (\"$projet\",0,1)";
+    $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme, ClasseTheme) values (\"$projet\",0,1,'".$app_section."')";
 	//echo $requete;
     $resultat =  mysqli_query($connexionDB,$requete);
-	$filtre = 11;
-	$anneeTri = '%';
+	$filtre = 11; // nouveau
 }
 $filtreSQL = "";
 if($filtre<10) {
 	$filtreSQL = " and et.IDEtatProjet = ".$filtre;
 }
-if($filtre==11) {
+if($filtre==11) { // nouveau
 	$filtreSQL = " and et.IDEtatProjet is null";
 }
+
 
 if(isset($_POST['theme'])&& !empty($_POST['theme'])) {
 	$themeTri = $_POST['theme'];
@@ -69,9 +69,14 @@ if(isset($_GET['theme'])&& !empty($_GET['theme'])) {
 }
 if(!empty($themeTri)) {
 	// tri sur theme, toutes années et etat confindus
-	$filtre = 10;
+	$filtre = 10; // tri sur thème
 	$anneeTri = '%';
 	$filtreSQL = " and th.IDTheme=". $themeTri;
+}
+
+// si nouveau ou en attente on effacer le tri sur les années
+if($filtre==11 || $filtre==0) {
+	$anneeTri = '%';
 }
 
 
@@ -267,7 +272,7 @@ $havingSQL = "";
 		}
 		$optionAnnee .= ">".($annee-$cntA)."/".($annee-$cntA+1)."</option>";
 	}
-	if(empty($themeTri)) {
+	if(empty($themeTri) && $anneeTri!='%') {
 		echo "Année: <select name='annee' onchange='submit()'><option value='%'>Tous</option>".$optionAnnee."</select>";
 	}
 	if($anneeTri!='%') {
@@ -296,6 +301,7 @@ if($anneeTri!='%') {
 	//$requete .= " and DateSaisie >= '".$anneeTri."-08-01'";// and DateSaisie <= '".($anneeTri+1)."-07-31'";
 }
 $requete .= " where typetheme = 1 ".$filtreSQL;
+$requete .= " and (ClasseTheme like '".$app_section."%' OR ClasseTheme is null OR ClasseTheme = '')";
 $requete .= " group by th.IDTheme, pr.IDEleve".$havingSQL;
 $requete .= " order by th.NomTheme, et.IDEtatProjet, ty.IDTypeProjet, DDebut desc";
 //echo $requete;
