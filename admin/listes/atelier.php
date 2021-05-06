@@ -272,12 +272,18 @@ if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
 
 // construction de la liste des classe si 'ancien' à été choisi
 if(isset($classe)&&$classe==100) {
-	$requeteCl = "select distinct Classe from elevesbk where Classe not in (''";
-	foreach ($configurationATE as $pos => $value) {
-		$requeteCl .= ",'".$value."'";
+	$requeteCl = "select distinct Classe from elevesbk where Classe not like '".$app_section."%'";
+	//foreach ($configurationATE as $pos => $value) {
+	//	$requeteCl .= ",'".$value."'";
+	//}
+	// ajout des sections autres
+	if(isset($configurationAPP)) {
+		foreach ($configurationAPP as $pos => $value) {
+			$requeteCl .= " and Classe not like '".$value."%'";
+		}
 	}
-	$requeteCl .= ") order by Classe";
-		//echo $requete."<br>";
+	//$requeteCl .= ") order by Classe";
+		//echo $requeteCl."<br>";
 	$resultat =  mysqli_query($connexionDB,$requeteCl);
 	// construction de la nouvelle configuration
 	$cnt=1;
@@ -311,315 +317,317 @@ if(isset($classe)&&$classe==101) {
 
 /* tableau des élèves par jour et construction de l'entête*/
 $cntCell = 3;
-foreach ($configurationATE as $pos => $value) {
-	if(empty($classe) || $classe==$pos || $classe==100 || ($classe==101 && strpos($value, $app_section)===0)) {
-		// Récupérer la liste des adresses e-mail des profs (seulement si la DB de la GDN est accessible)
-		$liste_emails_profs = "" ;
-		/*
-		if($connexion!=null)
-		{
-			// pas accessible pour l'instant
-			//$stmt = ociparse($connexion,"SELECT DISTINCT EMAIL_PROF FROM VU_PROF, TB_SUIVRE, TB_COURS, TB_SOUS_CLASSE WHERE FK_COURS_PROF = PK_PROF AND PK_FK_SUIVRE_COURS = PK_COURS AND PK_FK_SUIVRE_SOUS_CLASSE = PK_SOUS_CLASSE AND NOM_SOUS_CLASSE like '$value%'");
-			//ociexecute($stmt,OCI_DEFAULT);
-			//while (($data = nextEntry($connexion,$stmt))!=null)
-			//{
-			//	$liste_emails_profs .= getValue($connexion,$data,1).';' ;
+if(!empty($configurationATE)) {
+	foreach ($configurationATE as $pos => $value) {
+		if(empty($classe) || $classe==$pos || $classe==100 || ($classe==101 && strpos($value, $app_section)===0)) {
+			// Récupérer la liste des adresses e-mail des profs (seulement si la DB de la GDN est accessible)
+			$liste_emails_profs = "" ;
+			/*
+			if($connexion!=null)
+			{
+				// pas accessible pour l'instant
+				//$stmt = ociparse($connexion,"SELECT DISTINCT EMAIL_PROF FROM VU_PROF, TB_SUIVRE, TB_COURS, TB_SOUS_CLASSE WHERE FK_COURS_PROF = PK_PROF AND PK_FK_SUIVRE_COURS = PK_COURS AND PK_FK_SUIVRE_SOUS_CLASSE = PK_SOUS_CLASSE AND NOM_SOUS_CLASSE like '$value%'");
+				//ociexecute($stmt,OCI_DEFAULT);
+				//while (($data = nextEntry($connexion,$stmt))!=null)
+				//{
+				//	$liste_emails_profs .= getValue($connexion,$data,1).';' ;
+				//}
+			} */
+
+			// associer la liste d'élève
+			//if($connexion!=null) {
+				//$stmt = ociparse($connexion,"$GDN_eleves WHERE $GDN_tri like '$value%' $GDN_orderby");
+				//ociexecute($stmt,OCI_DEFAULT);
+			//} else {
+				$requete = "SELECT * FROM $tableElevesBK where Classe like '$value' order by Nom";
+					//echo $requete."<br>";
+				$stmt =  mysqli_query($connexionDB,$requete);
 			//}
-		} */
-
-		// associer la liste d'élève
-		//if($connexion!=null) {
-			//$stmt = ociparse($connexion,"$GDN_eleves WHERE $GDN_tri like '$value%' $GDN_orderby");
-			//ociexecute($stmt,OCI_DEFAULT);
-		//} else {
-			$requete = "SELECT * FROM $tableElevesBK where Classe like '$value' order by Nom";
-				//echo $requete."<br>";
-			$stmt =  mysqli_query($connexionDB,$requete);
-		//}
-		if(!$modeHTML) {
-			$objPHPExcel->getActiveSheet()->setCellValue("A".$cntCell, iconv("ISO-8859-1", "UTF-8", "$value"));
-			$objPHPExcel->getActiveSheet()->getStyle("A".$cntCell.":S".$cntCell)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-			$objPHPExcel->getActiveSheet()->getStyle("A".$cntCell++)->getFont()->setBold(true);
-		} else {
-			echo "<tr><td colspan='10'><b><a href='#' onClick='toggle(\"block$pos\");'>$value</a></b></td><td colspan='3'>";
-			//echo "<a href='' id='email_eleve_$value'>  <img src='/iconsFam/iconStudent.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email à la classe')\" onmouseout='UnTip()'></a>";
-			//echo "<a href='mailto:$liste_emails_profs' id='email_profs_$value'>  <img src='/iconsFam/iconProfessor.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email aux enseigants')\" onmouseout='UnTip()'></a>";
-			echo "</td></tr>\n";
-		}
-		$emailGroup = "";
-		$emailGroupOutlook = "";
-		while ($data = mysqli_fetch_assoc($stmt)) {
-		//while (($data = nextEntry($connexion,$stmt))!=null){
-			$troisplusun = false;
-
-			//if(strstr(getValue($connexion,$data,9),"+1")) {
-			//	$troisplusun = true;
-			//}
-			// recherche des données complémentaires
-
-			//$idGDN = getValue($connexion,$data,1);
-			$idGDN = $data['IDGDN'];
-			$nom = $data['Nom'];
-			$prenom = $data['Prenom'];
-			//echo $idGDN."-".$nom."-".$prenom;
-
-
-			$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle where el.IDGDN = $idGDN";
-	//echo $requete."<br>";
-			$resultat =  mysqli_query($connexionDB,$requete);
-			if($resultat!=null) {
-				$ligne = mysqli_fetch_assoc($resultat);
+			if(!$modeHTML) {
+				$objPHPExcel->getActiveSheet()->setCellValue("A".$cntCell, iconv("ISO-8859-1", "UTF-8", "$value"));
+				$objPHPExcel->getActiveSheet()->getStyle("A".$cntCell.":S".$cntCell)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+				$objPHPExcel->getActiveSheet()->getStyle("A".$cntCell++)->getFont()->setBold(true);
+			} else {
+				echo "<tr><td colspan='10'><b><a href='#' onClick='toggle(\"block$pos\");'>$value</a></b></td><td colspan='3'>";
+				//echo "<a href='' id='email_eleve_$value'>  <img src='/iconsFam/iconStudent.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email à la classe')\" onmouseout='UnTip()'></a>";
+				//echo "<a href='mailto:$liste_emails_profs' id='email_profs_$value'>  <img src='/iconsFam/iconProfessor.gif' height='25' align='absmiddle' onmouseover=\"Tip('Email aux enseigants')\" onmouseout='UnTip()'></a>";
+				echo "</td></tr>\n";
 			}
-			// ajout dans liste éleves si internes
-			//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
-			if($ligne['IDEntreprise']==1) {
-				$listeIds[] = array($idGDN,htmlentities($nom, ENT_QUOTES),$prenom,$value);
-			}
-			if((!empty($classe)&&$classe!=0)||$ligne['IDEntreprise']==1) {
-				if(!$modeHTML) {
+			$emailGroup = "";
+			$emailGroupOutlook = "";
+			while ($data = mysqli_fetch_assoc($stmt)) {
+			//while (($data = nextEntry($connexion,$stmt))!=null){
+				$troisplusun = false;
 
-					writeDataToCell($nom,$objPHPExcel,"A",$cntCell,$troisplusun);
-					//writeToCell($stmt,2,$objPHPExcel,"A",$cntCell,$troisplusun);
-					writeDataToCell($prenom,$objPHPExcel,"B",$cntCell,$troisplusun);
-					//writeToCell($stmt,3,$objPHPExcel,"B",$cntCell,$troisplusun);
-					writeDataToCell($data['Adresse'],$objPHPExcel,"I",$cntCell,$troisplusun);
-					//writeToCell($stmt,4,$objPHPExcel,"I",$cntCell,$troisplusun);
-					writeDataToCell($data['NPA'],$objPHPExcel,"J",$cntCell,$troisplusun);
-					//writeToCell($stmt,5,$objPHPExcel,"J",$cntCell,$troisplusun);
-					writeDataToCell($data['Localite'],$objPHPExcel,"K",$cntCell,$troisplusun);
-					//writeToCell($stmt,6,$objPHPExcel,"K",$cntCell,$troisplusun);
-					writeDataToCell($data['Email'],$objPHPExcel,"N",$cntCell,$troisplusun);
-					//writeToCell($stmt,7,$objPHPExcel,"N",$cntCell,$troisplusun);
-					// données uniquement de srv-electro
-					writeDataToCell($ligne['NoVestiaire'],$objPHPExcel,"C",$cntCell,$troisplusun);
-					writeDataToCell($ligne['NoJeton'],$objPHPExcel,"D",$cntCell,$troisplusun);
-					writeDataToCell($ligne['NoBadge'],$objPHPExcel,"E",$cntCell,$troisplusun);
-					writeDataToCell($ligne['NumeroCle'],$objPHPExcel,"F",$cntCell,$troisplusun);
+				//if(strstr(getValue($connexion,$data,9),"+1")) {
+				//	$troisplusun = true;
+				//}
+				// recherche des données complémentaires
 
-					//writeDataToCell($ligne['noChaise'],$objPHPExcel,"G",$cntCell,$troisplusun);
-					//writeDataToCell($ligne['noBanc'],$objPHPExcel,"H",$cntCell,$troisplusun);
+				//$idGDN = getValue($connexion,$data,1);
+				$idGDN = $data['IDGDN'];
+				$nom = $data['Nom'];
+				$prenom = $data['Prenom'];
+				//echo $idGDN."-".$nom."-".$prenom;
 
-					writeDataToCell($ligne['NoTel'],$objPHPExcel,"L",$cntCell,$troisplusun);
-					writeDataToCell($ligne['NoMobile'],$objPHPExcel,"M",$cntCell,$troisplusun);
-					$dateNaissance = explode("-", $ligne['DateNaissance']);
-					if(count($dateNaissance)==3) {
-						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
-						writeDataToCell($dateList,$objPHPExcel,"O",$cntCell,$troisplusun);
-					}
-					writeDataToCell($ligne['NoSeriePC'],$objPHPExcel,"P",$cntCell,$troisplusun);
-					writeDataToCell($ligne['NomPC'],$objPHPExcel,"Q",$cntCell,$troisplusun);
-					writeDataToCell($ligne['MacAdresseWifi'],$objPHPExcel,"R",$cntCell,$troisplusun);
-					writeDataToCell($ligne['MacAdresseEthernet'],$objPHPExcel,"S",$cntCell,$troisplusun);
-				} else {
-					//$nomDB = getValue($connexion,$data,2);
-					//$prenomDB = getValue($connexion,$data,3);
-					echo "<tr block$pos='$idGDN' id='hidethis' onclick='updateEleve($idGDN,\"".htmlentities($nom, ENT_QUOTES)."\",\"$prenom\");'";
 
-					$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribConge,$attribTel) and Date = \"".date("Y-m-d")."\"";
+				$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle where el.IDGDN = $idGDN";
 		//echo $requete."<br>";
-					$resultat =  mysqli_query($connexionDB,$requete);
+				$resultat =  mysqli_query($connexionDB,$requete);
+				if($resultat!=null) {
+					$ligne = mysqli_fetch_assoc($resultat);
+				}
+				// ajout dans liste éleves si internes
+				//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
+				if($ligne['IDEntreprise']==1) {
+					$listeIds[] = array($idGDN,htmlentities($nom, ENT_QUOTES),$prenom,$value);
+				}
+				if((!empty($classe)&&$classe!=0)||$ligne['IDEntreprise']==1) {
+					if(!$modeHTML) {
 
-					$ico = mysqli_fetch_assoc($resultat);
-					if($ico!=null) {
-						echo " bgcolor='#F8E0E0' onmouseover=\"Tip('";
-						if($ico['IDAttribut']==$attribTel) {
-							echo "Malade";
-						} else {
-							echo "Congé aujourd\'hui";
+						writeDataToCell($nom,$objPHPExcel,"A",$cntCell,$troisplusun);
+						//writeToCell($stmt,2,$objPHPExcel,"A",$cntCell,$troisplusun);
+						writeDataToCell($prenom,$objPHPExcel,"B",$cntCell,$troisplusun);
+						//writeToCell($stmt,3,$objPHPExcel,"B",$cntCell,$troisplusun);
+						writeDataToCell($data['Adresse'],$objPHPExcel,"I",$cntCell,$troisplusun);
+						//writeToCell($stmt,4,$objPHPExcel,"I",$cntCell,$troisplusun);
+						writeDataToCell($data['NPA'],$objPHPExcel,"J",$cntCell,$troisplusun);
+						//writeToCell($stmt,5,$objPHPExcel,"J",$cntCell,$troisplusun);
+						writeDataToCell($data['Localite'],$objPHPExcel,"K",$cntCell,$troisplusun);
+						//writeToCell($stmt,6,$objPHPExcel,"K",$cntCell,$troisplusun);
+						writeDataToCell($data['Email'],$objPHPExcel,"N",$cntCell,$troisplusun);
+						//writeToCell($stmt,7,$objPHPExcel,"N",$cntCell,$troisplusun);
+						// données uniquement de srv-electro
+						writeDataToCell($ligne['NoVestiaire'],$objPHPExcel,"C",$cntCell,$troisplusun);
+						writeDataToCell($ligne['NoJeton'],$objPHPExcel,"D",$cntCell,$troisplusun);
+						writeDataToCell($ligne['NoBadge'],$objPHPExcel,"E",$cntCell,$troisplusun);
+						writeDataToCell($ligne['NumeroCle'],$objPHPExcel,"F",$cntCell,$troisplusun);
+
+						//writeDataToCell($ligne['noChaise'],$objPHPExcel,"G",$cntCell,$troisplusun);
+						//writeDataToCell($ligne['noBanc'],$objPHPExcel,"H",$cntCell,$troisplusun);
+
+						writeDataToCell($ligne['NoTel'],$objPHPExcel,"L",$cntCell,$troisplusun);
+						writeDataToCell($ligne['NoMobile'],$objPHPExcel,"M",$cntCell,$troisplusun);
+						$dateNaissance = explode("-", $ligne['DateNaissance']);
+						if(count($dateNaissance)==3) {
+							$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
+							writeDataToCell($dateList,$objPHPExcel,"O",$cntCell,$troisplusun);
 						}
-						echo ": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
-					}
-					$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribConge and Date > \"".date("Y-m-d")."\"";
-		//echo $requete."<br>";
-					$resultat =  mysqli_query($connexionDB,$requete);
-					$ico = mysqli_fetch_assoc($resultat);
-					if($ico!=null) {
-						echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
-					}
-					if($ligne['IDEntreprise']!=1) {
-						echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
-					}
-					echo "><td><nobr>";
-					if($modeAff==0) {
-						$cntIcon = 1;
+						writeDataToCell($ligne['NoSeriePC'],$objPHPExcel,"P",$cntCell,$troisplusun);
+						writeDataToCell($ligne['NomPC'],$objPHPExcel,"Q",$cntCell,$troisplusun);
+						writeDataToCell($ligne['MacAdresseWifi'],$objPHPExcel,"R",$cntCell,$troisplusun);
+						writeDataToCell($ligne['MacAdresseEthernet'],$objPHPExcel,"S",$cntCell,$troisplusun);
+					} else {
+						//$nomDB = getValue($connexion,$data,2);
+						//$prenomDB = getValue($connexion,$data,3);
+						echo "<tr block$pos='$idGDN' id='hidethis' onclick='updateEleve($idGDN,\"".htmlentities($nom, ENT_QUOTES)."\",\"$prenom\");'";
 
-						// mode Normal
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribFem";
-		//echo $requete."<br>";
+						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribConge,$attribTel) and Date = \"".date("Y-m-d")."\"";
+			//echo $requete."<br>";
+						$resultat =  mysqli_query($connexionDB,$requete);
+
+						$ico = mysqli_fetch_assoc($resultat);
+						if($ico!=null) {
+							echo " bgcolor='#F8E0E0' onmouseover=\"Tip('";
+							if($ico['IDAttribut']==$attribTel) {
+								echo "Malade";
+							} else {
+								echo "Congé aujourd\'hui";
+							}
+							echo ": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
+						}
+						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribConge and Date > \"".date("Y-m-d")."\"";
+			//echo $requete."<br>";
 						$resultat =  mysqli_query($connexionDB,$requete);
 						$ico = mysqli_fetch_assoc($resultat);
 						if($ico!=null) {
-							echo "<img src='/iconsFam/user_female.png'>";
-						} else {
-							echo "<img src='/iconsFam/user.png'>";
+							echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 						}
-
 						if($ligne['IDEntreprise']!=1) {
-							echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('".libelleTrad('dual')."')\" onmouseout='UnTip()'>";
-							$cntIcon++;
-						} else {
-							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
+							echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
+						}
+						echo "><td><nobr>";
+						if($modeAff==0) {
+							$cntIcon = 1;
+
+							// mode Normal
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribFem";
+			//echo $requete."<br>";
 							$resultat =  mysqli_query($connexionDB,$requete);
 							$ico = mysqli_fetch_assoc($resultat);
 							if($ico!=null) {
-								echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('".libelleTrad('stage')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
+								echo "<img src='/iconsFam/user_female.png'>";
+							} else {
+								echo "<img src='/iconsFam/user.png'>";
 							}
-						}
 
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribtroisplusun, $attribMPT, $attribMPTtrois, $attribfuturtrois)";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null || $troisplusun) {
-							if($ico['IDAttribut']==$attribtroisplusun || $troisplusun) {
-								echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('".libelleTrad('form31')."')\" onmouseout='UnTip()'>";
+							if($ligne['IDEntreprise']!=1) {
+								echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('".libelleTrad('dual')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribfuturtrois) {
-								echo "<img src='/iconsFam/award_star_bronze_2.png' onmouseover=\"Tip('".libelleTrad('insc31')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribMPTtrois) {
-								echo "<img src='/iconsFam/award_star_silver_3.png' onmouseover=\"Tip('".libelleTrad('insc31mpt')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribMPT) {
-								echo "<img src='/iconsFam/medal_silver_3.png' onmouseover=\"Tip('".libelleTrad('prepmpt')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribPAS) {
-								echo "<img src='/iconsFam/arrow_switch.png' onmouseover=\"Tip('".libelleTrad('passerelle')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
+							} else {
+								$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
+								$resultat =  mysqli_query($connexionDB,$requete);
+								$ico = mysqli_fetch_assoc($resultat);
+								if($ico!=null) {
+									echo "<img src='/iconsFam/building_go.png' onmouseover=\"Tip('".libelleTrad('stage')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								}
 							}
-						}
-						if($cntIcon==3) {
-							echo "<br>";
-							$cntIcon = 0;
-						}
 
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribResp";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null) {
-							echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('".libelleTrad('delclasse')."')\" onmouseout='UnTip()'>";
-							$cntIcon++;
-						}
-						if($cntIcon==3) {
-							echo "<br>";
-							$cntIcon = 0;
-						}
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribNum";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null) {
-							echo "<img src='/iconsFam/camera_small.png' onmouseover=\"Tip('".libelleTrad('delnum')."')\" onmouseout='UnTip()'>";
-							$cntIcon++;
-						}
-						if($cntIcon==3) {
-							echo "<br>";
-							$cntIcon = 0;
-						}
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribtroisplusun, $attribMPT, $attribMPTtrois, $attribfuturtrois)";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null || $troisplusun) {
+								if($ico['IDAttribut']==$attribtroisplusun || $troisplusun) {
+									echo "<img src='/iconsFam/award_star_gold_1.png' onmouseover=\"Tip('".libelleTrad('form31')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribfuturtrois) {
+									echo "<img src='/iconsFam/award_star_bronze_2.png' onmouseover=\"Tip('".libelleTrad('insc31')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribMPTtrois) {
+									echo "<img src='/iconsFam/award_star_silver_3.png' onmouseover=\"Tip('".libelleTrad('insc31mpt')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribMPT) {
+									echo "<img src='/iconsFam/medal_silver_3.png' onmouseover=\"Tip('".libelleTrad('prepmpt')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribPAS) {
+									echo "<img src='/iconsFam/arrow_switch.png' onmouseover=\"Tip('".libelleTrad('passerelle')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								}
+							}
+							if($cntIcon==3) {
+								echo "<br>";
+								$cntIcon = 0;
+							}
 
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribANG, $attribALL,$attribMAT)";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						while(($ico = mysqli_fetch_assoc($resultat))!=null) {
-							//if($ico!=null) {
-							if($ico['IDAttribut']==$attribANG) {
-								echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('".libelleTrad('anglais')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribALL) {
-								echo "<img src='/iconsFam/flag-german.png' onmouseover=\"Tip('".libelleTrad('allemand')."')\" onmouseout='UnTip()'>";
-								$cntIcon++;
-							} else if($ico['IDAttribut']==$attribMAT) {
-								echo "<img src='/iconsFam/calculator.png' onmouseover=\"Tip('".libelleTrad('math')."')\" onmouseout='UnTip()'>";
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribResp";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/rosette.png' onmouseover=\"Tip('".libelleTrad('delclasse')."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							}
 							if($cntIcon==3) {
 								echo "<br>";
 								$cntIcon = 0;
 							}
-						}
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribNum";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/camera_small.png' onmouseover=\"Tip('".libelleTrad('delnum')."')\" onmouseout='UnTip()'>";
+								$cntIcon++;
+							}
+							if($cntIcon==3) {
+								echo "<br>";
+								$cntIcon = 0;
+							}
 
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribHOR";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null) {
-							echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('".libelleTrad('blochoraire')."')\" onmouseout='UnTip()'>";
-							$cntIcon++;
-						}
-						if($cntIcon==3) {
-							echo "<br>";
-							$cntIcon = 0;
-						}
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut in ($attribANG, $attribALL,$attribMAT)";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							while(($ico = mysqli_fetch_assoc($resultat))!=null) {
+								//if($ico!=null) {
+								if($ico['IDAttribut']==$attribANG) {
+									echo "<img src='/iconsFam/flag-english.png' onmouseover=\"Tip('".libelleTrad('anglais')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribALL) {
+									echo "<img src='/iconsFam/flag-german.png' onmouseover=\"Tip('".libelleTrad('allemand')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								} else if($ico['IDAttribut']==$attribMAT) {
+									echo "<img src='/iconsFam/calculator.png' onmouseover=\"Tip('".libelleTrad('math')."')\" onmouseout='UnTip()'>";
+									$cntIcon++;
+								}
+								if($cntIcon==3) {
+									echo "<br>";
+									$cntIcon = 0;
+								}
+							}
 
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribDual";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null) {
-							echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('".libelleTrad('horstaches')."')\" onmouseout='UnTip()'>";
-						}
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribHOR";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/clock_error.png' onmouseover=\"Tip('".libelleTrad('blochoraire')."')\" onmouseout='UnTip()'>";
+								$cntIcon++;
+							}
+							if($cntIcon==3) {
+								echo "<br>";
+								$cntIcon = 0;
+							}
 
-					} else {
-						// mode carnet
-						$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribCarnet";
-		//echo $requete."<br>";
-						$resultat =  mysqli_query($connexionDB,$requete);
-						$ico = mysqli_fetch_assoc($resultat);
-						if($ico!=null) {
-							echo "<img src='/iconsFam/tick.png'>";
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribDual";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/cog_delete.png' onmouseover=\"Tip('".libelleTrad('horstaches')."')\" onmouseout='UnTip()'>";
+							}
+
 						} else {
-							echo "<img src='/iconsFam/empty.png'>";
+							// mode carnet
+							$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = $attribCarnet";
+			//echo $requete."<br>";
+							$resultat =  mysqli_query($connexionDB,$requete);
+							$ico = mysqli_fetch_assoc($resultat);
+							if($ico!=null) {
+								echo "<img src='/iconsFam/tick.png'>";
+							} else {
+								echo "<img src='/iconsFam/empty.png'>";
+							}
 						}
-					}
-					echo "</nobr></td>";
-					//writeToHTMLCell($stmt,2,$troisplusun);
-					//$cell = getValue($connexion,$data,2);
-					echo "<td>$nom</td>";
-					//writeToHTMLCell($stmt,3,$troisplusun);
-					//$cell = getValue($connexion,$data,3);
-					echo "<td><nobr>$prenom</nobr></td>";
-					echo "<td align='center'>$ligne[NoVestiaire]</td>";
-					echo "<td align='center'>$ligne[NoJeton]</td>";
-					//echo "<td align='center'>$ligne[NoBadge]</td>";
-					echo "<td align='center'><nobr>$ligne[NumeroCle]</nobr></td>";
-					echo "<td>$ligne[Userid]<br>$ligne[NomPC]</td>";
-					//echo "<td align='center'>$ligne[noChaise]<br>$ligne[noBanc]</td>";
-					//$cell = getValue($connexion,$data,4);
-					echo "<td><nobr>".$data['Adresse']."<nobr><br>";
-					//$cell = getValue($connexion,$data,5);
-					echo $data['NPA']." ";
-					//$cell = getValue($connexion,$data,6);
-					echo $data['Localite']."</td>";
-					echo "<td align='center' >$ligne[NoTel]<br>";
-					echo "$ligne[NoMobile]</td>";
-					//$cell = getValue($connexion,$data,7);
-					//echo "<td><a href='mailto:$cell'>$cell</a></td>";
-					echo "<td></td>";
-					/*
-					if(!empty($emailGroup)) {
-						$emailGroup = $emailGroup . ', ';
-						$emailGroupOutlook = $emailGroupOutlook . '; ';
-					}
-					$emailGroup = $emailGroup . "$cell";
-					$emailGroupOutlook = $emailGroupOutlook . $data['Email'];
-					*/
-					$dateNaissance = explode("-", $ligne['DateNaissance']);
-					if(count($dateNaissance)==3) {
-						$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
-						echo "<td align='center'>$dateList</td>";
-					} else {
-						echo "<td align='center'>-</td>";
-					}
-					//$cell = getValue($connexion,$data,1);
-					//echo "<td>$cell</td>";
-					//writeToHTMLCell($stmt,1,$troisplusun);
-					echo "</tr>\n";
+						echo "</nobr></td>";
+						//writeToHTMLCell($stmt,2,$troisplusun);
+						//$cell = getValue($connexion,$data,2);
+						echo "<td>$nom</td>";
+						//writeToHTMLCell($stmt,3,$troisplusun);
+						//$cell = getValue($connexion,$data,3);
+						echo "<td><nobr>$prenom</nobr></td>";
+						echo "<td align='center'>$ligne[NoVestiaire]</td>";
+						echo "<td align='center'>$ligne[NoJeton]</td>";
+						//echo "<td align='center'>$ligne[NoBadge]</td>";
+						echo "<td align='center'><nobr>$ligne[NumeroCle]</nobr></td>";
+						echo "<td>$ligne[Userid]<br>$ligne[NomPC]</td>";
+						//echo "<td align='center'>$ligne[noChaise]<br>$ligne[noBanc]</td>";
+						//$cell = getValue($connexion,$data,4);
+						echo "<td><nobr>".$data['Adresse']."<nobr><br>";
+						//$cell = getValue($connexion,$data,5);
+						echo $data['NPA']." ";
+						//$cell = getValue($connexion,$data,6);
+						echo $data['Localite']."</td>";
+						echo "<td align='center' >$ligne[NoTel]<br>";
+						echo "$ligne[NoMobile]</td>";
+						//$cell = getValue($connexion,$data,7);
+						//echo "<td><a href='mailto:$cell'>$cell</a></td>";
+						echo "<td></td>";
+						/*
+						if(!empty($emailGroup)) {
+							$emailGroup = $emailGroup . ', ';
+							$emailGroupOutlook = $emailGroupOutlook . '; ';
+						}
+						$emailGroup = $emailGroup . "$cell";
+						$emailGroupOutlook = $emailGroupOutlook . $data['Email'];
+						*/
+						$dateNaissance = explode("-", $ligne['DateNaissance']);
+						if(count($dateNaissance)==3) {
+							$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
+							echo "<td align='center'>$dateList</td>";
+						} else {
+							echo "<td align='center'>-</td>";
+						}
+						//$cell = getValue($connexion,$data,1);
+						//echo "<td>$cell</td>";
+						//writeToHTMLCell($stmt,1,$troisplusun);
+						echo "</tr>\n";
 
+					}
 				}
+				$cntCell++;
 			}
 			$cntCell++;
-		}
-		$cntCell++;
-		if($modeHTML) {
-			// echo "<tr><td colspan='9'></td><td colspan='3'><a href='mailto:$emailGroup'><img src='/iconsFam/email.png' align='absmiddle'> Email $value</a></td></tr>";
-			// echo "<script>document.getElementById('email_eleve_$value').href = \"mailto:$emailGroup\";document.getElementById('email_eleve_$value').href = \"mailto:$emailGroupOutlook\";</script>";
-			echo "<tr height='20'></tr>";
+			if($modeHTML) {
+				// echo "<tr><td colspan='9'></td><td colspan='3'><a href='mailto:$emailGroup'><img src='/iconsFam/email.png' align='absmiddle'> Email $value</a></td></tr>";
+				// echo "<script>document.getElementById('email_eleve_$value').href = \"mailto:$emailGroup\";document.getElementById('email_eleve_$value').href = \"mailto:$emailGroupOutlook\";</script>";
+				echo "<tr height='20'></tr>";
+			}
 		}
 	}
 }
