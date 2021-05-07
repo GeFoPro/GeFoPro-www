@@ -193,7 +193,7 @@ echo "<div id='legend'>Liste des cours CIE</div>";
 echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250'>Cours</th><th width='80'>Version CC</th><th width='150'>Dates du cours</th><th width='50'>Jours</th><th width='100'>Responsable</th><th>Inscrits</th><th>Scannés</th><th>Eval APP</th><th>Eval MAI</th><th></th></tr>";
 //$requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, sum(if(''=PDFSigne OR PDFSigne is NULL, 0, 1)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours group by cours.IDCours order by TitreCIE, Dates";
-$requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, coalesce(sum(Uploaded)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours where Dates like '%".$anneeTri."' group by cours.IDCours order by TitreCIE, Dates";
+$requeteH = "SELECT TitreCIE, Version, cours.IDCours, Dates, NbrJours, Responsable, sum(if(IDEleve is NULL,0,1)) as Inscrits, coalesce(sum(Uploaded)) AS pdf FROM courscie as cours join doccie as doc on cours.IDDoc=doc.IDDoc left join docelevecie as docel on cours.IDCours=docel.IDCours where Dates like '%".$anneeTri."' and TitreCIE like '".$groupesCompetences[1]."%' group by cours.IDCours order by TitreCIE, Dates";
 //echo $requeteH;
 $resultat =  mysqli_query($connexionDB,$requeteH);
 $totalJour=0;
@@ -247,7 +247,7 @@ echo "<tr><td colspan='10' valign='bottom' valign='bottom' bgColor='#5C5C5C'></t
 echo "<tr><td colspan='3'><b>Total</b></td><td align='center'>".sprintf("%01.1f",$totalJour)."</td><td colspan='5'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un cours')\" onmouseout='UnTip()' onclick='toggle(\"newCours\");' align='absmiddle'><img src='/iconsFam/user_add.png' onmouseover=\"Tip('Inscrire à un cours')\" onmouseout='UnTip()' onclick='toggle(\"insCours\");' align='absmiddle'></td></tr>";
 echo "<tr newCours='1' style='display:none' ><td colspan='10' valign='bottom' height='30'><b>Ajouter un cours CIE:</b></td></tr>";
 // liste des documents
-$requeteD = "SELECT * from doccie ORDER BY TitreCIE";
+$requeteD = "SELECT * from doccie where TitreCIE like '".$groupesCompetences[1]."%' ORDER BY TitreCIE";
 $resultatD =  mysqli_query($connexionDB,$requeteD);
 $options = "";
 while($li = mysqli_fetch_assoc($resultatD)) {
@@ -266,7 +266,12 @@ echo "<div id='legend'>Liste des documents \"Contrôle de compétences\" et conten
 echo "<table id='hor-minimalist-b' width='100%'>\n";
 echo "<tr><th width='250' colspan='3'>Document</th><th width='150'>Version</th><th></th width='10'></tr>";
 // liste des ressources
-$requeteR = "SELECT * from competencecie where Archive is null ORDER BY IDBlocRessource,Numero";
+$requeteR = "SELECT * from competencecie where Archive is null";
+$requeteR .= " and (Numero is null";
+foreach ($groupesCompetences as $pos => $value) {
+	$requeteR .= " OR Numero like '".$value."%'";
+}
+$requeteR .= ") ORDER BY IDBlocRessource,Numero";
 $resultatR =  mysqli_query($connexionDB,$requeteR);
 $optionsR = "<option value='0'></option>";
 while($liR = mysqli_fetch_assoc($resultatR)) {
@@ -286,7 +291,7 @@ while($liR = mysqli_fetch_assoc($resultatR)) {
 
 }
 //$requeteH = "SELECT doc.IDDoc, doc.TitreCIE, doc.Version, com.Numero, com.Description, com.IDCompetence, sum(if(IDAppComp is NULL,0,1)) as eval FROM doccie as doc left join competencedoccie as cdc on doc.IDDoc=cdc.IDDoc left join competencecie as com on cdc.IDCompetence=com.IDCompetence left join appcompetencecie as app on com.IDCompetence=app.IDCompetence group by doc.IDDoc,com.IDCompetence order by TitreCIE, IDBlocRessource, Numero";
-$requeteH = "SELECT doc.IDDoc, doc.TitreCIE, doc.Version, com.Numero, com.Description, com.IDCompetence FROM doccie as doc left join competencedoccie as cdc on doc.IDDoc=cdc.IDDoc left join competencecie as com on cdc.IDCompetence=com.IDCompetence order by TitreCIE, IDBlocRessource, Numero";
+$requeteH = "SELECT doc.IDDoc, doc.TitreCIE, doc.Version, com.Numero, com.Description, com.IDCompetence FROM doccie as doc left join competencedoccie as cdc on doc.IDDoc=cdc.IDDoc left join competencecie as com on cdc.IDCompetence=com.IDCompetence where TitreCIE like '".$groupesCompetences[1]."%' order by TitreCIE, IDBlocRessource, Numero";
 //echo "<tr><td>".$requeteH."</td></tr>";
 $resultatH =  mysqli_query($connexionDB,$requeteH);
 $doc = 0;
