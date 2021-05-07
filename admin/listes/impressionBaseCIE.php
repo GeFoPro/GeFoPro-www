@@ -124,7 +124,7 @@ $templateProcessor->setValue("observXXS",'');
 $templateProcessor->setValue("observXXA",'');
 
 // envoi du fichier
-$file = "DIVTEC - FOR - MOD 2.10 Contrôle de compétences CIE.docx";
+$file = "Contrôle de compétences CIE.docx";
 header("Content-Description: File Transfer");
 header('Content-Disposition: attachment; filename="' . $file . '"');
 header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');
