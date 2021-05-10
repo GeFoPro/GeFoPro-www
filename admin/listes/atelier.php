@@ -613,9 +613,9 @@ if(!empty($configurationATE)) {
 							$age = (date("md", date("U", $birth)) > date("md") ? ((date("Y") - $dateNaissance[0]) - 1) : (date("Y") - $dateNaissance[0]));
 							echo "<td align='center'>$dateList";
 							if($age>=18) {
-								echo " <img src='/iconsFam/tag_green.png' onmouseover=\"Tip('".libelleTrad('majeur')."')\" onmouseout='UnTip()'>";
+								echo " <img src='/iconsFam/tag_green.png' onmouseover=\"Tip('".libelleTrad('majeur')." (".$age.")')\" onmouseout='UnTip()'>";
 							} else {
-								echo " <img src='/iconsFam/tag_yellow.png' onmouseover=\"Tip('".libelleTrad('mineur')."')\" onmouseout='UnTip()'>";
+								echo " <img src='/iconsFam/tag_yellow.png' onmouseover=\"Tip('".libelleTrad('mineur')." (".$age.")')\" onmouseout='UnTip()'>";
 							}
 							echo "</td>";
 						} else {
