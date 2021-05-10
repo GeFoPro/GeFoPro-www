@@ -90,7 +90,7 @@ if(isset($_POST['evaluation'])) {
 		if(!empty($_FILES['docSigne']['tmp_name'])) {
 			$data = file_get_contents($_FILES['docSigne']['tmp_name']);
 			if(!empty($data)) {
-				$requete .= ", PDFSigne = '".mysqli_real_escape_string($data)."', Uploaded=1";
+				$requete .= ", PDFSigne = '".mysqli_real_escape_string($connexionDB,$data)."', Uploaded=1";
 			}
 		}
 		$requete .= " where IDDocEleve=$IDDocEleve";
