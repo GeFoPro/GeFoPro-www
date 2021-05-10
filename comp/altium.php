@@ -50,7 +50,7 @@ where IDComposant=$IDComp";
 <?php
   $requete = "SELECT * FROM $tableReference order by Reference";
   $resultat =  mysqli_query($connexionDB,$requete);
-  while ($listeLigne = mysql_fetch_array($resultat)) {
+  while (!empty($resultat) && $listeLigne = mysqli_fetch_array($resultat)) {
     echo "<option value='$listeLigne[0]'>";
     echo "$listeLigne[1] </option>";
   }

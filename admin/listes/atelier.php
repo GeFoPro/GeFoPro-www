@@ -608,8 +608,16 @@ if(!empty($configurationATE)) {
 						*/
 						$dateNaissance = explode("-", $ligne['DateNaissance']);
 						if(count($dateNaissance)==3) {
-							$dateList = date("d.m.Y",mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]));
-							echo "<td align='center'>$dateList</td>";
+							$birth = mktime(0,0,0, $dateNaissance[1], $dateNaissance[2], $dateNaissance[0]);
+							$dateList = date("d.m.Y",$birth);
+							$age = (date("md", date("U", $birth)) > date("md") ? ((date("Y") - $dateNaissance[0]) - 1) : (date("Y") - $dateNaissance[0]));
+							echo "<td align='center'>$dateList";
+							if($age>=18) {
+								echo " <img src='/iconsFam/tag_green.png' onmouseover=\"Tip('".libelleTrad('majeur')."')\" onmouseout='UnTip()'>";
+							} else {
+								echo " <img src='/iconsFam/tag_yellow.png' onmouseover=\"Tip('".libelleTrad('mineur')."')\" onmouseout='UnTip()'>";
+							}
+							echo "</td>";
 						} else {
 							echo "<td align='center'>-</td>";
 						}
