@@ -13,7 +13,7 @@
 	$release .= "<br>- Sélection possible de différents métiers dans l\'entête";
 	$release .= "<br>- Fonctionnement possible de l\'application sans ActiveDirectory/LDAP";
 	$release .= "<br>- Interface utilisateur multilingue";
-	$release .= "<br>- Calcul est affichage de la majorité dans la liste d'apprentis";
+	$release .= "<br>- Calcul est affichage de la majorité dans la liste d\'apprentis";
 	$release .= "<br><b><i>2.5</i></b>";
 	$release .= "<br>- migration vers php7 (utilisation de mysqli)";
 	$release .= "<br>- corrections pour fonctionnement sur systèmes linux (LAMP)";
