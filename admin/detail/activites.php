@@ -289,7 +289,7 @@ if(isset($_POST['AjoutActivite'])) {
 						$msgErreur .= "<font color='#FF0000'>L'heure de fin n'est pas correcte!</font>";
 					} else {
 						//echo $time1."-".$time2."->".(round(abs($time2 - $time1) / 3600,1));
-						$heures = round(abs($time2 - $time1) / 3600,1);
+						$heures = round(abs($time2 - $time1) / 3600,3);
 						if($heures==0) {
 							$msgErreur .= "<font color='#FF0000'>Les heures saisies ne sont pas correctes!</font>";
 						}
@@ -400,7 +400,7 @@ if(isset($_POST['activite'])&&!empty($_POST['activite'])) {
 				if(empty($time2)|| $time2<$time1) {
 					$msgErreur .= "<font color='#FF0000'>L'heure de fin n'est pas correcte!</font>";
 				} else {
-					$heuresMaj = round(abs($time2 - $time1) / 3600,1);
+					$heuresMaj = round(abs($time2 - $time1) / 3600,3);
 					if($heuresMaj==0) {
 						$msgErreur .= "<font color='#FF0000'>Les heures saisies ne sont pas correctes!</font>";
 					}
@@ -972,9 +972,9 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($last!=$ligne['IDTheme']) {
 			if($last!=0) {
 				echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
-				echo "<tr><td><i>Total thème</i></td><td></td><td align='center'>".$total."h</td><td>";
+				echo "<tr><td><i>Total thème</i></td><td></td><td align='center'>".round($total,2)."h</td><td>";
 				if($total!=$ligneHeures['heures']) {
-					echo "(cumul sur l'année scolaire: ".$ligneHeures['heures']."h";
+					echo "(cumul sur l'année scolaire: ".round($ligneHeures['heures'],2)."h";
 					//if($objectif!=0) {
 					//	echo "/".$objectif."h";
 					//}
@@ -1070,7 +1070,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if($last != $ligne['DateJournal']) {
 			if($last != 0) {
 				echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
-				echo "<tr><td><i>Total jour</i></td><td></td><td align='center'>".$nbrJour[$last]."h</td><td>";
+				echo "<tr><td><i>Total jour</i></td><td></td><td align='center'>".round($nbrJour[$last], 2)."h</td><td>";
 				echo "</td><td></td></tr>";
 			}
 			echo "<tr><td valign='top' colspan='2' bgColor='#DEDEDE'><b>";
@@ -1127,11 +1127,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 	} else {
 		echo "<td valign='top' align='center'>";
 		if($nbrJour[$lastJour]>9) {
-			echo "<font color='#FF0000'>".$ligne['Heures']."h</font>";
+			echo "<font color='#FF0000'>".round($ligne['Heures'], 2)."h</font>";
 			$msgErreur .= "Heures journalières > 9h<br>";
 			echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('".$msgErreur."')\" onmouseout='UnTip()'>";
 		} else {
-			echo $ligne['Heures']."h";
+			echo round($ligne['Heures'], 2)."h";
 		}
 	}
 
@@ -1149,7 +1149,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 		if(!hasAdminRigth()) {
 			if(empty($IDQuery)) {
 				if($ligne['Heures']=='0.0') {
-					echo "<img src='/iconsFam/clock_stop.png' align='absmiddle' onmouseover=\"Tip('Terminer l'activité')\" onmouseout='UnTip()' onclick='limitEvent(event);stopActivite(\"$idJournal\",\"$heureAct\")'> ";
+					echo "<img src='/iconsFam/clock_stop.png' align='absmiddle' onmouseover=\"Tip('Terminer l\'activité')\" onmouseout='UnTip()' onclick='limitEvent(event);stopActivite(\"$idJournal\",\"$heureAct\")'> ";
 				}
 				echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDJournal=$ligne[IDJournal]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 
@@ -1204,9 +1204,9 @@ if ($cnt==0) {
 	if(!$triSemaine) {
 		if(empty($IDQuery) || $IDQuery==2) {
 			echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
-			echo "<tr><td><i>Total thème</i></td><td></td><td align='center'>".$total."h</td><td>";
+			echo "<tr><td><i>Total thème</i></td><td></td><td align='center'>".round($total,2)."h</td><td>";
 			if($total!=$ligneHeures['heures']) {
-				echo "(cumul sur l'année scolaire: ".$ligneHeures['heures']."h";
+				echo "(cumul sur l'année scolaire: ".round($ligneHeures['heures'],2)."h";
 				//if($objectif!=0) {
 				//	echo "/".$objectif."h";
 				//}
@@ -1222,7 +1222,7 @@ if ($cnt==0) {
 		}
 	} else {
 		echo "<tr><td colspan='5' valign='bottom' bgColor='#DEDEDE'></td></tr>";
-		echo "<tr><td><i>Total jour</i></td><td></td><td align='center'>".$nbrJour[$last]."h</td><td>";
+		echo "<tr><td><i>Total jour</i></td><td></td><td align='center'>".round($nbrJour[$last], 2)."h</td><td>";
 		echo "</td><td></td></tr>";
 
 	}
@@ -1292,7 +1292,7 @@ if ($cnt==0) {
 	} else {
 		echo count($nbrJour)." jours ";
 	}
-	echo "</td><td align='center'>".$totalPage."h</td><td colspan='2'></td></tr>";
+	echo "</td><td align='center'>".round($totalPage,2)."h</td><td colspan='2'></td></tr>";
 
 
 }
