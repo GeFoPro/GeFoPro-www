@@ -657,15 +657,31 @@ function wiki2html($text)
         $text = preg_replace("/'''(.*?)'''/", '<strong>$1</strong>', $text);
         $text = preg_replace("/''(.*?)''/", '<em>$1</em>', $text);
         //$text = preg_replace('/&lt;s&gt;(.*?)&lt;\/s&gt;/', '<strike>$1</strike>', $text);
+		$text = preg_replace('/--(.*?)--/', '<strike>$1</strike>', $text);
         //$text = preg_replace('/\[\[Image:(.*?)\|(.*?)\]\]/', '<img src="$1" alt="$2" title="$2" />', $text);
-        //$text = preg_replace('/\[(.*?) (.*?)\]/', '<a href="$1" title="$2">$2</a>', $text);
+        $text = preg_replace('/\[(.*?) (.*?)\]/', '<a href="$1" title="$2" target="ext" onclick="limitEvent(event)"><u>$2</u></a>', $text);
         //$text = preg_replace('/&gt;(.*?)\n/', '<blockquote>$1</blockquote>', $text);
 
-        $text = preg_replace('/\* (.*?)\n/', '<ul><li>$1</li></ul>', $text);
-        $text = preg_replace('/<\/ul><ul>/', '', $text);
-
-        $text = preg_replace('/# (.*?)\n/', '<ol><li>$1</li></ol>', $text);
-        $text = preg_replace('/<\/ol><ol>/', '', $text);
+        //$text = preg_replace('/\* (.*?)/', '<ul><li>$1</li></ul>', $text);
+        //$text = preg_replace('/<\/ul>\n<ul>/', '', $text);
+		
+		$text = preg_replace("/\*\*(.*)?/i","<ull><li>$1</li></ull>",$text); // liste 2ème niveau
+		$text = preg_replace("/(\<\/ull\>\n(.*)\<ull\>)+/","",$text); // correction entre lignes
+		$text = preg_replace("/\*(.*)?/i","<ul><li>$1</li></ul>",$text); // liste premier niveau
+		$text = preg_replace("/(\<\/ul\>\n(.*)\<ul\>)+/","",$text); // correction entre lignes
+		$text = preg_replace('/(\<\/ul\>\n(.*)\<ull\>)+/', '<li style="list-style-type:none"><ul>', $text); // correction entre niveau 1 et 2
+        $text = preg_replace('/(\<\/ull\>\n(.*)\<ul\>)+/', '</ul></li>', $text); // correction entre niveau 2 et 1
+		$text = preg_replace('/(\<\/ull\>\n)+/', '</ul></li></ul>', $text); // correction entre niveau 2 et fin
+		
+        //$text = preg_replace("/\#(.*)?/i", '<ol><li>$1</li></ol>', $text);
+        //$text = preg_replace("/(\<\/ol\>\n(.*)\<ol\>)+/","",$text);
+		$text = preg_replace("/\#\#(.*)?/i","<oll><li>$1</li></oll>",$text); // liste 2ème niveau
+		$text = preg_replace("/(\<\/oll\>\n(.*)\<oll\>)+/","",$text); // correction entre lignes
+		$text = preg_replace("/\#(.*)?/i","<ol><li>$1</li></ol>",$text); // liste premier niveau
+		$text = preg_replace("/(\<\/ol\>\n(.*)\<ol\>)+/","",$text); // correction entre lignes
+		$text = preg_replace('/(\<\/ol\>\n(.*)\<oll\>)+/', '<li style="list-style-type:none"><ol>', $text); // correction entre niveau 1 et 2
+        $text = preg_replace('/(\<\/oll\>\n(.*)\<ol\>)+/', '</ol></li>', $text); // correction entre niveau 2 et 1
+		$text = preg_replace('/(\<\/oll\>\n)+/', '</ol></li></ol>', $text); // correction entre niveau 2 et fin
 
         //$text = str_replace("\r\n\r\n", '</p><p>', $text);
         $text = str_replace("\r\n", '<br/>', $text);
@@ -673,7 +689,18 @@ function wiki2html($text)
         return $text;
 }
 
-
+$helptxt = "<b><i>Syntaxe:</i></b><br><br>";
+$helptxt .= "== Titre 1 ==<br>";
+$helptxt .= "=== Titre 2 ===<br>";
+$helptxt .= "==== Titre 3 ====<br><br>";
+$helptxt .= "\'\'Italic\'\'<br>";
+$helptxt .= "\'\'\'Gras\'\'\'<br>";
+$helptxt .= "--Barré--<br><br>";
+$helptxt .= "[adresse lien]<br><br>";
+$helptxt .= "* liste à puce <br>";
+$helptxt .= "** liste à puce indentée <br><br>";
+$helptxt .= "# liste à numéro <br>";
+$helptxt .= "## liste à numéro indentée";
 
 //function jourSemaine($lundi, $jour) {
 	//$jSem = array(0=>"Lu","Ma","Me","Je","Ve");
@@ -1327,18 +1354,21 @@ echo "</td></tr>";
 echo "<tr newActivite='1' style='display:none'><td colspan='5' valign='bottom' height='30'><b>Nouvelle entrée dans le journal:<b></td></tr>";
 echo "<tr newActivite='1' style='display:none'><td valign='top' colspan='5' height='30'><select name='IDTheme' style='width: 900px'>".$optionAPP."</select></td></tr>";
 //echo "<td valign='top'><input name='DateActivite' size='8' maxlength='10' value='".date('d.m.Y')."'></input></td>";
-echo "<tr newActivite='1' style='display:none'><td></td>";
+echo "<tr newActivite='1' style='display:none'><td valign='center' align='center'>";
+
+echo "</td>";
 if(!$triSemaine) {
-	echo "<td valign='top'>";
+	echo "<td valign='top' align='center'>";
 } else {
 	echo "<td valign='top' align='right'>";
 }
+
 echo "<select id='DateActivite' name='DateActivite'>".$listeJours."</select><script>selectList('DateActivite','".date('d.m.Y')."')</script></td>";
 if(empty($heures)) {
 	$heures = "0.0";
 }
 echo "<td valign='top' align='center' modeClock='1' style='display:none'><select name='HeuresActivite'>".$listeHeures."</select><img src='/iconsFam/clock_play.png' align='absmiddle' onmouseover=\"Tip('Changer de mode de saisie en chrono')\" onmouseout='UnTip()' onclick='toggleTD(\"modeClock\")'></td><td valign='top' align='center' modeClock='1'><input type='texte' size='3' name='HeureDebut' value='".$heureAct."'></input><img src='/iconsFam/clock.png' align='absmiddle' onmouseover=\"Tip('Changer le mode de saisie en durée')\" onmouseout='UnTip()' onclick='toggleTD(\"modeClock\")'><br><img src='/iconsFam/arrow_down.png'><img src='/iconsFam/empty.png'><br><input type='texte' size='3' name='HeureFin' value=''></input><img src='/iconsFam/empty.png'></td>";
-echo "<td valign='top'><textarea name='RemarqueActivite' COLS=76 ROWS=20>".$commentaires."</textarea></td>";
+echo "<td valign='top'><textarea name='RemarqueActivite' COLS=66 ROWS=20>".$commentaires."</textarea><img src='/iconsFam/help.png' onmouseover=\"Tip('".$helptxt."')\" onmouseout='UnTip()'></td>";
 echo "<td valign='top'><input type='submit' name='AjoutActivite' value='Ajouter'></input></td></tr>";
 echo "</tr>";
 echo "</table></div><br>";
@@ -1599,8 +1629,8 @@ $requeteTri = "";
 			$dateajout = $ajd;
 		}
 		echo "</select></td></tr>";
-		echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='top'></td>";
-		echo "<td valign='top'><input name='DateRemarque$last' value='".date('d.m.Y',$dateajout)."' size='8' maxlength='10' onclick='limitEvent(event)'></input></td><td></td><td><textarea name='Remarque$last' COLS=74 ROWS=20 onclick='limitEvent(event)'></textarea></td><td valign='top'><input type='button' name='AjoutRem' value='Ajouter' onclick='submitRemarque(\"$last\",\"ajout\")'></input></td></tr>";
+		echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='center' align='center'></td>";
+		echo "<td valign='top'><input name='DateRemarque$last' value='".date('d.m.Y',$dateajout)."' size='8' maxlength='10' onclick='limitEvent(event)'></input></td><td></td><td><textarea name='Remarque$last' COLS=74 ROWS=20 onclick='limitEvent(event)'></textarea><img src='/iconsFam/help.png' onmouseover=\"Tip('".$helptxt."')\" onmouseout='UnTip()'></td><td valign='top'><input type='button' name='AjoutRem' value='Ajouter' onclick='submitRemarque(\"$last\",\"ajout\")'></input></td></tr>";
 		echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 		echo "<tr newremarque$last='1'><td colspan='5' align='right'>";
 		$_SESSION['last_request'] = $requeteRem;
