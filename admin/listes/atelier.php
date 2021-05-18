@@ -192,11 +192,13 @@ if(!$modeHTML) {
 	} else {
 		echo "<option value='0'>Atelier</option>";
 	}
-	// ajout d'une ligne Tous
-	if(isset($classe) && $classe==101) {
-		echo "<option value='101' selected='selected'>$app_section</option>";
-	} else {
-		echo "<option value='101'>$app_section</option>";
+	// ajout d'une ligne Tous si tri sur entreprises
+	if($triEntreprises) {
+		if(isset($classe) && $classe==101) {
+			echo "<option value='101' selected='selected'>$app_section</option>";
+		} else {
+			echo "<option value='101'>$app_section</option>";
+		}
 	}
 	// construction de la liste des classes
 	foreach ($configurationATE as $pos => $value) {
@@ -252,7 +254,11 @@ if(!empty($_GET['reset']) && $modeAff!=0) {
 if(!empty($_GET['resetAndSet']) && $modeAff!=0) {
 	// ajouter une remarque de carnet non signés
 	$requete = "SELECT distinct IDGDN as IDEleve from $tableEleves where IDGDN not in (SELECT IDEleve from $tableAttribEleves where IDAttribut=100)";
-	$requeteNew = "SELECT distinct el.IDGDN as IDEleve from $tableEleves as el join elevesbk as elbk on el.IDGDN=elbk.IDGDN where el.IDEntreprise=1 and elbk.Classe in ('ZZZ'";
+	$requeteNew = "SELECT distinct el.IDGDN as IDEleve from $tableEleves as el join elevesbk as elbk on el.IDGDN=elbk.IDGDN where ";
+	if($triEntreprises) {
+		$requeteNew .= "el.IDEntreprise=1 and ";
+	}
+	$requeteNew .= "elbk.Classe in ('ZZZ'";
 	foreach ($configurationATE as $pos => $value) {
 		$requeteNew .= ",'".$value."'";
 	}
@@ -379,10 +385,10 @@ if(!empty($configurationATE)) {
 				}
 				// ajout dans liste éleves si internes
 				//listeIds[] = array($idGDN,getValue($connexion,$data,2),getValue($connexion,$data,3),$value);
-				if($ligne['IDEntreprise']==1) {
+				if($ligne['IDEntreprise']==1 || !$triEntreprises) {
 					$listeIds[] = array($idGDN,htmlentities($nom, ENT_QUOTES),$prenom,$value);
 				}
-				if((!empty($classe)&&$classe!=0)||$ligne['IDEntreprise']==1) {
+				if((!empty($classe)&&$classe!=0)||!$triEntreprises||$ligne['IDEntreprise']==1) {
 					if(!$modeHTML) {
 
 						writeDataToCell($nom,$objPHPExcel,"A",$cntCell,$troisplusun);
@@ -443,7 +449,7 @@ if(!empty($configurationATE)) {
 						if($ico!=null) {
 							echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 						}
-						if($ligne['IDEntreprise']!=1) {
+						if($ligne['IDEntreprise']!=1&&$triEntreprises) {
 							echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
 						}
 						echo "><td><nobr>";

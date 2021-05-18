@@ -62,7 +62,11 @@ $cnt = 1;
 foreach ($configurationTCH as $pos => $value) {
 	// associer la liste d'élève
 
-		$requete = "SELECT * FROM $tableElevesBK el join eleves eli on el.IDGDN=eli.IDGDN and IDEntreprise=1 left outer join $tableAttribEleves at on (el.IDGDN = at.IDEleve and (at.IDAttribut = 8 OR at.IDAttribut = 13)) where Classe like '$value%' order by Nom, Prenom";
+		$requete = "SELECT * FROM $tableElevesBK el join eleves eli on el.IDGDN=eli.IDGDN";
+		if($triEntreprises) {
+			$requete .= " and IDEntreprise=1";
+		}
+		$requete .= " left outer join $tableAttribEleves at on (el.IDGDN = at.IDEleve and (at.IDAttribut = 8 OR at.IDAttribut = 13)) where Classe like '$value%' order by Nom, Prenom";
 		$resultat =  mysqli_query($connexionDB,$requete);
 		$classe = array();
 		//echo "classe: ".$value."<br>";
@@ -79,7 +83,7 @@ foreach ($configurationTCH as $pos => $value) {
 	$cnt++;
 	// ajout en-tête
 	if(!$modeHTML) {
-		$objPHPExcel->getActiveSheet()->setCellValue($configurationColExcel[$pos].$configurationLiExcel, $configurationTCH[$pos]);
+		$objPHPExcel->getActiveSheet()->setCellValue($configurationColExcel[$pos].$configurationLiExcel, iconv("ISO-8859-1", "UTF-8", "$configurationTCH[$pos]"));
 	}
 }
 

@@ -105,7 +105,11 @@ echo "<div class='post'>";
 mysqli_select_db($connexionDB,DBAdmin);
 $listeSCT = "<option value='0'></option>";
 // recherche des élèves
-$requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
+$requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%'";
+if($triEntreprises) {
+	$requete .= " and IDEntreprise=1";
+}
+$requete .= " order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
 $resultat =  mysqli_query($connexionDB,$requete);

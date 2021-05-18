@@ -48,7 +48,10 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 	}
 
 	// recherche des élève concernés
-	$requete = "SELECT ele.IDGDN FROM elevesbk ele join eleves els on ele.IDGDN=els.IDGDN where Classe like '".$classeTri."' and IDEntreprise=1";
+	$requete = "SELECT ele.IDGDN FROM elevesbk ele join eleves els on ele.IDGDN=els.IDGDN where Classe like '".$classeTri."'";
+	if($triEntreprises) {
+		$requete .= " and IDEntreprise=1";
+	}
 	$resultat =  mysqli_query($connexionDB,$requete);
 	if($modeEvaluation=="theme") {
 		// ajout d'une ligne pour la période/thème vide
@@ -227,7 +230,11 @@ echo "</tr>";
 
 // recherche des notes
 $requete = "SELECT * FROM elevesbk ele join eleves els on ele.IDGDN=els.IDGDN join notes no on ele.IDGDN=no.IDEleve join theme th on
-no.IDTheme=th.IDTheme where annee like '".$anneeTri."' and Classe like '".$classeTri."' and IDEntreprise=1 order by Classe desc, Nom, Prenom, annee desc, nosemestre, nomtheme, no.IDTypeNote, no.IDNote";
+no.IDTheme=th.IDTheme where annee like '".$anneeTri."' and Classe like '".$classeTri."'";
+if($triEntreprises) {
+	$requete .= " and IDEntreprise=1";
+}
+$requete .= " order by Classe desc, Nom, Prenom, annee desc, nosemestre, nomtheme, no.IDTypeNote, no.IDNote";
 //echo $requete;
 $resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;

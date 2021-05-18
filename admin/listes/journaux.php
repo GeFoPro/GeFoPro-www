@@ -354,7 +354,11 @@ order by TypeTheme,NomTheme,Nom,Prenom";
 
 	echo "</table></div>";
 } else {
-	$requete = "SELECT Classe, elbk.IDGDN, Nom, Prenom, DateJournal, DateValidation, Heures FROM elevesbk elbk join eleves el on elbk.IDGDN=el.IDGDN and el.IDEntreprise=1 left join attribeleves att on att.IDEleve=elbk.IDGDN and IDAttribut=13 left join journal jo on elbk.IDGDN=jo.IDEleve and (jo.DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') where IDAttribut is NULL and (".$whereclasse.") order by Classe desc ,Nom,Prenom,DateJournal";
+	$requete = "SELECT Classe, elbk.IDGDN, Nom, Prenom, DateJournal, DateValidation, Heures FROM elevesbk elbk join eleves el on elbk.IDGDN=el.IDGDN";
+	if($triEntreprises) {
+		$requete .= " and el.IDEntreprise=1";
+	}
+	$requete .= " left join attribeleves att on att.IDEleve=elbk.IDGDN and IDAttribut=13 left join journal jo on elbk.IDGDN=jo.IDEleve and (jo.DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') where IDAttribut is NULL and (".$whereclasse.") order by Classe desc ,Nom,Prenom,DateJournal";
 	$resultat =  mysqli_query($connexionDB,$requete);
 	//echo $requete;
 	echo "<br><div id='corners'>";

@@ -88,7 +88,11 @@ if(isset($_POST['actionProjet'])) {
 		$type = $_POST['IDTypeProjet'.$theme];
 		if(in_array($eleve,$configurationATE)) {
 			// si classe entière
-			$requeteEl = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$eleve."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
+			$requeteEl = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$eleve."%'";
+			if($triEntreprises) {
+				$requeteEl .= " and IDEntreprise=1";
+			}
+			$requeteEl .= " order by Classe desc, Nom, Prenom";
 			$resultatEl =  mysqli_query($connexionDB,$requeteEl);
 			while ($ligneEl = mysqli_fetch_assoc($resultatEl)) {
 				$requete = "insert into projets (IDTheme, IDEleve, IDTypeProjet, IDEtatProjet) values ($theme, $ligneEl[IDGDN], $type, 0)";
@@ -224,7 +228,11 @@ echo "</center>";
 // construction de la liste des élèves
 $listeSCT = "<option value='0'></option>";
 // recherche des élèves
-$requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%' and IDEntreprise=1 order by Classe desc, Nom, Prenom";
+$requete = "SELECT * FROM elevesbk ele join eleves el on ele.IDGDN=el.IDGDN where Classe like '".$app_section."%'";
+if($triEntreprises) {
+	$requete .= " and IDEntreprise=1";
+}
+$requete .= " order by Classe desc, Nom, Prenom";
 // Classe in ('".$app_section." 3','".$app_section." 4', '".$app_section." 3+1') order by Classe desc, Nom, Prenom";
 //echo $requete;
 $resultat =  mysqli_query($connexionDB,$requete);
