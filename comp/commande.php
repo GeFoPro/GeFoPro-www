@@ -477,9 +477,12 @@ if(!empty($resultat)) {
 		$rowCounter++;
 		$link = $ligne['LienArticle'];
 		$ancArticle = $noArticle;
-		$noArticle= str_replace(" ","",$ligne['NumArticle']);
-		$noArticle= str_replace(".","",$noArticle);
-		$noArticle= str_replace("-","",$noArticle);
+		$noArticle=$ligne['NumArticle'];
+		$noArticleNosp= str_replace(" ","",$noArticle);
+		$noArticleNop= str_replace(".","",$noArticle);
+		$noArticleNospp= str_replace(".","",$noArticleNosp);
+		$noArticleNos= str_replace("-","",$noArticle);
+		$noArticleNosps= str_replace("-","",$noArticleNosp);
 
 		// recherche si article semble exister dans la gestion du matériel
 		/* liste composants */

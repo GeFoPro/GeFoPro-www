@@ -125,4 +125,16 @@ function libelleTradUpdAll($libelle) {
 	}		
 	return $returnedTxt;
 }
+
+function dispUpdField($id,$fieldname,$libelle,$size, $align) {
+	$libelleTxt = $libelle;
+	if(empty($libelle)) {
+		$libelleTxt = "-";
+	}
+	$returnedTxt =  "<div idField_".$fieldname.$id."='1' onclick='toggleTrad(\"idField_".$fieldname.$id."\")' style='display: inline-block;'>".$libelleTxt."</div>";
+	$returnedTxt .= "<div idField_".$fieldname.$id."='1' style='display:none' onclick='toggleTrad(\"idField_".$fieldname.$id."\")'>";
+	$returnedTxt .= "<input type='text' name='idField_".$fieldname.$id."' value=\"".$libelle."\" onclick='limitEventTrad(event)' size='".$size."' onChange='updateField(".$id.",\"".$fieldname."\",this.value)' style='text-align: ".$align."'>";
+	$returnedTxt .= "</div>";
+	return $returnedTxt;
+}
 ?>

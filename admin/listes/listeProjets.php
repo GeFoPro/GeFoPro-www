@@ -49,6 +49,14 @@ if(isset($_POST['ajoutProjet'])) {
     $resultat =  mysqli_query($connexionDB,$requete);
 	$filtre = 11; // nouveau
 }
+if(isset($_POST['ajoutTheme'])) {
+	// ajout d'un thème
+	$projet = $_POST['NomTheme'];
+	// ajout d'un attribut
+    $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme, ClasseTheme, Objectif) values (\"".$_POST['NomTheme']."\",".$_POST['PonderationTheme'].",0,'".$_POST['ClasseTheme']."', 0)";
+	//echo $requete;
+    $resultat =  mysqli_query($connexionDB,$requete);
+}
 $filtreSQL = "";
 if($filtre<10) {
 	$filtreSQL = " and et.IDEtatProjet = ".$filtre;
@@ -143,7 +151,14 @@ if(isset($_POST['actionProjet'])) {
 		$requete = "update projets set IDEtatProjet=2 where IDTheme=".$theme;
 		//echo $requete;
     	$resultat =  mysqli_query($connexionDB,$requete);
+	} else if($_POST['actionProjet']=='actionUpdTheme') {
+		$theme = $_POST['theme'];
+		// mise à jour du theme
+		$requete = "update theme set ".$_POST['fieldUpd']."='".addslashes($_POST['valueUpd'])."' where IDTheme=".$theme;
+		//echo $requete;
+    	$resultat =  mysqli_query($connexionDB,$requete);
 	}
+	
 }
 if(isset($_GET['IDTheme'])) {
 	// suppression d'un theme
@@ -210,6 +225,15 @@ function submitUpdateProjID(projet,theme, eleve,action) {
 	//}
 	document.getElementById('myForm').submit();
 }
+function updateField(id,field,value) {
+	///location.href = 'xxx.php?action=Modifier&IDxxx='+id+'&updateField='+field+'&newValue='+value+'&xxx';
+	document.getElementById('myForm').actionProjet.value='actionUpdTheme';
+	document.getElementById('myForm').theme.value=id;
+	document.getElementById('myForm').fieldUpd.value=field;
+	document.getElementById('myForm').valueUpd.value=value;
+	//alert("Update theme "+id+", champ "+field+", valeur "+value);
+	document.getElementById('myForm').submit();
+}
 </script>
 <?php
 include("../../userInfo.php");
@@ -219,6 +243,8 @@ echo "<input type='hidden' name='actionProjet' value=''>";
 echo "<input type='hidden' name='theme' value=''>";
 echo "<input type='hidden' name='projet' value=''>";
 echo "<input type='hidden' name='eleve' value=''>";
+echo "<input type='hidden' name='fieldUpd' value=''>";
+echo "<input type='hidden' name='valueUpd' value=''>";
 echo "<div class='post'>";
 echo "<center> <font color='#088A08'></font>";
 echo "<br><font color='#FF0000'><b>Attention: vérifier avec l'apprenti qu'il ait bien fini de saisir ses journaux ainsi que son auto-évaluation avant de clôturer un projet!</b></font>";
@@ -474,6 +500,40 @@ echo "<tr newProjet='1' style='display:none' >";
 echo "<td valign='top' colspan='2'><input name='NomTheme' value='' size='40'></input></td>";
 echo "<td valign='top' colspan='8'><input type='submit' name='ajoutProjet' value='Ajouter'></input></td></tr>";
 echo "</table></div><br>";
+
+// liste des thèmes
+echo "<br><div id='corners'>";
+echo "<div id='legend'>Liste des thèmes</div>";
+echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
+echo "<tr><th width='500'>Nom thème</th><th align='center'>Restreint à</th><th align='center'>Pondération</th><th align='center' width='50'>Objectif</th><th></th></tr>";
+// recherche des thèmes
+$requete = "SELECT *" ;
+$requete .= " FROM theme th";
+$requete .= " where typetheme = 0 and (ClasseTheme like '".$app_section."%' OR ClasseTheme is null OR ClasseTheme = '')";
+//$requete .= " group by th.IDTheme, pr.IDEleve".$havingSQL;
+$requete .= " order by th.ClasseTheme, th.NomTheme asc";
+//echo $requete;
+$resultat =  mysqli_query($connexionDB,$requete);
+
+while ($ligne = mysqli_fetch_assoc($resultat)) {
+	echo "<tr><td>".dispUpdField($ligne['IDTheme'],'NomTheme',$ligne['NomTheme'],50,'left')."</td>";
+	echo "<td align='center'>".dispUpdField($ligne['IDTheme'],'ClasseTheme',$ligne['ClasseTheme'],5,'center')."</td>";
+	echo "<td align='center'>".dispUpdField($ligne['IDTheme'],'PonderationTheme',$ligne['PonderationTheme'],3,'center')."</td>";
+	echo "<td align='right'>".dispUpdField($ligne['IDTheme'],'Objectif',$ligne['Objectif'],2,'right')."</td>";
+	echo "<td width='50' align='right'><a href='listeProjets.php?IDTheme=$ligne[IDTheme]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce thème')\" onmouseout='UnTip()'></a></td></tr>";
+}
+// ligne d'ajout
+
+echo "<tr><td colspan='5' bgColor='#5C5C5C'></td></tr>";
+echo "<tr newTheme='1' ><td colspan='4'></td><td align='right'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter un thème')\" onmouseout='UnTip()' onclick='toggle(\"newTheme\");' align='absmiddle'></td></tr>";
+echo "<tr newTheme='1' style='display:none'><td colspan='5' valign='bottom' height='30'><b>Nouveau thème:<b></td></tr>";
+echo "<tr newTheme='1' style='display:none'>";
+echo "<td valign='top'><input name='NomTheme' value='' size='40'></input></td>";
+echo "<td valign='top' align='center'><input name='ClasseTheme' value='' size='5'></input></td>";
+echo "<td valign='top' align='center'><input name='PonderationTheme' value='' size='2'></input></td>";
+echo "<td valign='top' align='right' colspan='2'><input type='submit' name='ajoutTheme' value='Ajouter'></input></td></tr>";
+echo "</table></div><br>";
+
 ?>
 
 </div> <!-- post -->
