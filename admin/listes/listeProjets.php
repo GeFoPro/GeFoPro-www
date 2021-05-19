@@ -507,10 +507,11 @@ echo "<div id='legend'>Liste des thèmes</div>";
 echo "<table id='hor-minimalist-b' width='100%' border='0'>\n";
 echo "<tr><th width='500'>Nom thème</th><th align='center'>Restreint à</th><th align='center'>Pondération</th><th align='center' width='50'>Objectif</th><th></th></tr>";
 // recherche des thèmes
-$requete = "SELECT *" ;
+$requete = "SELECT th.IDTheme, th.NomTheme, th.ClasseTheme, th.PonderationTheme, th.Objectif, count(jrn.IDTheme) as Journaux" ;
 $requete .= " FROM theme th";
+$requete .= " left join journal jrn on th.IDTheme=jrn.IDTheme";
 $requete .= " where typetheme = 0 and (ClasseTheme like '".$app_section."%' OR ClasseTheme is null OR ClasseTheme = '')";
-//$requete .= " group by th.IDTheme, pr.IDEleve".$havingSQL;
+$requete .= " group by th.IDTheme";
 $requete .= " order by th.ClasseTheme, th.NomTheme asc";
 //echo $requete;
 $resultat =  mysqli_query($connexionDB,$requete);
@@ -520,7 +521,11 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 	echo "<td align='center'>".dispUpdField($ligne['IDTheme'],'ClasseTheme',$ligne['ClasseTheme'],5,'center')."</td>";
 	echo "<td align='center'>".dispUpdField($ligne['IDTheme'],'PonderationTheme',$ligne['PonderationTheme'],3,'center')."</td>";
 	echo "<td align='right'>".dispUpdField($ligne['IDTheme'],'Objectif',$ligne['Objectif'],2,'right')."</td>";
-	echo "<td width='50' align='right'><a href='listeProjets.php?IDTheme=$ligne[IDTheme]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce thème')\" onmouseout='UnTip()'></a></td></tr>";
+	echo "<td width='50' align='right'>";
+	if($ligne['Journaux']==0) {
+			echo "<a href='listeProjets.php?IDTheme=$ligne[IDTheme]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer ce thème')\" onmouseout='UnTip()'></a>";
+	}
+	echo "</td></tr>";
 }
 // ligne d'ajout
 
