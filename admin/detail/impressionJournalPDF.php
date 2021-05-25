@@ -133,7 +133,7 @@ function Header()
 {
     global $strHeures,$annee,$nomTheme,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
     // Logo
-    $this->Image("../../images/logoEMT.jpg",20,11,40);
+    $this->Image("../../".LogoInstitution,20,11,40);
     // Police Arial gras 15
     $this->SetFont('Arial','B',15);
     // Décalage à droite

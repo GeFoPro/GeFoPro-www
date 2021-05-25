@@ -3,7 +3,7 @@
 # @Date:   19.03.2021 11:03:60
 # @Email:  david.girardin@gefopro.ch
 # @Project: GeFoPro
-# @Filename: impressionSuiviPDF.php
+# @Filename: impressionNotePDF.php
 # @Last modified by:   degehi
 # @Last modified time: 30.03.2021 15:03:88
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
@@ -68,7 +68,7 @@ function Header()
 {
     global $strHeures,$annee,$nomThemeTitre,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
     // Logo
-    $this->Image("../../".LogoInstitution,20,11,40);
+    $this->Image("../../images/logoEMT.jpg",20,11,40);
     // Police Arial gras 15
     $this->SetFont('Arial','B',15);
     // Décalage à droite

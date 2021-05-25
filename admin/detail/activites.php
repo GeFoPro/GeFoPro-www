@@ -362,7 +362,16 @@ if(isset($_GET['IDRemSuivi'])) {
 		$requete = "DELETE FROM remarquesuivi where IDRemSuivi=$_GET[IDRemSuivi]";
 	}
 	if($_GET['action']=='corrected') {
+		// journal corrigé
 		$requete = "UPDATE remarquesuivi set TypeRemarque=3 where IDRemSuivi=$_GET[IDRemSuivi]";
+	}
+	if($_GET['action']=='done') {
+		// tâche effectuée
+		$requete = "UPDATE remarquesuivi set TypeRemarque=5 where IDRemSuivi=$_GET[IDRemSuivi]";
+	}
+	if($_GET['action']=='validated') {
+		// tâche effectuée
+		$requete = "UPDATE remarquesuivi set TypeRemarque=6 where IDRemSuivi=$_GET[IDRemSuivi]";
 	}
 	//echo $requete;
 	mysqli_query($connexionDB,$requete);
@@ -1467,7 +1476,7 @@ $requeteTri = "";
 		$showtableSuivi = true;
 		echo "<tr><th width='175'>Concerne</th><th width='90'>Date</th><th width='40'>Auteur</th><th>Remarques</th><th width='10'></th></tr>";
 	} else {
-		$requeteTri .= " and TypeRemarque=2";
+		$requeteTri .= " and (TypeRemarque=2 or TypeRemarque=4)";
 	}
 	$requeteRem = "(SELECT IDRemSuivi, NomTheme, DateSaisie, Remarque, TypeRemarque, abbr, th.IDTheme FROM remarquesuivi rem join theme th on rem.IDTheme=th.IDTheme left outer join prof as pr on rem.UserId=pr.userid where IDEleve=".$IDEleve." and ".$requeteTri.")";
 	if(hasAdminRigth()) {
@@ -1505,12 +1514,16 @@ $requeteTri = "";
 			echo "<div id='legend'>Suivi</div>";
 			echo "<table id='hor-minimalist-b' border='0' width='100%'>\n";
 			$showtableSuivi = true;
-			echo "<tr><th width='175'>Concerne</th><th width='90'></th><th width='40'></th><th>Remarques</th><th width='10'></th></tr>";
+			echo "<tr><th width='175'>Concerne</th><th width='90'>Date</th><th width='40'></th><th>Remarques</th><th width='10'></th></tr>";
 		}
 		while ($ligneRem = mysqli_fetch_assoc($resultatRem)) {
 			$idRem = $ligneRem['IDRemSuivi'];
 			$txtrem = $ligneRem['Remarque'];
 			$typerem = $ligneRem['TypeRemarque'];
+			if($typerem>=4 && is_numeric(substr($txtrem,0,1))) {
+				// on enlève le premier caractère s'il est numérique (type de tâche encodé dans ce champ)
+				$txtrem = $configurationTJ[substr($txtrem,0,1)]." ".substr($txtrem,1);
+			}
 			$daterem = jourSemaine($ligneRem['DateSaisie'])." ".date('d.m.Y', strtotime($ligneRem['DateSaisie']));
 			$auteur = $ligneRem['abbr'];
 			//if(!empty($txtrem)) {
@@ -1532,13 +1545,34 @@ $requeteTri = "";
 							echo "<tr><td valign='top'><b><font color='#FF0000'><i>JRN</i> - A corriger</font></b></td><td valign='top'><font color='#FF0000'>".$daterem."</font></td><td align='center'><font color='#FF0000'>".$auteur."</font></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 							//echo "<tr remarque$idRem='1' style='display:none' onclick='toggle(\"remarque$idRem\")'><td valign='top'>A corriger</td><td valign='top'></td><td align='center'></td><td colspan='2'><textarea name='RemarqueJournal' COLS=60 ROWS=20 onclick='limitEvent(event)'>".$txtrem."</textarea></td></tr>";
 						} else {
-							echo "<tr><td valign='top'><b><font color='#FF0000'>A corriger</font></b></td><td></td><td></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+							echo "<tr><td valign='top'><b><font color='#FF0000'>Journal de travail à corriger</font></b></td><td><b><font color='#FF0000'>".$daterem."</font></b></td><td></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						}
 						$cntErreurSaisie++;
 						break;
-					case 3:
+					case 3: 
 						echo "<tr><td valign='top'><font color='#FF7F00'><i>JRN</i> - A vérifier</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Clôturer l\'erreur')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						break;
+					case 4: // tâche à faire
+						if(hasAdminRigth()) {
+							echo "<tr><td valign='top'><b><font color='#9900cc'><i>TCH</i> - A faire</font></b></td><td valign='top'><font color='#9900cc'>".$daterem."</font></td><td align='center'><font color='#9900cc'> ".$auteur." </font></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('La tâche a été effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						} else {
+							echo "<tr><td valign='top'><b><font color='#9900cc'>Tâche à effectuer</font></b></td><td><b><font color='#9900cc'>".$daterem."</font></b></td><td></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
+							if(strtotime($ligneRem['DateSaisie'])<time()) {
+								echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('J\'ai effectué la tâche')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+							}
+							echo "</td></tr>";
+						}
+						//$cntErreurSaisie++;
+						break;
+					case 5: // tâche effectuée
+						echo "<tr><td valign='top'><font color='#FF7F00'><i>TCH</i> - A valider</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=validated'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Valider la tâche comme effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						break;
+					case 6: // tâche effectuée et validée
+						//echo "<tr><td valign='top'><font color='#007F00'><i>TCH</i> - Vérifiée</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'></td></tr>";
+						break;
+					case 7: // tâche non effectuée
+						echo "<tr><td valign='top'><i>TCH</i> - Non effectuée</td><td>".$daterem."</td><td align='center' valign='top'>".$auteur."</td><td>".wiki2html($txtrem)."</td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer l\'attribution')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						break;	
 					case 0:
 						if(hasAdminRigth()) {
 							echo "<tr><td valign='top'><i>ADM</i> - ".$ligneRem['NomTheme']."</td><td>".$daterem."</td><td></td><td>".$txtrem."</td><td align='center' valign='top'></td></tr>";
@@ -1620,7 +1654,7 @@ $requeteTri = "";
 			//}
 			$option .= "SUV - ".$ligne['NomTheme']."</option>";
 		}
-		echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='top' colspan='5'><select name='TypeRemarque$last' onclick='limitEvent(event)' style='width: 900px'><option value='1'>CPG - Remarque</option><option value='2'>JRN - A corriger</option>";
+		echo "<tr newremarque$last='1' style='display:none' onclick='toggle(\"newremarque$last\")'><td valign='top' colspan='5'><select name='TypeRemarque$last' onclick='limitEvent(event)' style='width: 900px'><option value='1'>CPG - Remarque</option><option value='2'>JRN - Journal à corriger par l'apprenti</option><option value='4'>TCH - Tâche à faire par l'apprenti</option>";
 		echo $option;
 		$ajd = time();
 		if($ajd > $vendredi) {

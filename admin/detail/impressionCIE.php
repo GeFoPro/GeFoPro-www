@@ -33,7 +33,18 @@ $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('../../docBase/cie
 
 
 $templateProcessor->setValue('profession', Profession);
+$templateProcessor->setValue('serviceFormation', ServiceFormation);
 
+// Recherche coordonnées école/lieu (IDEntreprise=1)
+$requeteEnt = "SELECT * FROM entreprise where IDEntreprise=1";
+//echo $requete;
+$resultat =  mysqli_query($connexionDB,$requeteEnt);
+$ligne = mysqli_fetch_assoc($resultat);
+// Lieu du cours
+$templateProcessor->setValue("lieuNom",$ligne['NomEntreprise']);
+$templateProcessor->setValue("lieuCompl",$ligne['ComplementEntreprise']);
+$templateProcessor->setValue("lieuRue",$ligne['RueEntreprise']);
+$templateProcessor->setValue("lieuLieu",$ligne['NPAEntreprise']." ".$ligne['LieuEntreprise']);
 
 // partie du document propre à chaque apprenti
 // Recherche des information du cours pour la personne et mise à jour
@@ -47,7 +58,7 @@ $nomApp = $ligne['Nom'];
 $prenomApp = $ligne['Prenom'];
 $date = strtotime($ligne['DateNaissance']);
 $templateProcessor->setValue("dateNaissance", date('d.m.Y', $date));
-// Entreprise
+// Entreprise formatrice
 $templateProcessor->setValue("entrepriseNom",$ligne['NomEntreprise']);
 $templateProcessor->setValue("entrepriseCompl",$ligne['ComplementEntreprise']);
 $templateProcessor->setValue("entrepriseRue",$ligne['RueEntreprise']);
@@ -208,7 +219,7 @@ for ($id=1;$ligne = mysqli_fetch_assoc($resultat);$id++) {
 
 // envoi du fichier
 //$file = "DIVTEC - FOR - MOD 2.10 Contrôle de compétences CIE ".$denom." ".$nomApp." ".$prenomApp;
-$file = "DIVTEC - FOR - MOD 2.10 Contrôle de compétences CIE ".$denom." ".$nomApp." ".$prenomApp.".docx";
+$file = "Contrôle de compétences CIE ".$denom." ".$nomApp." ".$prenomApp.".docx";
 header("Content-Description: File Transfer");
 header('Content-Disposition: attachment; filename="' . $file . '"');
 header('Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document');

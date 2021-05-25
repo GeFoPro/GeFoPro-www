@@ -25,6 +25,18 @@ if(isset($_GET['IDDoc'])) {
 // charger la template
 $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('../../docBase/ciebaseRow.docx');
 $templateProcessor->setValue('profession',  Profession);
+$templateProcessor->setValue('serviceFormation', ServiceFormation);
+
+// Recherche coordonnées école/lieu (IDEntreprise=1)
+$requeteEnt = "SELECT * FROM entreprise where IDEntreprise=1";
+//echo $requete;
+$resultat =  mysqli_query($connexionDB,$requeteEnt);
+$ligne = mysqli_fetch_assoc($resultat);
+// Lieu du cours
+$templateProcessor->setValue("lieuNom",$ligne['NomEntreprise']);
+$templateProcessor->setValue("lieuCompl",$ligne['ComplementEntreprise']);
+$templateProcessor->setValue("lieuRue",$ligne['RueEntreprise']);
+$templateProcessor->setValue("lieuLieu",$ligne['NPAEntreprise']." ".$ligne['LieuEntreprise']);
 
 // Recherche des information du document et mise à jour
 $requeteH = "SELECT * FROM doccie WHERE IDDoc=$IDDoc";
