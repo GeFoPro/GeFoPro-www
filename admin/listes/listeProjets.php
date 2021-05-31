@@ -42,16 +42,16 @@ if(isset($_POST['annee'])) {
 
 if(isset($_POST['ajoutProjet'])) {
 	// ajout d'un thème
-	$projet = $_POST['NomTheme'];
+	$nomProjet = $_POST['NomProjet'];
 	// ajout d'un attribut
-    $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme, ClasseTheme) values (\"$projet\",0,1,'".$app_section."')";
+    $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme, ClasseTheme) values (\"$nomProjet\",0,1,'".$app_section."')";
 	//echo $requete;
     $resultat =  mysqli_query($connexionDB,$requete);
 	$filtre = 11; // nouveau
 }
 if(isset($_POST['ajoutTheme'])) {
 	// ajout d'un thème
-	$projet = $_POST['NomTheme'];
+	//$theme = $_POST['NomTheme'];
 	// ajout d'un attribut
     $requete = "INSERT INTO theme (NomTheme, PonderationTheme, TypeTheme, ClasseTheme, Objectif) values (\"".$_POST['NomTheme']."\",".$_POST['PonderationTheme'].",0,'".$_POST['ClasseTheme']."', 0)";
 	//echo $requete;
@@ -497,7 +497,7 @@ echo "<tr newProjet='1' ><td colspan='9'></td><td align='right'><img src='/icons
 
 echo "<tr newProjet='1' style='display:none' ><td colspan='10' valign='bottom' height='30'><b>Nouveau projet:<b></td></tr>";
 echo "<tr newProjet='1' style='display:none' >";
-echo "<td valign='top' colspan='2'><input name='NomTheme' value='' size='40'></input></td>";
+echo "<td valign='top' colspan='2'><input name='NomProjet' value='' size='40'></input></td>";
 echo "<td valign='top' colspan='8'><input type='submit' name='ajoutProjet' value='Ajouter'></input></td></tr>";
 echo "</table></div><br>";
 
