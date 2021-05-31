@@ -1565,7 +1565,7 @@ $requeteTri = "";
 						//$cntErreurSaisie++;
 						break;
 					case 5: // tâche effectuée
-						echo "<tr><td valign='top'><font color='#FF7F00'><i>TCH</i> - A valider</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=validated'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Valider la tâche comme effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						echo "<tr><td valign='top'><font color='#FF7F00'><i>TCH</i> - A valider</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=validated'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Valider la tâche comme effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						break;
 					case 6: // tâche effectuée et validée
 						//echo "<tr><td valign='top'><font color='#007F00'><i>TCH</i> - Vérifiée</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'></td></tr>";
