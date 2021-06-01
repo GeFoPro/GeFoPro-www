@@ -151,6 +151,7 @@ $PDF->AddPage();
 	$lastTheme = -1;
 	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		//$idJournal = $ligne['IDJournal'];
+		if($ligne['TypeRemarque']>1) continue;
 		if($lastTheme!=$ligne['IDTheme']) {
 			//$posLigne = $posLigne+2;
 			$nomTheme = "";
