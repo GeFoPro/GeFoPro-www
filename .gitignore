@@ -9,5 +9,6 @@ images/*.gif
 *_last.php
 *_orig.php
 *.config
-docBase/*
+docBase/*.docx
+docBase/*.xls
 Thumbs.db
