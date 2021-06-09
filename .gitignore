@@ -9,4 +9,5 @@ images/*.gif
 *_last.php
 *_orig.php
 *.config
+docBase/*
 Thumbs.db
