@@ -8,4 +8,5 @@ images/*.gif
 *_2*.php
 *_last.php
 *_orig.php
+*.config
 Thumbs.db
