@@ -43,7 +43,7 @@ $errorMsg = "";
 
 $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader = new PHPExcel_Reader_Excel5();
-$objPHPExcel = $objReader->load("../docBase/listeStock.xls");
+$objPHPExcel = $objReader->load($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."docBase/listeStock.xls");
 
 /* requete pour entête*/
 if(isset($critere) && !empty($critere)) {

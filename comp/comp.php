@@ -363,20 +363,20 @@ if(isset($_POST['actionDataImg'])) {
 		//echo $IDComp."/".$imgGrp."/".$IDGenreImg."/".$IDTypeImg."/".$IDBoitierImg."/".$IDUnique;
 		if($imgGrp==1) {
 			// uniquement pour cet article -> enregistrer l'image avec son identifiant
-			$target = "../images/articles/".$IDUnique.".".$ext;
+			$target = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDUnique.".".$ext;
 			move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target);
 			addMEssage("Image ajoutée pour cet article uniquement");
 		} else if($imgGrp==2) {
 			// image pour genre/type
-			$target = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_0.".$ext;
+			$target = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDGenreImg."_".$IDTypeImg."_0.".$ext;
 			if(!is_file($target)) {
 				// pas de fichier 0
 				// vérifier si fichiers 1 ou suivants existent
 				$cntImg = 1;
-				$target1 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
+				$target1 = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
 				while(is_file($target1)) {
 					$cntImg++;
-					$target1 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_".$cntImg.".".$ext;
+					$target1 = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDGenreImg."_".$IDTypeImg."_".$cntImg.".".$ext;
 				}
 				if($cntImg==1) {
 					// encore aucune image pour ce genre/type -> fichier 0
@@ -389,16 +389,16 @@ if(isset($_POST['actionDataImg'])) {
 				}
 			} else {
 				// fichier 0 existe déjà -> renommer en fichier 1
-				$target1 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
+				$target1 = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDGenreImg."_".$IDTypeImg."_1.".$ext;
 				rename($target,$target1);
 				// ajouter le nouveau en 2
-				$target2 = "../images/articles/".$IDGenreImg."_".$IDTypeImg."_2.".$ext;
+				$target2 = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$IDGenreImg."_".$IDTypeImg."_2.".$ext;
 				move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target2);
 				addMEssage("2ème image ajoutée pour cette catégorie");
 			}
 		} else if($imgGrp==3) {
 			// image pour un boitier
-			$target = "../images/articles/".$nomBoitierImg.".".$ext;
+			$target = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$nomBoitierImg.".".$ext;
 			move_uploaded_file( $_FILES['imgDownload']['tmp_name'], $target);
 			addMEssage("Image ajoutée pour ce boitier");
 		}
@@ -527,7 +527,7 @@ REQ;
   }
   if($action=="RemImageProp") {
 	// tenter d'effacer le fichier propre
-	$target = "../images/articles/".$_GET['file'].".png";
+	$target = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/".$_GET['file'].".png";
 	unlink($target);
 	addMEssage("Image effacée");
   }
@@ -919,7 +919,7 @@ REQ;
 <?php if($action!="Nouveau" && !empty($IDComp)) echo "<td colspan='2' align='center'><font size='2'>Commandes</font></td><td colspan='2' align='center'><font size='2'>Etiquettes</font></td>"; ?>
 <?php
 $imgpathURL = "".$_SESSION['home']."images/articles/";
-$imgpath = "../images/articles/";
+$imgpath = $_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."images/articles/";
 $imgFound = false;
 $descFound = false;
 if($action!="Nouveau" && !empty($IDComp)) {
