@@ -84,8 +84,7 @@ if(!$modeHTML) {
 	require_once 'PHPExcel/Writer/Excel5.php';
 	$objReader = PHPExcel_IOFactory::createReader('Excel5');
 	//$objReader->setReadDataOnly(true);
-	$liste = "../../docBase/liste_".$_SESSION['user_lang'].".xls";
-	$objPHPExcel = $objReader->load($liste);
+	$objPHPExcel = $objReader->load($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."docBase/liste_".$_SESSION['user_lang'].".xls");
 } else {
 	include("entete.php");
 ?>

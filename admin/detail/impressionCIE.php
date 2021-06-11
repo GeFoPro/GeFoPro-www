@@ -28,7 +28,7 @@ if(isset($_GET['IDCours'])) {
 }
 
 // charger la template
-$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('../../docBase/ciebaseRow.docx');
+$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."docBase/ciebaseRow.docx");
 //$templateProcessor->cloneBlockTest("CLONEME",2, true, false);
 
 

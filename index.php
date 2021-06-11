@@ -21,6 +21,8 @@ $_SESSION['section'] = $scturl;
 if(count($subs)>3) {
 	// sous répertoire présent, on le mémorise
 	$_SESSION['instance'] = $subs[count($subs)-3];	
+}else {
+	unset($_SESSION['instance']);
 }
 //echo "<br>SCT: ".$_SESSION['section'];
 if(empty($subs[count($subs)-1])) {
@@ -29,8 +31,12 @@ if(empty($subs[count($subs)-1])) {
 	$_SESSION['home'] = explode($subs[count($subs)-1],$_SERVER['REQUEST_URI'])[0];
 }
 //echo "<br>Home: ".$_SESSION['home'];
-
-require("Config_".$scturl.$_SESSION['instance'].".php");
+$config_file = "Config_".$scturl;
+if(!empty($_SESSION['instance'])) {
+	$config_file .= "_";
+	$config_file .= $_SESSION['instance'];
+}
+require($config_file.".php");
 checkEOL();
 
 if(isset($_GET['lang'])) {

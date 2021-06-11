@@ -1,14 +1,8 @@
-images/*/*.png
-images/*/*.jpg
-images/*/*.gif
-images/*.png
-images/*.jpg
-images/*.gif
+images/*
 *.css
 *_2*.php
 *_last.php
 *_orig.php
 *.config
-docBase/*.docx
-docBase/*.xls
+docBase/*
 Thumbs.db

@@ -38,7 +38,12 @@ $nomPage = substr(end($pagesubs),0,-4);
 //echo "<br>Home: ".$_SESSION['home'];
 
 /* inclure les paramètres de connexion */
-require("Config_".$app_section.$app_instance.".php");
+$config_file = "Config_".$app_section;
+if(!empty($app_instance)) {
+	$config_file .= "_";
+	$config_file .= $app_instance;
+}
+require($config_file.".php");
 
 /* connexion */
 $connexionDB=null;

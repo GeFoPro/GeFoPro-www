@@ -23,7 +23,7 @@ if(isset($_GET['IDDoc'])) {
 }
 
 // charger la template
-$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor('../../docBase/ciebaseRow.docx');
+$templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."docBase/ciebaseRow.docx");
 $templateProcessor->setValue('profession',  Profession);
 $templateProcessor->setValue('serviceFormation', ServiceFormation);
 
