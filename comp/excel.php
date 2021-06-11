@@ -82,7 +82,7 @@ PHPExcel_Settings::setLocale('fr-CH');
 $objReader = PHPExcel_IOFactory::createReader('Excel5');
 //$objReader->setReadDataOnly(true);
 //$objReader->setLoadSheetsOnly( array("Sheet 1", "Feuille commande") );
-$objPHPExcel = $objReader->load("../docBase/commande.xls");
+$objPHPExcel = $objReader->load($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home']."docBase/commande.xls");
 
 // requete pour en-tête
  if(isset($critere) && !empty($critere)) {
