@@ -8,8 +8,9 @@
 # @Last modified time: 30.03.2021 16:03:37
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
-
-	$release = "<br><b><i>2.5.2</i></b>";
+	$release = "<br><b><i>2.5.3</i></b>";
+	$release .= "<br>- ";
+	$release .= "<br><b><i>2.5.2</i></b>";
 	$release .= "<br>Bugs:";
 	$release .= "<br>- Correction d\'une erreur de précision sur le calcul du total d\'heure dans les journaux [KU]";
 	$release .= "<br>Fonctionnalités:";
@@ -89,7 +90,7 @@
 	$release .= "<br>- Problème de création globale des périodes pour les notes, pour le système d\'évaluation hebdomadaire";
 ?>
 <div id="footer">
-	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5.2, 2010 &copy; Designed by DGI</p>
+	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5.3, 2010 &copy; Designed by DGI</p>
 
 </div>
 <!-- end footer -->
