@@ -9,7 +9,7 @@
 # @License: GPL-3.0 License, please refer to LICENSE file included to this package
 # @Copyright: GeFoPro, 2010
 	$release = "<br><b><i>2.5.3</i></b>";
-	$release .= "<br>- ";
+	$release .= "<br>- Déploiement commun à toutes les sections";
 	$release .= "<br><b><i>2.5.2</i></b>";
 	$release .= "<br>Bugs:";
 	$release .= "<br>- Correction d\'une erreur de précision sur le calcul du total d\'heure dans les journaux [KU]";
