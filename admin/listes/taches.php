@@ -64,7 +64,7 @@ if(isset($_GET['IDRemSuivi'])) {
 }
 
 $add_assign = false;
-if($_GET['action']=='assigner') {
+if(isset($_GET['action']) && $_GET['action']=='assigner') {
 	// effectuer les assignation pour la semaine
 	$add_assign = true;
 	$modeHTML = true;
