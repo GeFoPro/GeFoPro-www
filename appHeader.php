@@ -39,7 +39,7 @@ $subs = explode($app_section,$_SERVER['REQUEST_URI'])[1];
 //echo "<br>sub: ".$subs;
 $app_id = explode("/",$subs)[1];
 //echo "<br>APPID: ".$app_id;
-$pagesubs = explode("/",$_SERVER['PHP_SELF']);
+$pagesubs = explode("/",$pageSelf);
 $nomPage = substr(end($pagesubs),0,-4);
 //echo "<br>Home: ".$_SESSION['home'];
 
@@ -115,7 +115,7 @@ function libelleTradUpd($libelle) {
 	if($_SESSION['user_login']===$configTraducteur) {
 		$returnedTxt =  "<div idTrad_".$libelle."='1' onclick='toggleTrad(\"idTrad_".$libelle."\")' style='display: inline-block;'>".$trad."</div>";
 		$returnedTxt .= "<div idTrad_".$libelle."='1' style='display:none' onclick='toggleTrad(\"idTrad_".$libelle."\")'>";
-		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraduction(\"".$libelle."\",\"".$_SERVER['PHP_SELF']."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
+		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraduction(\"".$libelle."\",\"".$pageSelf."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
 		$returnedTxt .= "</div>";
 	} else {
 		$returnedTxt = $trad;
@@ -129,7 +129,7 @@ function libelleTradUpdAll($libelle) {
 	if($_SESSION['user_login']===$configTraducteur) {
 		$returnedTxt =  "<div idTrad_".$libelle."='1' onclick='toggleTrad(\"idTrad_".$libelle."\")' style='display: inline-block;'>".$trad."</div>";
 		$returnedTxt .= "<div idTrad_".$libelle."='1' style='display:none' onclick='toggleTrad(\"idTrad_".$libelle."\")'>";
-		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraductionAll(\"".$libelle."\",\"".$_SERVER['PHP_SELF']."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
+		$returnedTxt .= "<input type='text' name='idTrad_".$libelle."' value=\"".$trad."\" onclick='limitEventTrad(event)' size='10' onChange='updateTraductionAll(\"".$libelle."\",\"".$pageSelf."\",\"".$_SERVER['QUERY_STRING']."\",this.value,\"".$_SESSION['user_lang']."\")' style='text-align: right'>";
 		$returnedTxt .= "</div>";
 	} else {
 		$returnedTxt = $trad;
