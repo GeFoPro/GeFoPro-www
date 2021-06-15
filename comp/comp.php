@@ -905,7 +905,7 @@ REQ;
 	}
 }
 ?>
-<FORM ACTION="<?php echo $_SERVER['PHP_SELF'] ?>"  METHOD="GET">
+<FORM ACTION="comp.php"  METHOD="GET">
 <div class='post'>
 <div align='center' width='100%' id='hideMe'><font size="2" color="green" align='center'><i><?=getMessage()?></i></font></div>
 <!--br><h2>Détail de l'article</h2-->
@@ -1133,6 +1133,7 @@ $lastIDCom = 0;
 			} else {
 				$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,0);
 			}
+			$libelleComNo = substr($libelleComNo,0,50);
 			//$libelleComNo = getFieldToPrint($ligne['PosLigneC1'],$ligne,1)." ".getFieldToPrint($ligne['PosLigneC2'],$ligne,2);
 			$libelleCom = urlencode($libelleComNo);
 			echo "<a href='commande.php?action=Ajouter&IDCommande=$fournLigne[IDCommande]&PrixUnite=$str&Libelle=$libelleCom&IDFournisseur=$fournLigne[IDFournisseur]'><img src='/iconsFam/basket_add.png' align='absmiddle' onmouseover=\"Tip('Commander &laquo;$libelleComNo&raquo;')\" onmouseout='UnTip()'></a></td></tr>";
@@ -1194,4 +1195,4 @@ if($app_section=='ELT') {
 
 </div> <!-- page -->
 
-<?php include("../piedPage.php"); ?>
+<?php include("../piedPage.php");?>

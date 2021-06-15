@@ -10,6 +10,7 @@
 # @Copyright: GeFoPro, 2010
 
 session_start();
+
 if(isset($_SESSION['section']) && !empty($_SESSION['section'])) {
 	// en session
 	$login = $_SESSION['login'];
@@ -19,6 +20,11 @@ if(isset($_SESSION['section']) && !empty($_SESSION['section'])) {
 } else {
 	// pas en session ou expirée
 	header('Location: index.php');
+}
+if(isset($_SERVER['REDIRECT_URL'])) {
+	$pageSelf = $_SERVER['REDIRECT_URL'];
+}else {
+	$pageSelf = $_SERVER['PHP_SELF'];
 }
 //$app_section = $_SESSION['sct'];
 //$app_section = strtoupper(substr($_SERVER['REQUEST_URI'],1,3));
