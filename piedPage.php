@@ -90,7 +90,7 @@
 	$release .= "<br>- Problème de création globale des périodes pour les notes, pour le système d\'évaluation hebdomadaire";
 ?>
 <div id="footer">
-	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()">GeFoPro 2.5.3, 2010 &copy; Designed by DGI</p>
+	<p id="legal" onmouseover="Tip('<b>Release notes:</b><?=$release?>')" onmouseout="UnTip()"><a href='http://www.gefopro.ch'><img src='<?=$_SESSION['home']?>images/logo_gefopro_ic.png' height='27' style='vertical-align: middle'></a> GeFoPro 2.5.3, 2010 &copy; Designed by DGI</p>
 
 </div>
 <!-- end footer -->
