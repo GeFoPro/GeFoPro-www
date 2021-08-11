@@ -19,7 +19,7 @@ if(isset($_POST['id'])) {
 	$id = $_POST['id'];
 }
 
-$connexion = connexionAdmin("localhost",DBUserAdmin,DBPwdAdmin);
+$connexion = connexionAdmin(DBServer,DBUserAdmin,DBPwdAdmin);
 
 // required headers
 header("Access-Control-Allow-Origin: *");

@@ -133,7 +133,7 @@ if(isset($_GET['logout'])) {
 						$loginMsg = $loginMsg . "<br>" . printLDAPInfo($ldap_cnx,$user_login);
 					} else {
 						// test de connexion avec l'utilisateur DB récupéré
-						$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
+						$connexion = connexionAdmin(DBServer,$_SESSION['login'],$_SESSION['mdp']);
 						if(!isset($connexion)) {
 							//DB inaccessible
 							//session_destroy();
@@ -165,7 +165,7 @@ if(isset($_GET['logout'])) {
 				$loginMsg ="L'utilisateur ".$user_login." n'a pas les droits nécessaires pour cette application!<br>";
 			} else {
 				// test de connexion avec l'utilisateur DB récupéré
-				$connexion = connexionAdmin($serveur,$_SESSION['login'],$_SESSION['mdp']);
+				$connexion = connexionAdmin(DBServer,$_SESSION['login'],$_SESSION['mdp']);
 				if(!isset($connexion)) {
 					//DB inaccessible
 					$loginMsg ="Connexion à la base de donnée impossible ou manque de droits!";

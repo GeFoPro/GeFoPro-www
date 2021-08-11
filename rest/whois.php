@@ -20,7 +20,7 @@ if(isset($_POST['id'])) {
 }
 $nom = "?";
 $prenom = "?";
-$connexion = connexionAdmin("localhost",DBUserAdmin,DBPwdAdmin);
+$connexion = connexionAdmin(DBServer,DBUserAdmin,DBPwdAdmin);
 mysql_select_db(DBAdmin);
 
 // required headers

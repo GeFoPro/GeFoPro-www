@@ -109,10 +109,12 @@ function callPage(sel) {
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/suiviEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Suivi</a></li -->
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('suiviform')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/notesEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('menunotes')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/theorie.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('menutheorie')?></a></li>
 			<?php } else { ?>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/infoEleve.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('infopers')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/docEleveCIE.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('coursinter')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/activites.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>&vue=1"><?=libelleTrad('suiviform')?></a></li>
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/theorie.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>"><?=libelleTrad('menutheorie')?></a></li>
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/evaluations.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Auto-évaluations</a></li -->
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/impressionJournal.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">Imprimer</a></li -->
 			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/detail/evalCoursCIE.php?nom=<?=$nom?>&prenom=<?=$prenom?>&idEleve=<?=$IDEleve?>">CIE</a></li -->

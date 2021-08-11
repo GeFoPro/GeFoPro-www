@@ -24,7 +24,7 @@ if(isset($_POST['ret'])) {
 	$ret = true;
 }
 
-$connexion = connexionAdmin("localhost",DBUserAdmin,DBPwdAdmin);
+$connexion = connexionAdmin(DBServer,DBUserAdmin,DBPwdAdmin);
 
 // required headers
 header("Access-Control-Allow-Origin: *");

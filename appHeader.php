@@ -54,11 +54,11 @@ require($config_file.".php");
 /* connexion */
 $connexionDB=null;
 if($app_id=='admin') {
-	$connexionDB = connexionAdmin($serveur,$login,$mdp);
+	$connexionDB = connexionAdmin(DBServer,$login,$mdp);
 } else if($app_id=='doc') {
-	$connexionDB = connexionDoc($serveur,$login,$mdp);
+	$connexionDB = connexionDoc(DBServer,$login,$mdp);
 } else if($app_id=='comp') {
-	$connexionDB = connexionComp($serveur,$login,$mdp);
+	$connexionDB = connexionComp(DBServer,$login,$mdp);
 }
 if($connexionDB==null) {
 	//echo $_SESSION['login']."/".$_SESSION['mdp']."/".$_SESSION['section'];
