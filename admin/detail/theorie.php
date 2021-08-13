@@ -310,7 +310,7 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 generate_branch($IDBranche, $LibelleBranche, $notes, $notesID, $arrondiFact);
 
 if(empty($count)) {
-	echo "<tr><td colspan='9'>Fonctionnalité non paramétrée</td></tr>";
+	echo "<tr><td colspan='9' height='100' align='center'><b><i>Fonctionnalité non paramétrée</i></b></td></tr>";
 	echo "</table></div>";
 } else {
 	echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
