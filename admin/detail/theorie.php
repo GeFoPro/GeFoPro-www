@@ -311,6 +311,7 @@ generate_branch($IDBranche, $LibelleBranche, $notes, $notesID, $arrondiFact);
 
 if(empty($count)) {
 	echo "<tr><td colspan='9'>Fonctionnalité non paramétrée</td></tr>";
+	echo "</table></div>";
 } else {
 	echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 	echo "<tr newNote='1' ><td colspan='8'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter une note')\" onmouseout='UnTip()' onclick='toggle(\"newNote\");' align='absmiddle'></td></tr>";
