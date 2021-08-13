@@ -286,6 +286,7 @@ $arrondiFact = 0;
 $LibelleBranche = "";
 $moyenneBranche = array();
 $moyenneBulletin = array();
+$count =0;
 while($ligne = mysqli_fetch_assoc($resultat)) {
 	
 	if($IDBranche!=$ligne['IDBranche']) {
@@ -303,54 +304,53 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 	// mémorisation de la note
 	$notes[] = $ligne['Note'];
 	$notesID[] = $ligne['IDNoteEPT'];
+	$count++;
 }
 // dernière branche
 generate_branch($IDBranche, $LibelleBranche, $notes, $notesID, $arrondiFact);
 
-//echo "<tr><td colspan='9' valign='bottom' bgColor='#5C5C5C'></td></tr>";
-//if(!empty($cntJours)) {
-//	echo "<tr><td colspan='2'>Total</td><td align='center'>$cntJours</td><td align='center'>".$absencesEx."/".$absencesNonEx."</td><td colspan='5'></td></tr>";
-//} else {
-//	echo "<tr><td colspan='9' align='center'>Aucune note trouvée</td></tr>";
-//}
-echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
-echo "<tr newNote='1' ><td colspan='8'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter une note')\" onmouseout='UnTip()' onclick='toggle(\"newNote\");' align='absmiddle'></td></tr>";
-echo "<tr newNote='1' style='display:none' ><td colspan='9' valign='bottom' height='30'><b>Ajouter une note:<b></td></tr>";
-echo "<tr newNote='1' style='display:none' >";
-$requeteH = "select bra.IDBranche, bra.Libelle from planept as pla join brancheept as bra on pla.Branche=bra.IDBranche and '".$classe."' LIKE CONCAT(pla.Classe, '%') and (pla.NoSemestre = ".$semestreAct." OR pla.NoSemestre = 0) and pla.annee = ".$anneeCalc;
-$requeteH .= " ORDER BY RPAD(bra.IDBranche,3,0)";
-//echo $requeteH;
-$resultat =  mysqli_query($connexionDB,$requeteH);
-$listBranche = "<select name='NewIDBranche'>";
-while($ligne = mysqli_fetch_assoc($resultat)) {
-	$listBranche .= "<option value='".$ligne['IDBranche']."'>".$ligne['Libelle']."</option>";
-}
-$listBranche .= "</select>";
-echo "<td valign='top' colspan='2'>".$listBranche."</td>";
-echo "<td valign='top' colspan='5'><input name='NewNote' value='' size='2' style='text-align: right'></input></td>";
-echo "<td valign='top' colspan='2' align='right'><input type='submit' name='ajouterNote' value='Ajouter'></input></td></tr>";
-
-echo "</table></div>";
-
-// calcul de la moyenne du bulletin
-// Recherche des groupes à prendre en compte (pourcentage spécifié en DB)
-$requeteH = "select IDBranche, CalculPrc from brancheept where CalculPrc is not null";
-//echo $requeteH;
-$resultat =  mysqli_query($connexionDB,$requeteH);
-$moyBul = 0;
-$displayBulletin = true;
-while($ligne = mysqli_fetch_assoc($resultat)) {
-	// pour chaque groupe, recherche des moyennes
-	if($moyenneBulletin[$ligne['IDBranche']]!=0) {
-		$moyBul += $moyenneBulletin[$ligne['IDBranche']] * $ligne['CalculPrc'] / 100;
-	} else {
-		$displayBulletin = false;
+if(empty($count)) {
+	echo "<tr><td colspan='9'>Fonctionnalité non paramétrée</td></tr>";
+} else {
+	echo "<tr><td colspan='9' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
+	echo "<tr newNote='1' ><td colspan='8'></td><td align='center'><img src='/iconsFam/add.png' onmouseover=\"Tip('Ajouter une note')\" onmouseout='UnTip()' onclick='toggle(\"newNote\");' align='absmiddle'></td></tr>";
+	echo "<tr newNote='1' style='display:none' ><td colspan='9' valign='bottom' height='30'><b>Ajouter une note:<b></td></tr>";
+	echo "<tr newNote='1' style='display:none' >";
+	$requeteH = "select bra.IDBranche, bra.Libelle from planept as pla join brancheept as bra on pla.Branche=bra.IDBranche and '".$classe."' LIKE CONCAT(pla.Classe, '%') and (pla.NoSemestre = ".$semestreAct." OR pla.NoSemestre = 0) and pla.annee = ".$anneeCalc;
+	$requeteH .= " ORDER BY RPAD(bra.IDBranche,3,0)";
+	//echo $requeteH;
+	$resultat =  mysqli_query($connexionDB,$requeteH);
+	$listBranche = "<select name='NewIDBranche'>";
+	while($ligne = mysqli_fetch_assoc($resultat)) {
+		$listBranche .= "<option value='".$ligne['IDBranche']."'>".$ligne['Libelle']."</option>";
 	}
-	//echo "<br>".$ligne['IDBranche'].": ".sprintf("%01.1f",$moyenneBulletin[$ligne['IDBranche']])." * ".$ligne['CalculPrc']."%";
-}
-//echo "<br>Moyenne bulletin: ".sprintf("%01.1f",$moyBul);
-if($moyBul!=0 && $displayBulletin) {
-	echo "<script>writeMoy('bulletin','".sprintf("%01.1f",arrondi($moyBul,10))."');</script>";
+	$listBranche .= "</select>";
+	echo "<td valign='top' colspan='2'>".$listBranche."</td>";
+	echo "<td valign='top' colspan='5'><input name='NewNote' value='' size='2' style='text-align: right'></input></td>";
+	echo "<td valign='top' colspan='2' align='right'><input type='submit' name='ajouterNote' value='Ajouter'></input></td></tr>";
+
+	echo "</table></div>";
+
+	// calcul de la moyenne du bulletin
+	// Recherche des groupes à prendre en compte (pourcentage spécifié en DB)
+	$requeteH = "select IDBranche, CalculPrc from brancheept where CalculPrc is not null";
+	//echo $requeteH;
+	$resultat =  mysqli_query($connexionDB,$requeteH);
+	$moyBul = 0;
+	$displayBulletin = true;
+	while($ligne = mysqli_fetch_assoc($resultat)) {
+		// pour chaque groupe, recherche des moyennes
+		if($moyenneBulletin[$ligne['IDBranche']]!=0) {
+			$moyBul += $moyenneBulletin[$ligne['IDBranche']] * $ligne['CalculPrc'] / 100;
+		} else {
+			$displayBulletin = false;
+		}
+		//echo "<br>".$ligne['IDBranche'].": ".sprintf("%01.1f",$moyenneBulletin[$ligne['IDBranche']])." * ".$ligne['CalculPrc']."%";
+	}
+	//echo "<br>Moyenne bulletin: ".sprintf("%01.1f",$moyBul);
+	if($moyBul!=0 && $displayBulletin) {
+		echo "<script>writeMoy('bulletin','".sprintf("%01.1f",arrondi($moyBul,10))."');</script>";
+	}
 }
 ?>
 
