@@ -146,7 +146,8 @@ $resultat =  mysqli_query($connexionDB,$requete);
 if(!empty($resultat) && empty($errorMsg)) {
 	$cnt = 12;
 	while ($ligne = mysqli_fetch_assoc($resultat) ) {
-		$objPHPExcel->getActiveSheet()->setCellValue('C'.$cnt, $ligne['NumArticle']);
+		//$objPHPExcel->getActiveSheet()->setCellValue('C'.$cnt, $ligne['NumArticle']);
+		$objPHPExcel->getActiveSheet()->setCellValueExplicit('C'.$cnt, $ligne['NumArticle'], PHPExcel_Cell_DataType::TYPE_STRING);
 		$objPHPExcel->getActiveSheet()->setCellValue('D'.$cnt, iconv("ISO-8859-1", "UTF-8", "$ligne[Libelle]"));
 		$objPHPExcel->getActiveSheet()->setCellValue('E'.$cnt, $ligne['Nombre']);
 		$objPHPExcel->getActiveSheet()->setCellValue('F'.$cnt, $ligne['PrixUnite']);
