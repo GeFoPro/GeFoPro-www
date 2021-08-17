@@ -284,7 +284,9 @@ if(isset($classe)&&$classe==100) {
 	// ajout des sections autres
 	if(isset($configurationAPP)) {
 		foreach ($configurationAPP as $pos => $value) {
-			$requeteCl .= " and Classe not like '%".$value."%'";
+			if($value!=$app_section) {
+				$requeteCl .= " and Classe not like '%".$value."%'";
+			}
 		}
 	}
 	//$requeteCl .= ") order by Classe";
