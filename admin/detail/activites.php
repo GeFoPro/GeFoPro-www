@@ -1554,10 +1554,14 @@ $requeteTri = "";
 						break;
 					case 4: // tâche à faire
 						if(hasAdminRigth()) {
-							echo "<tr><td valign='top'><b><font color='#9900cc'><i>TCH</i> - A faire</font></b></td><td valign='top'><font color='#9900cc'>".$daterem."</font></td><td align='center'><font color='#9900cc'> ".$auteur." </font></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('La tâche a été effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+							echo "<tr><td valign='top'><b><font color='#9900cc'><i>TCH</i> - A faire</font></b></td><td valign='top'><font color='#9900cc'>".$daterem."</font></td><td align='center'><font color='#9900cc'> ".$auteur." </font></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
+							if((time()-strtotime($ligneRem['DateSaisie']))>(86400*3)) {
+								echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('La tâche a été effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+							}
+							echo "</td></tr>";
 						} else {
-							echo "<tr><td valign='top'><b><font color='#9900cc'>Tâche à effectuer</font></b></td><td><b><font color='#9900cc'>".$daterem."</font></b></td><td></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
-							if(strtotime($ligneRem['DateSaisie'])<time()) {
+							echo "<tr><td valign='top'><b><font color='#9900cc'>Tâche à effectuer</font></b></td><td><b><font color='#9900cc'>Toute la semaine</font></b></td><td></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
+							if((time()-strtotime($ligneRem['DateSaisie']))>(86400*3)) {
 								echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('J\'ai effectué la tâche')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 							}
 							echo "</td></tr>";

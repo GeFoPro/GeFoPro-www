@@ -93,7 +93,8 @@ if(!empty($configurationAPP)&&hasAdminRigth()) {
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeProjets.php"><?=libelleTrad('menuprojets')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/journaux.php"><?=libelleTrad('menusuivis')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/listeNotes.php"><?=libelleTrad('menunotes')?></a></li>
-			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML"><?=libelleTrad('menutaches')?></a></li>
+			<!-- li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/taches.php?modeHTML"><?=libelleTrad('menutaches')?></a></li -->
+			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/tachesHebdo.php"><?=libelleTrad('menutaches')?></a></li>
 			<li class="current_page_item"><a href="<?=$_SESSION['home']?>admin/listes/todo.php"><?=libelleTrad('menutodo')?></a></li>
 			<?php  } ?>
 			<li class="last"><a href="<?=$_SESSION['home']?>index.php?logout=out"><?=libelleTrad('menulogout')?></a></li>
