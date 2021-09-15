@@ -1085,8 +1085,13 @@ $lastIDCom = 0;
 			$dataSheet = $fournLigne['LienDatasheet'];
 			$noArticle= str_replace(" ","",$fournLigne['NoArticle']);
 			$noArticleSep = $noArticle;
-			$noArticle= str_replace(".","",$noArticle);
-			$noArticle= str_replace("-","",$noArticle);
+			$noArticleNosp= str_replace(" ","",$noArticle);
+			$noArticleNop= str_replace(".","",$noArticle);
+			$noArticleNospp= str_replace(".","",$noArticleNosp);
+			$noArticleNos= str_replace("-","",$noArticle);
+			$noArticleNosps= str_replace("-","",$noArticleNosp);
+			//$noArticle= str_replace(".","",$noArticle);
+			//$noArticle= str_replace("-","",$noArticle);
 			$str = "";
 			if(isset($fournLigne['PrixPce'])) {
 				$str = number_format($fournLigne['PrixPce'], 2, '.', '');
