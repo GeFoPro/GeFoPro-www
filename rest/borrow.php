@@ -34,21 +34,21 @@ header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
 
 // recherche du userid de la personne
-mysql_select_db(DBAdmin);
+mysqli_select_db($connexion,DBAdmin);
 $uid = "";
 $message = "";
-$result = mysql_query("select nom,prenom,Userid from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where IDCard = 0x".$idUser);
+$result = mysqli_query($connexion,"select nom,prenom,Userid from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where IDCard = 0x".$idUser);
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)==1) {
-		$user = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)==1) {
+		$user = mysqli_fetch_assoc($result);
 		$uid = $user['Userid'];
 		$message = $user['nom']." ".$user['prenom'];
 	} else {
-		// pas trouv� chez APP, on essaie chez prof
-		$result = mysql_query("select abbr,userid from prof where IDCard = 0x".$idUser);
+		// pas trouvé chez APP, on essaie chez prof
+		$result = mysqli_query($connexion,"select abbr,userid from prof where IDCard = 0x".$idUser);
 		if($result!=null && !empty($result)) {
-			if(mysql_num_rows($result)==1) {
-				$user = mysql_fetch_assoc($result);
+			if(mysqli_num_rows($result)==1) {
+				$user = mysqli_fetch_assoc($result);
 				$uid = $user['userid'];
 				$message = $user['abbr'];
 			}
@@ -59,18 +59,18 @@ if($result!=null && !empty($result)) {
 $idInventaire = "";
 $idStockage = "";
 if(!empty($uid)) {
-	// utilisateur trouv�, recherche de l'appareil concern�
+	// utilisateur trouvé, recherche de l'appareil concerné
 	$message .= ",";
-	mysql_select_db(DBComp);
-	$result = mysql_query("select IDInventaire,Description,Caracteristiques,NoInventaire from inventaire as inv join composant as comp on inv.IDComposant = comp.IDComposant where IDTag = 0x".$idDevice);
+	mysqli_select_db($connexion,DBComp);
+	$result = mysqli_query($connexion,"select IDInventaire,Description,Caracteristiques,NoInventaire from inventaire as inv join composant as comp on inv.IDComposant = comp.IDComposant where IDTag = 0x".$idDevice);
 	if($result!=null && !empty($result)) {
-		if(mysql_num_rows($result)==1) {
+		if(mysqli_num_rows($result)==1) {
 			// appareil inventori�
-			$stock = mysql_fetch_assoc($result);
-			// recherche si l'appareil est d�j� emprunt�
-			$resultEm = mysql_query("select * from emprunt where IDInventaire = ".$stock['IDInventaire']." and DateRetour is null");
-			if($resultEm!=null && !empty($resultEm) && mysql_num_rows($resultEm)!=0 && !$ret) {
-				// l'appareil est d�j� emprunt�
+			$stock = mysqli_fetch_assoc($result);
+			// recherche si l'appareil est déjà emprunté
+			$resultEm = mysqli_query($connexion,"select * from emprunt where IDInventaire = ".$stock['IDInventaire']." and DateRetour is null");
+			if($resultEm!=null && !empty($resultEm) && mysqli_num_rows($resultEm)!=0 && !$ret) {
+				// l'appareil est déjà emprunté
 				http_response_code(403);
 				return;
 			} else {
@@ -79,16 +79,16 @@ if(!empty($uid)) {
 			}
 		} else {
 			// pas dans inventaire, on recheche dans les emplacements
-			$result = mysql_query("select IDStockage,Description,Caracteristiques,Emplacement,Tirroir from stockage as stg join composant as comp on stg.IDComposant = comp.IDComposant join stock as sto on stg.IDStock = sto.IDStock where IDTag = 0x".$idDevice);
+			$result = mysqli_query($connexion,"select IDStockage,Description,Caracteristiques,Emplacement,Tirroir from stockage as stg join composant as comp on stg.IDComposant = comp.IDComposant join stock as sto on stg.IDStock = sto.IDStock where IDTag = 0x".$idDevice);
 			if($result!=null && !empty($result)) {
-				if(mysql_num_rows($result)>1) {
-					// plus d'un appareil dans un m�me endroit (ne peut pas arriver, UNIQUE)
-					$stock = mysql_fetch_assoc($result);
+				if(mysqli_num_rows($result)>1) {
+					// plus d'un appareil dans un même endroit (ne peut pas arriver, UNIQUE)
+					$stock = mysqli_fetch_assoc($result);
 					$idStockage = $stock['IDStockage'];
 					$message .= $stock['Emplacement'].",".$stock['Tirroir'];
-				} else if(mysql_num_rows($result)==1) {
-					// un seul �l�ment stock� � cet endroit -> on affiche l'appareil
-					$stock = mysql_fetch_assoc($result);
+				} else if(mysqli_num_rows($result)==1) {
+					// un seul élément stocké à cet endroit -> on affiche l'appareil
+					$stock = mysqli_fetch_assoc($result);
 					$idStockage = $stock['IDStockage'];
 					$message .= $stock['Description'].",".$stock['Caracteristiques'].",".$stock['Emplacement'].",".$stock['Tirroir'];
 				}
@@ -97,7 +97,7 @@ if(!empty($uid)) {
 	}
 
 	if(!empty($idInventaire) || !empty($idStockage)) {
-		// appareil trouv� (et utilisateur)
+		// appareil trouvé (et utilisateur)
 		if(!$ret) {
 			// si pas retour
 			if(!empty($idInventaire)) {
@@ -114,14 +114,14 @@ if(!empty($uid)) {
 			}
 		}
 		//echo $requete;
-		$resultat =  mysql_query($requete);
+		$resultat =  mysqli_query($connexion,$requete);
 		if($resultat) {
-			if($ret && mysql_affected_rows()!=1) {
-					// retour sur pr�t non trouv�
-					http_response_code(404);
+			if($ret && mysqli_affected_rows($connexion)!=1) {
+					// retour sur prêt non trouv�
+					http_response_code(403);
 					return;
 			}
-			mysql_query('COMMIT');
+			mysqli_query($connexion,'COMMIT');
 			http_response_code(201);
 			echo $message;
 		} else {
@@ -129,11 +129,11 @@ if(!empty($uid)) {
 			http_response_code(500);
 		}
 	} else {
-		// appareil pas trouv� -> erreur
+		// appareil pas trouvé -> erreur
 		http_response_code(404);
 	}
 } else {
-	// utilisateur pas trouv� -> erreur
+	// utilisateur pas trouvé -> erreur
 	http_response_code(404);
 }
 ?>

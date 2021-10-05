@@ -29,59 +29,59 @@ header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
 
 // recherche si identifiant existant parmi les apprentis
-mysql_select_db(DBAdmin);
-$result = mysql_query("select nom,prenom from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where IDCard = 0x".$id);
+mysqli_select_db($connexion,DBAdmin);
+$result = mysqli_query($connexion,"select nom,prenom from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where IDCard = 0x".$id);
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)==1) {
-		$user = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)==1) {
+		$user = mysqli_fetch_assoc($result);
 		http_response_code(200);
-		echo $user['nom']." ".$user['prenom'];
+		echo "USR,".$user['nom']." ".$user['prenom'];
 		return;
 	}
 }
 
-// pas trouv�, on essaie les profs
-$result = mysql_query("select abbr from prof where IDCard = 0x".$id);
+// pas trouvé, on essaie les profs
+$result = mysqli_query($connexion,"select Nom from prof where IDCard = 0x".$id);
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)==1) {
-		$user = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)==1) {
+		$user = mysqli_fetch_assoc($result);
 		http_response_code(200);
-		echo $user['abbr'];
+		echo "USR,".$user['Nom'];
 		return;
 	}
 }
 
-// pas trouv� -> on essaie dans les appareils inventori�s
-mysql_select_db(DBComp);
-$result = mysql_query("select Description,Caracteristiques,NoInventaire from inventaire as inv join composant as comp on inv.IDComposant = comp.IDComposant where IDTag = 0x".$id);
+// pas trouvé -> on essaie dans les appareils inventoriés
+mysqli_select_db($connexion,DBComp);
+$result = mysqli_query($connexion,"select Description,Caracteristiques,NoInventaire from inventaire as inv join composant as comp on inv.IDComposant = comp.IDComposant where IDTag = 0x".$id);
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)==1) {
-		// appareil inventori�
-		$stock = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)==1) {
+		// appareil inventorié
+		$stock = mysqli_fetch_assoc($result);
 		http_response_code(200);
-		echo $stock['Description'].",".$stock['Caracteristiques'].",".$stock['NoInventaire'];
+		echo "DEV,".$stock['NoInventaire']."/".$stock['Description'];
 		return;
 	}
 }
 
-// pas trouv� -> on essaie dans les emplacements
-$result = mysql_query("select Description,Caracteristiques,Emplacement,Tirroir from stockage as stg join composant as comp on stg.IDComposant = comp.IDComposant join stock as sto on stg.IDStock = sto.IDStock where IDTag = 0x".$id);
+// pas trouvé -> on essaie dans les emplacements
+$result = mysqli_query($connexion,"select Description,Caracteristiques,Emplacement,Tirroir from stockage as stg join composant as comp on stg.IDComposant = comp.IDComposant join stock as sto on stg.IDStock = sto.IDStock where IDTag = 0x".$id);
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)>1) {
-		// plus d'un appareil dans un m�me endroit (ne peut pas arriver UNIQUE)
-		$stock = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)>1) {
+		// plus d'un appareil dans un même endroit (ne peut pas arriver UNIQUE)
+		$stock = mysqli_fetch_assoc($result);
 		http_response_code(200);
-		echo $stock['Emplacement'].",".$stock['Tirroir'];
+		echo "STO,".$stock['Emplacement']."/".$stock['Tirroir'];
 		return;
-	} else if(mysql_num_rows($result)==1) {
-		// un seul �l�ment stock� � cet endroit -> on affiche l'appareil
-		$stock = mysql_fetch_assoc($result);
+	} else if(mysqli_num_rows($result)==1) {
+		// un seul élément stocké à cet endroit -> on affiche l'appareil
+		$stock = mysqli_fetch_assoc($result);
 		http_response_code(200);
-		echo $stock['Description'].",".$stock['Caracteristiques'].",".$stock['Emplacement'].",".$stock['Tirroir'];
+		echo "STO,".$stock['Emplacement']."/".$stock['Tirroir']."/".$stock['Description'];
 		return;
 	}
 }
 
-// pas trouv� -> erreur
+// pas trouvé -> erreur
 http_response_code(404);
 ?>
