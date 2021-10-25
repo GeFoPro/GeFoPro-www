@@ -48,7 +48,7 @@ if(isset($_POST['ajoutRemarque'])) {
 }
 
 
-if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
+if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve']) || isset($_POST['initPWD'])) {
 	$dateNaissance = "\"".date("Y-m-d",strtotime($_POST['DateNaissanceNew']))."\"";
 	if(empty($_POST['DateNaissanceNew'])) {
 		$dateNaissance = 'NULL';
@@ -102,7 +102,7 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 	$macEth = $_POST['MacAdresseEthernetNew'];
 
 	$entreprise = $_POST['IDEntrepriseNew'];
-
+	
 	// requêtes SQL
 	if(empty($classe)||empty($nom)) {
 		$msg = "<font color='#FF0000'>Le nom et la classe sont obligatoires</font>";
@@ -120,14 +120,20 @@ if(isset($_POST['modifEleve']) || isset($_POST['ajoutEleve'])) {
 			$msg = "<font color='#088A08'>Elève ajouté</font>";
 		} else {
 			// modification table elevesbk
-    			$requete = "UPDATE elevesbk set Nom=\"$nom\", Prenom=\"$prenom\", Adresse=\"$adresse\", NPA=\"$npa\", Localite=\"$localite\", Classe=\"$classe\", Email=\"$email\" where IDGDN=$IDEleve";
+    		$requete = "UPDATE elevesbk set Nom=\"$nom\", Prenom=\"$prenom\", Adresse=\"$adresse\", NPA=\"$npa\", Localite=\"$localite\", Classe=\"$classe\", Email=\"$email\" where IDGDN=$IDEleve";
 			$resultat =  mysqli_query($connexionDB,$requete);
 			// modification table eleves
-			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=$idCard where IDGDN=$IDEleve";
+			$msg = "<font color='#088A08'>Elève modifié</font>";
+			$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise, IDCard=$idCard";
+			if(isset($_POST['initPWD'])) {
+				$requete .= ", encrypted=\"encrypted\"";
+				$msg = "<font color='#088A08'>Mot de passe réinitialisé</font>";
+			}
+			$requete .= " where IDGDN=$IDEleve";
 			//$requete = "UPDATE eleves set DateNaissance=$dateNaissance, noChaise=\"$noChaise\", noBanc=\"$noBanc\", IDCle=$IDCle, NoVestiaire=$noVestiaire, NoJeton=$noJeton, NoBadge=$noBadge, NoTel=\"$noTel\", NoMobile=\"$noMobile\", Userid=\"$userid\", Origine=\"$origine\", NoSeriePC=\"$noSeriePC\", NomPC=\"$nomPC\", MacAdresseWifi=\"$macWifi\", MacAdresseEthernet=\"$macEth\", IDEntreprise=$entreprise where IDGDN=$IDEleve";
 			//echo $requete;
 			$resultat =  mysqli_query($connexionDB,$requete);
-			$msg = "<font color='#088A08'>Elève modifié</font>";
+			
 		}
 	}
 }
@@ -287,10 +293,17 @@ echo "</td>";
 echo "</tr><tr><td></td><td align='center'>";
 if(!empty($IDEleve)) {
 	echo "<input type='submit' name='modifEleve' value='Modifier'></input>";
+	if(empty(AD_SERVER)) {
+		echo "</td><td colspan='3'>";
+		echo "<input type='submit' name='initPWD' value='Réinitialiser MPD'></input></td>";
+	} else {
+		echo "</td><td colspan='3'></td>";
+	}
 } else {
 	echo "<input type='submit' name='ajoutEleve' value='Ajouter'></input>";
+	echo "</td><td colspan='3'></td>";
 }
-echo "</td><td colspan='3'></td></tr></table></div>";
+echo "</tr></table></div>";
 
 
 if(!empty($IDEleve)) {
