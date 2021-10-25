@@ -21,7 +21,7 @@ if(isset($_POST['id'])) {
 $nom = "?";
 $prenom = "?";
 $connexion = connexionAdmin(DBServer,DBUserAdmin,DBPwdAdmin);
-mysql_select_db(DBAdmin);
+mysqli_select_db($connexion,DBAdmin);
 
 // required headers
 header("Access-Control-Allow-Origin: *");
@@ -33,10 +33,10 @@ header('Content-Type: application/json');
 
 
 //echo "select nom,prenom from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where Userid = ".$id;
-$result = mysql_query("select nom,prenom from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where Userid = '".$id."'");
+$result = mysqli_query($connexion,"select nom,prenom from eleves as el join elevesbk as elbk on el.IDGDN = elbk.IDGDN where Userid = '".$id."'");
 if($result!=null && !empty($result)) {
-	if(mysql_num_rows($result)==1) {
-		$user = mysql_fetch_assoc($result);
+	if(mysqli_num_rows($result)==1) {
+		$user = mysqli_fetch_assoc($result);
 		$nom = $user['nom'];
 		//echo " - nom: ".$nom;
 		$prenom = $user['prenom'];
