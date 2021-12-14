@@ -206,7 +206,7 @@ if(isset($_POST['actionNote']) && !empty($_POST['actionNote'])) {
 			$noteAuto=2;
 		}
 	}
-	if(empty($messageErreur)) {
+	if(empty($messageErreur)  && !empty($requete)) {
     		$resultat =  mysqli_query($connexionDB,$requete);
 	}
 	// ajout automatique des notes TARS
