@@ -24,6 +24,7 @@ if(isset($_GET['nom'])) {
 	$annee = $_GET['annee'];
 	$tri = (isset($_GET['tri'])?$_GET['tri']:1);
 	$only = (isset($_GET['only'])?$_GET['only']:"");
+	$triSemaine = (isset($_GET['triSemaine'])?$_GET['triSemaine']:"");
 } else if(isset($_POST['nom'])) {
 	$nom = $_POST['nom'];
 	$prenom = $_POST['prenom'];
@@ -33,8 +34,14 @@ if(isset($_GET['nom'])) {
 	$annee = $_POST['annee'];
 	$tri = (isset($_POST['tri'])?$_POST['tri']:1);
 	$only = (isset($_POST['only'])?$_POST['only']:"");
+	$triSemaine = (isset($_GET['triSemaine'])?$_GET['triSemaine']:"");
 }
 
+if(!$triSemaine) {
+	$decalComm = 45;
+} else {
+	$decalComm = 70;
+}
 $dateCalc=mktime(0,0,0,1,4,$annee);
 $jour_semaine=date("N",$dateCalc);
 $lundi=$dateCalc-86400*($jour_semaine-1)+604800*($noSemaine-1);
@@ -131,7 +138,7 @@ class PDF extends FPDF
 // En-tête
 function Header()
 {
-    global $strHeures,$annee,$nomTheme,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
+    global $strHeures,$annee,$nomTheme,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only, $triSemaine, $decalComm;
     // Logo
     $this->Image($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home'].LogoInstitution,20,11,40);
     // Police Arial gras 15
@@ -182,12 +189,18 @@ function Header()
     //$this->Write(0,$annee."/".$noSemaine."/".$tri."/".$betweenSQLSem);
 	if($only!="eval") {
 		$this->SetXY(20,35);
-		$this->Write(0,"Date");
-		$this->SetXY(40,35);
-		$this->Write(0,"Sem.");
-		$this->SetXY(50,35);
+		if(!$triSemaine) {
+			$this->Write(0,"Date");
+			if(!empty($IDTheme)) {
+				$this->SetXY(40,35);
+				$this->Write(0,"Sem.");
+			}
+		} else {
+			$this->Write(0,"Thème/projet");
+		}
+		$this->SetXY(5+$decalComm,35);
 		$this->Write(0,"Heures");
-		$this->SetXY(65,35);
+		$this->SetXY(20+$decalComm,35);
 		$this->Write(0,"Commentaires");
 		$this->SetDrawColor(183);
 		$this->Line(20,37.5,197,37.5);
@@ -204,6 +217,13 @@ function Footer()
     // Numéro de page
     $this->Cell(0,10,'Page '.$this->PageNo(),0,0,'C');
 }
+
+function jourSemaine($jour) {
+	$jSem = array(0=>"Lu","Ma","Me","Je","Ve");
+	//echo "!".($jour%7)."-".($lundi%7)."-".$jSem[(($jour%7)-($lundi%7))/86400]."!";
+	// return date('w', $jour);
+	return $jSem[date('w', strtotime($jour))-1];
+}
 }
 
 $PDF = new PDF();
@@ -213,6 +233,7 @@ $posCol = 20;
 $PDF->AddPage();
 	$PDF->SetFont("Arial","",8);
 	$nomTheme = "";
+	$lastJour = "";
 	$PDF->SetDrawColor(183); // Couleur du fond
 	$PDF->SetFillColor(221); // Couleur des filets
 if($only!="eval") {
@@ -233,57 +254,86 @@ if($only!="eval") {
 		}
 		$requete .= " order by DateJournal";
 	} else {
-		$requete = "SELECT * FROM journal jou join theme th on jou.IDTheme=th.IDTheme where IDEleve = $IDEleve and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."') order by jou.IDTheme, DateJournal";
+		// impression de la semaine
+		$requete = "SELECT * FROM journal jou join theme th on jou.IDTheme=th.IDTheme where IDEleve = $IDEleve and (DateJournal between '".date('Y-m-d', $lundi)."' and '".date('Y-m-d', $vendredi)."')";
+		if(!$triSemaine) {
+			$requete .= " order by jou.IDTheme, DateJournal, HeureDebut";
+		} else {
+			$requete .= " order by DateJournal, HeureDebut";
+		}
 	}
 	//echo $requete;
 	$resultat =  mysqli_query($connexionDB,$requete);
 
 	while ($ligne = mysqli_fetch_assoc($resultat)) {
+		if(!$triSemaine) {
+			//$idJournal = $ligne['IDJournal'];
+			if(!empty($ligne['NomTheme'])&&$nomTheme!=$ligne['NomTheme']) {
+				//$posLigne = $posLigne+2;
+				$nomTheme=$ligne['NomTheme'];
+				$PDF->SetFont("Arial","I",8);
+				$PDF->SetTextColor(0,0,0);
+				$PDF->SetXY($posCol,$posLigne-2.5);
+				$PDF->Cell(177,4,$nomTheme,1,1,'L',1);
+				//$PDF->Write(0,$nomTheme);
 
-		//$idJournal = $ligne['IDJournal'];
-		if(!empty($ligne['NomTheme'])&&$nomTheme!=$ligne['NomTheme']) {
-			//$posLigne = $posLigne+2;
-			$nomTheme=$ligne['NomTheme'];
-			$PDF->SetFont("Arial","I",8);
-			$PDF->SetTextColor(0,0,0);
-			$PDF->SetXY($posCol,$posLigne-2.5);
-			$PDF->Cell(177,4,$nomTheme,1,1,'L',1);
-			//$PDF->Write(0,$nomTheme);
+				// recherche du nombre d'heures déjà effectuées pour le thème sur l'année scolaire entière
+				$requeteTot = "SELECT IDTheme, sum( heures ) AS heures, count( heures ) AS jours FROM (SELECT  jo.IDTheme as IDTheme, sum( Heures ) AS heures FROM elevesbk JOIN journal jo ON IDGDN = IDEleve JOIN theme th ON jo.IDTheme=th.IDTheme";
+				if($noSemaine>30) {
+					$requeteTot .= " where (DateJournal between '".$annee."-08-01' and '".date('Y-m-d', $vendredi)."') and IDGDN=".$IDEleve." and jo.IDTheme=".$ligne['IDTheme'];
+				} else {
+					$requeteTot .= " where (DateJournal between '".($annee-1)."-08-01' and '".date('Y-m-d', $vendredi)."') and IDGDN=".$IDEleve." and jo.IDTheme=".$ligne['IDTheme'];
+				}
+				$requeteTot .= " GROUP BY jo.IDTheme, DateJournal) AS res GROUP BY IDTheme";
+				//echo "Heures: ".$requeteTot."<br>";
+				$resultatTot =  mysqli_query($connexionDB,$requeteTot);
+				$ligneHeures = mysqli_fetch_assoc($resultatTot);
+				$PDF->SetXY(130,$posLigne-0.5);
+				if($ligne['Objectif']!=0) {
+					$PDF->Write(0,"Cumul: ".$ligneHeures['heures']."h, objectif: ".$ligne['Objectif']."h");
+				} else {
+					$PDF->Write(0,"Cumul: ".$ligneHeures['heures']);
+				}
 
-			// recherche du nombre d'heures déjà effectuées pour le thème sur l'année scolaire entière
-			$requeteTot = "SELECT IDTheme, sum( heures ) AS heures, count( heures ) AS jours FROM (SELECT  jo.IDTheme as IDTheme, sum( Heures ) AS heures FROM elevesbk JOIN journal jo ON IDGDN = IDEleve JOIN theme th ON jo.IDTheme=th.IDTheme";
-			if($noSemaine>30) {
-				$requeteTot .= " where (DateJournal between '".$annee."-08-01' and '".date('Y-m-d', $vendredi)."') and IDGDN=".$IDEleve." and jo.IDTheme=".$ligne['IDTheme'];
-			} else {
-				$requeteTot .= " where (DateJournal between '".($annee-1)."-08-01' and '".date('Y-m-d', $vendredi)."') and IDGDN=".$IDEleve." and jo.IDTheme=".$ligne['IDTheme'];
+				$posLigne += 5;
+				$PDF->SetFont("Arial","",8);
 			}
-			$requeteTot .= " GROUP BY jo.IDTheme, DateJournal) AS res GROUP BY IDTheme";
-			//echo "Heures: ".$requeteTot."<br>";
-			$resultatTot =  mysqli_query($connexionDB,$requeteTot);
-			$ligneHeures = mysqli_fetch_assoc($resultatTot);
-			$PDF->SetXY(130,$posLigne-0.5);
-			if($ligne['Objectif']!=0) {
-				$PDF->Write(0,"Cumul: ".$ligneHeures['heures']."h, objectif: ".$ligne['Objectif']."h");
+			if(empty($ligne['DateValidation']) || $ligne['DateValidation']=="0000-00-00") {
+				$PDF->SetTextColor(100,100,100);
 			} else {
-				$PDF->Write(0,"Cumul: ".$ligneHeures['heures']);
+				$PDF->SetTextColor(0,0,0);
 			}
-
-			$posLigne += 5;
-			$PDF->SetFont("Arial","",8);
-		}
-		if(empty($ligne['DateValidation']) || $ligne['DateValidation']=="0000-00-00") {
-			$PDF->SetTextColor(100,100,100);
+			$date = strtotime($ligne['DateJournal']);
+			$PDF->SetXY($posCol,$posLigne);
+			$PDF->Write(0,date('d.m.Y', $date));
+			if(!empty($IDTheme)) {
+				$PDF->SetXY($posCol+22,$posLigne);
+				$PDF->Write(0,date('W', $date));
+			}
 		} else {
-			$PDF->SetTextColor(0,0,0);
+			if($lastJour != $ligne['DateJournal']) {
+				$lastJour = $ligne['DateJournal'];
+				$PDF->SetFont("Arial","I",8);
+				$PDF->SetTextColor(0,0,0);
+				$PDF->SetXY($posCol,$posLigne-2.5);
+				$date = strtotime($ligne['DateJournal']);
+				$jTxt = $PDF->jourSemaine($ligne['DateJournal']);
+				$PDF->Cell(177,4,$jTxt." ".date('d.m.Y', $date),1,1,'L',1);
+				$posLigne += 5;
+				$PDF->SetFont("Arial","",8);
+			}
+			if(empty($ligne['DateValidation']) || $ligne['DateValidation']=="0000-00-00") {
+				$PDF->SetTextColor(100,100,100);
+			} else {
+				$PDF->SetTextColor(0,0,0);
+			}
+			
+			$PDF->SetXY($posCol,$posLigne);
+			$PDF->Write(0,substr($ligne['NomTheme'],0,40));
 		}
-		$date = strtotime($ligne['DateJournal']);
-		$PDF->SetXY($posCol,$posLigne);
-		$PDF->Write(0,date('d.m.Y', $date));
-		$PDF->SetXY($posCol+22,$posLigne);
-		$PDF->Write(0,date('W', $date));
-		$PDF->SetXY($posCol+32,$posLigne);
-		$PDF->Write(0,$ligne['Heures']."h");
-		$PDF->SetXY($posCol+45,$posLigne);
+		$PDF->SetXY($posCol+$decalComm-15,$posLigne);
+		$PDF->Write(0,sprintf("%2.1f",$ligne['Heures'])."h");
+		$PDF->SetXY($posCol+$decalComm,$posLigne);
 		// remplacer les caractère wiki
 		$tok = $ligne['Commentaires'];
 		$tok = preg_replace("/'''(.*?)'''/", '$1', $tok);
@@ -295,7 +345,7 @@ if($only!="eval") {
 		while ($tok !== false) {
 			$debut=0;
 			while(strlen($tok) > $debut) {
-				$fin = 98;
+				$fin = 143-$decalComm;
 				$txt = substr($tok,$debut,$fin);
 				if(strlen($txt)==$fin) {
 					$fin = strrpos($txt," ");
@@ -307,10 +357,10 @@ if($only!="eval") {
 					$PDF->AddPage();
 					$posLigne = 40;
 				}
-				$PDF->SetXY($posCol+45,$posLigne);
+				$PDF->SetXY($posCol+$decalComm,$posLigne);
 				$debut += ($fin+1);
 			}
-			$PDF->SetXY($posCol+45,$posLigne);
+			$PDF->SetXY($posCol+$decalComm,$posLigne);
 			$tok = strtok("\r\n");
 		}
 		if($found) {

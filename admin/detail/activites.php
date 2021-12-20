@@ -974,7 +974,7 @@ if(!$triSemaine) {
 	echo "<tr><th width='35'>Date</th><th width='250' onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=0'\">Thème</th><th width='85' align='center'>Heures</th><th>Activités</th><th width='25' align='right'>";
 }
 if(empty($IDQuery)) {
-	echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&noSemaine=".$noSemaine."&annee=".$anneeCalc."&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."' target='pdf'><img src='/iconsFam/page_white_acrobat.png' onmouseover=\"Tip('Imprimer le journal')\" onmouseout='UnTip()'></a>";
+	echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&noSemaine=".$noSemaine."&annee=".$anneeCalc."&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&triSemaine=".$triSemaine."' target='pdf'><img src='/iconsFam/page_white_acrobat.png' onmouseover=\"Tip('Imprimer le journal')\" onmouseout='UnTip()'></a>";
 } else {
 	if($IDQuery!=1 && $IDQuery!=2) {
 		// ne pas proposer d'imprimmer si CPG selectionné
