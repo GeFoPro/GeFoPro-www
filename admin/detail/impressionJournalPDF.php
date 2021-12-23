@@ -329,7 +329,7 @@ if($only!="eval") {
 			}
 			
 			$PDF->SetXY($posCol,$posLigne);
-			$PDF->Write(0,substr($ligne['NomTheme'],0,40));
+			$PDF->Write(0,substr($ligne['NomTheme'],0,38));
 		}
 		$PDF->SetXY($posCol+$decalComm-15,$posLigne);
 		$PDF->Write(0,sprintf("%2.1f",$ligne['Heures'])."h");
