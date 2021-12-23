@@ -111,7 +111,7 @@ echo "<tr height='25'><td></td><td></td></tr>\n";
 echo "<tr><td>Classe</td><td>Userid</td></tr>";
 echo "<tr><td><input type='texte' name='ClasseNew' value='".$ligne['Classe']."' size='15'></input></td><td><input type='texte' name='UseridNew' value='".$ligne['Userid']."' size='7'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
-echo "<td valign='top'><img src='".$_SESSION['home']."images/photo/".(htmlentities(isset($ligne['Nom'])?$ligne['Nom']:"", ENT_QUOTES))."_".$ligne['Prenom'].".jpg' id='studentImg' alt='(pas de photo)'></td>";
+echo "<td valign='top'><img src='".$_SESSION['home']."images/photo/".(htmlentities(isset($ligne['Nom'])?$ligne['Nom']:"", ENT_QUOTES))."_".$ligne['Prenom'].".jpg' id='studentImg' onerror='this.onerror=null;this.src=\"".$_SESSION['home']."images/photo/avatar.jpg\";'></td>";
 
 echo "</tr></table></div>";
 

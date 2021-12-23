@@ -194,8 +194,8 @@ echo "<FORM id='myForm' ACTION='evalCoursCIE.php'  METHOD='POST' enctype='multip
 echo "<input type='hidden' name='actionCours' value=''>";
 echo "<input type='hidden' name='IDEleve' value='".$IDEleve."'>";
 echo "<input type='hidden' name='IDCours' value='".$IDCours."'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 echo "<div class='post'>";
 echo "<center> <font color='#088A08'></font>";
 echo "</center><br>";

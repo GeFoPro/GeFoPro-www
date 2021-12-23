@@ -369,8 +369,8 @@ function noteMoy($moyenne) {
 echo "<FORM id='myForm' ACTION='notesEleve.php'  METHOD='POST'>";
 // transfert info
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 echo "<input type='hidden' name='actionNote' value=''>";
 echo "<input type='hidden' name='anneeNote' value=''>";
 echo "<input type='hidden' name='semestreNote' value=''>";
@@ -443,7 +443,7 @@ for($cntA=0;$cntA<5;$cntA++) {
 
 echo "<table border='0' width='100%'><tr><td>".$navApp."<!-- h3>Notes:</h3><a href='notesEleve.php?nom=$nom&prenom=$prenom&idEleve=$IDEleve&expand=expand'><img src='/iconsFam/bullet_arrow_down.png'></a><a href='notesEleve.php?nom=$nom&prenom=$prenom&idEleve=$IDEleve&expand=default'><img src='/iconsFam/bullet_arrow_up.png'></a --></td><td align='right'><select name='annee' onchange='submit();'><option value='%'>Tous</option>".$optionAnnee."</select><img src='/iconsFam/calendar_add.png' onmouseover=\"Tip('Ajouter un semestre')\" onmouseout='UnTip()' onclick='limitEvent(event);toggle(\"newSemestre\");' align='absmiddle'></td></tr></table>";
 echo "<br><div id='corners'>";
-echo "<div id='legend'>Notes  <a href='notesEleve.php?nom=$nom&prenom=$prenom&idEleve=$IDEleve&expand=expand'><img src='/iconsFam/bullet_arrow_down.png' valign='bottom'></a><a href='notesEleve.php?nom=$nom&prenom=$prenom&idEleve=$IDEleve&expand=default'><img src='/iconsFam/bullet_arrow_up.png' valign='bottom'></a></div>";
+echo "<div id='legend'>Notes  <a href='notesEleve.php?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&idEleve=$IDEleve&expand=expand'><img src='/iconsFam/bullet_arrow_down.png' valign='bottom'></a><a href='notesEleve.php?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&idEleve=$IDEleve&expand=default'><img src='/iconsFam/bullet_arrow_up.png' valign='bottom'></a></div>";
 echo "<br><table id='hor-minimalist-b' border='0' width='100%'>\n";
 
 // ligne d'ajout d'un semestre

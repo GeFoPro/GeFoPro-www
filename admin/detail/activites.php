@@ -735,8 +735,8 @@ echo "<FORM id='myForm' ACTION='activites.php'  METHOD='POST'>";
 // transfert info
 //echo "<input type='hidden' name='vue' value='".$vue."'>";
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 echo "<input type='hidden' name='activite' value=''>";
 echo "<input type='hidden' name='noSemaine' value=''>";
 echo "<input type='hidden' name='anneeCalc' value=''>";
@@ -923,9 +923,9 @@ echo "<br><div id='corners'>";
 echo "<div id='legend' onClick='toggleTable(\"tblActivite\")'>Activités</div>";
 if($vue==1) {
 	if(!$triSemaine) {
-		echo "<div id='criteres' width='100%' align='right'><i>Tri par thème &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=1'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par jour')\" onmouseout='UnTip()'></a></i></div>";
+		echo "<div id='criteres' width='100%' align='right'><i>Tri par thème &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&triSem=1'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par jour')\" onmouseout='UnTip()'></a></i></div>";
 	} else {
-		echo "<div id='criteres' width='100%' align='right'><i>Tri par jour &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=0'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par thème')\" onmouseout='UnTip()'></a></i></div>";
+		echo "<div id='criteres' width='100%' align='right'><i>Tri par jour &nbsp;<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&triSem=0'><img src='/iconsFam/table_refresh.png' style='vertical-align: middle;' onmouseover=\"Tip('Changer de tri par thème')\" onmouseout='UnTip()'></a></i></div>";
 	}
 } else {
 	// si pas vue semaine, on n'active pas le tri par jour
@@ -969,9 +969,9 @@ if(empty($IDQuery)) {
 //echo $requete;
 echo "<table id='hor-minimalist-b' width='100%' tblActivite='1'>\n";
 if(!$triSemaine) {
-	echo "<tr><th width='105'>Thème</th><th width='90' align='center' onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=1'\">Date</th><th width='85' align='center'>Heures</th><th>Activités</th><th width='25' align='right'>";
+	echo "<tr><th width='105'>Thème</th><th width='90' align='center' onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&triSem=1'\">Date</th><th width='85' align='center'>Heures</th><th>Activités</th><th width='25' align='right'>";
 } else {
-	echo "<tr><th width='35'>Date</th><th width='250' onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&triSem=0'\">Thème</th><th width='85' align='center'>Heures</th><th>Activités</th><th width='25' align='right'>";
+	echo "<tr><th width='35'>Date</th><th width='250' onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&triSem=0'\">Thème</th><th width='85' align='center'>Heures</th><th>Activités</th><th width='25' align='right'>";
 }
 if(empty($IDQuery)) {
 	echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&noSemaine=".$noSemaine."&annee=".$anneeCalc."&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&triSemaine=".$triSemaine."' target='pdf'><img src='/iconsFam/page_white_acrobat.png' onmouseover=\"Tip('Imprimer le journal')\" onmouseout='UnTip()'></a>";
@@ -1120,7 +1120,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 	//	echo "<tr journal$idJournal='1' onclick='toggle(\"journal$idJournal\")'><td></td>";
 	//}
 	if(hasAdminRigth()) {
-		echo "<tr onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&DateJournal=$ligne[DateJournal]&vue=1'\">";
+		echo "<tr onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&DateJournal=$ligne[DateJournal]&vue=1'\">";
 	} else {
 		if($ligne['DateValidation']!=0) {
 			echo "<tr journal$idJournal='1'>";
@@ -1128,7 +1128,7 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 			if(empty($IDQuery)) {
 				echo "<tr journal$idJournal='1' onclick='toggle(\"journal$idJournal\")'>";
 			} else {
-				echo "<tr onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&DateJournal=$ligne[DateJournal]&vue=1'\">";
+				echo "<tr onClick=\"location.href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&DateJournal=$ligne[DateJournal]&vue=1'\">";
 			}
 		}
 	}
@@ -1187,14 +1187,14 @@ while ($ligne = mysqli_fetch_assoc($resultat)) {
 				if($ligne['Heures']=='0.0') {
 					echo "<img src='/iconsFam/clock_stop.png' align='absmiddle' onmouseover=\"Tip('Terminer l\'activité')\" onmouseout='UnTip()' onclick='limitEvent(event);stopActivite(\"$idJournal\",\"$heureAct\")'> ";
 				}
-				echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDJournal=$ligne[IDJournal]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+				echo "<a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDJournal=$ligne[IDJournal]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 
 			}
 		} else {
 			if($ligne['Heures']=='0.0') {
 				echo "<img src='/iconsFam/error.png' align='absmiddle' onmouseover=\"Tip('Activité non terminée')\" onmouseout='UnTip()'> ";
 			}
-			echo "<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=$nom&prenom=$prenom&Classe=$classe&DateJournal=$ligne[DateJournal]'><img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Saisie à valider')\" onmouseout='UnTip()'></a>";
+			echo "<a href='activites.php?from=journaux&idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&Classe=$classe&DateJournal=$ligne[DateJournal]'><img src='/iconsFam/bullet_red.png' align='absmiddle' onmouseover=\"Tip('Saisie à valider')\" onmouseout='UnTip()'></a>";
 
 		}
 	}
@@ -1536,46 +1536,46 @@ $requeteTri = "";
 							$nomTheme = "<i>SUV</i> - ".$nomTheme;
 						}
 						echo "<tr remarque$idRem='1' onclick='toggle(\"remarque$idRem\")'><td valign='top'>".$nomTheme."</td><td valign='top'>".$daterem."</td><td align='center' valign='top'>".$auteur."</td><td valign='top'>".wiki2html($txtrem)."</td><td align='center' valign='top'>";
-						echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette remarque')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+						echo "<a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette remarque')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 						echo "</td></tr>";
 						echo "<tr remarque$idRem='1' style='display:none' onclick='toggle(\"remarque$idRem\")'><td valign='top'>".$nomTheme."</td><td valign='top'><input name='DateRemarque$idRem' value='".date('d.m.Y', strtotime($ligneRem['DateSaisie']))."' size='8' maxlength='10' onclick='limitEvent(event)'></input></td><td></td><td valign='top'><textarea name='Remarque$idRem' COLS=60 ROWS=20 onclick='limitEvent(event)'>".$txtrem."</textarea></td><td valign='top'><input type='button' name='ModifRem' value='Modifier' onclick='submitRemarque(\"$idRem\",\"modif\")'></input></td></tr>";
 						break;
 					case 2:
 						if(hasAdminRigth()) {
-							echo "<tr><td valign='top'><b><font color='#FF0000'><i>JRN</i> - A corriger</font></b></td><td valign='top'><font color='#FF0000'>".$daterem."</font></td><td align='center'><font color='#FF0000'>".$auteur."</font></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+							echo "<tr><td valign='top'><b><font color='#FF0000'><i>JRN</i> - A corriger</font></b></td><td valign='top'><font color='#FF0000'>".$daterem."</font></td><td align='center'><font color='#FF0000'>".$auteur."</font></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 							//echo "<tr remarque$idRem='1' style='display:none' onclick='toggle(\"remarque$idRem\")'><td valign='top'>A corriger</td><td valign='top'></td><td align='center'></td><td colspan='2'><textarea name='RemarqueJournal' COLS=60 ROWS=20 onclick='limitEvent(event)'>".$txtrem."</textarea></td></tr>";
 						} else {
-							echo "<tr><td valign='top'><b><font color='#FF0000'>Journal de travail à corriger</font></b></td><td><b><font color='#FF0000'>".$daterem."</font></b></td><td></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+							echo "<tr><td valign='top'><b><font color='#FF0000'>Journal de travail à corriger</font></b></td><td><b><font color='#FF0000'>".$daterem."</font></b></td><td></td><td><b><font color='#FF0000'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=corrected'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Marquer l\'erreur comme corrigée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						}
 						$cntErreurSaisie++;
 						break;
 					case 3: 
-						echo "<tr><td valign='top'><font color='#FF7F00'><i>JRN</i> - A vérifier</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Clôturer l\'erreur')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						echo "<tr><td valign='top'><font color='#FF7F00'><i>JRN</i> - A vérifier</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Clôturer l\'erreur')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						break;
 					case 4: // tâche à faire
 						if(hasAdminRigth()) {
 							echo "<tr><td valign='top'><b><font color='#9900cc'><i>TCH</i> - A faire</font></b></td><td valign='top'><font color='#9900cc'>".$daterem."</font></td><td align='center'><font color='#9900cc'> ".$auteur." </font></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
 							if((time()-strtotime($ligneRem['DateSaisie']))>(86400*3)) {
-								echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('La tâche a été effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+								echo "<a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('La tâche a été effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 							}
 							echo "</td></tr>";
 						} else {
 							echo "<tr><td valign='top'><b><font color='#9900cc'>Tâche à effectuer</font></b></td><td><b><font color='#9900cc'>Toute la semaine</font></b></td><td></td><td><b><font color='#9900cc'>".wiki2html($txtrem)."</font></b></td><td align='center' valign='top'>";
 							if((time()-strtotime($ligneRem['DateSaisie']))>(86400*3)) {
-								echo "<a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('J\'ai effectué la tâche')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
+								echo "<a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=done'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('J\'ai effectué la tâche')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a>";
 							}
 							echo "</td></tr>";
 						}
 						//$cntErreurSaisie++;
 						break;
 					case 5: // tâche effectuée
-						echo "<tr><td valign='top'><font color='#FF7F00'><i>TCH</i> - A valider</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=validated'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Valider la tâche comme effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						echo "<tr><td valign='top'><font color='#FF7F00'><i>TCH</i> - A valider</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=validated'><img src='/iconsFam/tick.png' align='absmiddle' onmouseover=\"Tip('Valider la tâche comme effectuée')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						break;
 					case 6: // tâche effectuée et validée
 						//echo "<tr><td valign='top'><font color='#007F00'><i>TCH</i> - Vérifiée</font></td><td><font color='#FF7F00'>".$daterem."</font></td><td align='center' valign='top'><font color='#FF7F00'> ".$auteur." </font></td><td><font color='#FF7F00'>".wiki2html($txtrem)."</font></td><td align='center' valign='top'></td></tr>";
 						break;
 					case 7: // tâche non effectuée
-						echo "<tr><td valign='top'><i>TCH</i> - Non effectuée</td><td>".$daterem."</td><td align='center' valign='top'>".$auteur."</td><td>".wiki2html($txtrem)."</td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer l\'attribution')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
+						echo "<tr><td valign='top'><i>TCH</i> - Non effectuée</td><td>".$daterem."</td><td align='center' valign='top'>".$auteur."</td><td>".wiki2html($txtrem)."</td><td align='center' valign='top'><a href='activites.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDRemSuivi=$ligneRem[IDRemSuivi]&action=delete'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer l\'attribution')\" onmouseout='UnTip()' onclick='limitEvent(event)'></a></td></tr>";
 						break;	
 					case 0:
 						if(hasAdminRigth()) {
@@ -1672,7 +1672,7 @@ $requeteTri = "";
 		echo "<tr><td colspan='5' valign='bottom' valign='bottom' bgColor='#5C5C5C'></td></tr>";
 		echo "<tr newremarque$last='1'><td colspan='5' align='right'>";
 		$_SESSION['last_request'] = $requeteRem;
-		echo "<a href='impressionSuiviPDF.php?IDEleve=".$IDEleve."&IDTheme=".$IDQuery."&annee=".$anneeCalc."&noSemaine=".$noSemaine."&nom=".$nom."&prenom=".$prenom."&tri=".$triPeriode."' target='pdf'><img src='/iconsFam/page_white_acrobat.png' onmouseover=\"Tip('Imprimer le suivi')\" onmouseout='UnTip()'></a>";
+		echo "<a href='impressionSuiviPDF.php?IDEleve=".$IDEleve."&IDTheme=".$IDQuery."&annee=".$anneeCalc."&noSemaine=".$noSemaine."&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&tri=".$triPeriode."' target='pdf'><img src='/iconsFam/page_white_acrobat.png' onmouseover=\"Tip('Imprimer le suivi')\" onmouseout='UnTip()'></a>";
 		echo "<img src='/iconsFam/comment_add.png'  onclick='toggle(\"newremarque$last\")' onmouseover=\"Tip('Ajouter une remarque dans le suivi')\" onmouseout='UnTip()'>";
 		echo "</td></tr>";
 	}
@@ -2158,7 +2158,7 @@ if(!empty($typeEvaluation) && $IDQuery!=2) {
 				if(hasAdminRigth() && $resp==$_SESSION['user_login']) {
 					echo "<img src='/iconsFam/page_delete.png' onmouseover=\"Tip('Dévalider l\'évaluation')\" onmouseout='UnTip()' align='absmiddle' onClick='submitValidation(\"unlockEval\",".$noSemaine.",".$anneeCalc.")'> ";
 				}
-				echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&IDTheme=".$IDQuery."&annee=".$anneeCalc."&noSemaine=".$noSemaine."&nom=".$nom."&prenom=".$prenom."&tri=".$triPeriode."&only=eval' target='pdf'><img src='/iconsFam/page_white_acrobat.png' align='absmiddle' onmouseover=\"Tip('Imprimer l\'évaluation')\" onmouseout='UnTip()'></a>";
+				echo "<a href='impressionJournalPDF.php?IDEleve=".$IDEleve."&IDTheme=".$IDQuery."&annee=".$anneeCalc."&noSemaine=".$noSemaine."&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&tri=".$triPeriode."&only=eval' target='pdf'><img src='/iconsFam/page_white_acrobat.png' align='absmiddle' onmouseover=\"Tip('Imprimer l\'évaluation')\" onmouseout='UnTip()'></a>";
 			} else {
 				//echo (count($compEval)*2)."/".$nbrNotes;
 				//

@@ -228,8 +228,8 @@ include("../../userInfo.php");
 echo "<FORM id='myForm' ACTION='theorie.php'  METHOD='POST'>";
 // transfert info
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 // update note
 echo "<input type='hidden' name='actionNote' value=''>";
 echo "<input type='hidden' name='note' value=''>";

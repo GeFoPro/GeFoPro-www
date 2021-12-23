@@ -175,8 +175,8 @@ include("../../userInfo.php");
 echo "<FORM id='myForm' ACTION='detailEleve.php'  METHOD='POST'>";
 // transfert info
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 
 echo "<div class='post'>";
 if(empty($msg)) {
@@ -319,7 +319,7 @@ $requete = "SELECT * FROM $tableAttribEleves el join $tableAttribut att on el.ID
 $resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 while ($ligne = mysqli_fetch_assoc($resultat)) {
-	echo "<tr><td>".$ligne['Nom']."</td><td>".nl2br($ligne['Remarque'])."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
+	echo "<tr><td>".$ligne['Nom']."</td><td>".nl2br($ligne['Remarque'])."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
 	$cnt++;
 }
 if ($cnt==0) {
@@ -351,7 +351,7 @@ $requete = "SELECT * FROM $tableAttribEleves el join $tableAttribut att on el.ID
 $resultat =  mysqli_query($connexionDB,$requete);
 $cnt=0;
 while ($ligne = mysqli_fetch_assoc($resultat)) {
-	echo "<tr><td>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Nom']."</td><td>".$ligne['Remarque']."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=$nom&prenom=$prenom&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
+	echo "<tr><td>".date('d.m.Y', strtotime($ligne['Date']))."</td><td>".$ligne['Nom']."</td><td>".$ligne['Remarque']."</td><td align='right'><a href='detailEleve.php?idEleve=$IDEleve&nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&IDAttribEleve=$ligne[IDAttribEleve]'><img src='/iconsFam/table_row_delete.png' align='absmiddle' onmouseover=\"Tip('Supprimer cette ligne')\" onmouseout='UnTip()'></a></td></tr>";
 	$cnt++;
 }
 if ($cnt==0) {

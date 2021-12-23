@@ -62,8 +62,8 @@ include("../../userInfo.php");
 echo "<FORM id='myForm' ACTION='docEleveCIE.php'  METHOD='POST'>";
 // transfert info
 echo "<input type='hidden' name='IDEleve' value='$IDEleve'>";
-echo "<input type='hidden' name='nom' value='$nom'>";
-echo "<input type='hidden' name='prenom' value='$prenom'>";
+echo "<input type='hidden' name='nom' value='".htmlentities($nom,ENT_QUOTES)."'>";
+echo "<input type='hidden' name='prenom' value='".htmlentities($prenom,ENT_QUOTES)."'>";
 
 echo "<div class='post'>";
 if(empty($msg)) {
@@ -111,7 +111,7 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 	if(!empty($ligne['PDFSigne'])&&!hasAdminRigth()) {
 		echo "<tr>";
 	} else {
-		echo "<tr onClick='document.location.href=\"evalCoursCIE.php?nom=".$nom."&prenom=".$prenom."&idEleve=".$IDEleve."&IDCours=".$ligne['IDCours']."\"' >";
+		echo "<tr onClick='document.location.href=\"evalCoursCIE.php?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&idEleve=".$IDEleve."&IDCours=".$ligne['IDCours']."\"' >";
 	}
 	echo "<td>".$ligne['TitreCIE']."</td><td>".$ligne['Dates']."</td><td align='center'>".$ligne['NbrJours']."</td>";
 	echo "<td align='center'>".$ligne['AbsencesEx']."/".$ligne['AbsencesNonEx']."</td>";
@@ -128,7 +128,7 @@ while($ligne = mysqli_fetch_assoc($resultat)) {
 	}
 	echo "</td><td align='center'>";
 	if(empty($ligne['PDFSigne'])&&$ligne['evalAPP']==0&&$ligne['evalMAI']==0&&hasAdminRigth()) {
-		echo "<a href='docEleveCIE.php?nom=".$nom."&prenom=".$prenom."&idEleve=".$IDEleve."&effacerCours=".$ligne['IDCours']."'><img src='/iconsFam/table_row_delete.png'></a>";
+		echo "<a href='docEleveCIE.php?nom=".urlencode($nom)."&prenom=".urlencode($prenom)."&idEleve=".$IDEleve."&effacerCours=".$ligne['IDCours']."'><img src='/iconsFam/table_row_delete.png'></a>";
 	}
 	echo "</td></tr>";
 	$cntJours += $ligne['NbrJours'];
