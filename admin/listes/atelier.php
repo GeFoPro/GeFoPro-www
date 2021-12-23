@@ -379,7 +379,7 @@ if(!empty($configurationATE)) {
 				//echo $idGDN."-".$nom."-".$prenom;
 
 
-				$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle where el.IDGDN = $idGDN";
+				$requete = "SELECT * FROM $tableEleves el left join cleatelier ca on el.IDCle=ca.IDCle left join entreprise ent on el.IDEntreprise=ent.IDEntreprise where el.IDGDN = $idGDN";
 		//echo $requete."<br>";
 				$resultat =  mysqli_query($connexionDB,$requete);
 				if($resultat!=null) {
@@ -452,7 +452,7 @@ if(!empty($configurationATE)) {
 							echo " bgcolor='#F8ECE0' onmouseover=\"Tip('Congé le ".date('d.m.Y', strtotime($ico['Date'])).": ".addslashes($ico['Remarque'])."')\" onmouseout='UnTip()'";
 						}
 						if($ligne['IDEntreprise']!=1&&$triEntreprises) {
-							echo " bgcolor='#F0F0F0' style='color:#C0C0C0' onmouseover=\"Tip('Formation en dual')\" onmouseout='UnTip()'";
+							echo " bgcolor='#F0F0F0' style='color:#C0C0C0' ";
 						}
 						echo "><td><nobr>";
 						if($modeAff==0) {
@@ -470,7 +470,7 @@ if(!empty($configurationATE)) {
 							}
 
 							if($ligne['IDEntreprise']!=1) {
-								echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('".libelleTrad('dual')."')\" onmouseout='UnTip()'>";
+								echo "<img src='/iconsFam/building.png' onmouseover=\"Tip('".libelleTrad('dual').": ".$ligne['NomEntreprise']."')\" onmouseout='UnTip()'>";
 								$cntIcon++;
 							} else {
 								$requete = "SELECT * FROM $tableAttribEleves where IDEleve = $idGDN and IDAttribut = 13";
