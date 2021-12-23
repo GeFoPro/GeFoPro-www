@@ -286,8 +286,9 @@ echo "<tr><td>Classe</td><td>Userid</td></tr>";
 echo "<tr><td><input type='texte' name='ClasseNew' value='".(isset($ligne['Classe'])?$ligne['Classe']:"")."' size='15'></input></td>";
 echo "<td><input type='texte' name='UseridNew' value='".(isset($ligne['Userid'])?$ligne['Userid']:"")."' size='7'></input></td></tr>\n";
 echo "</table></td><td width='100'></td>";
+// photo
 echo "<td valign='top'><img src='".$_SESSION['home']."images/photo/".(htmlentities(isset($ligne['Nom'])?$ligne['Nom']:"", ENT_QUOTES))."_";
-echo (isset($ligne['Prenom'])?$ligne['Prenom']:"").".jpg' alt='(pas de photo)' id='studentImg' style='image-orientation: from-image'>";
+echo (isset($ligne['Prenom'])?$ligne['Prenom']:"").".jpg' id='studentImg' style='image-orientation: from-image' onerror='this.onerror=null;this.src=\"".$_SESSION['home']."images/photo/avatar.jpg\";'>";
 echo "</td>";
 
 echo "</tr><tr><td></td><td align='center'>";
