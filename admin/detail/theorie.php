@@ -14,10 +14,11 @@ date_default_timezone_set('Europe/Zurich');
 $noSemaine = date('W');
 $anneeCalc = date('Y');
 $semestreAct = 1;
-if($noSemaine<30 && $noSemaine>=$noSemaineSem2) {
-	$semestreAct = 2;
-	// utilisation de l'année précédente pour le 2ème semestre
-	$anneeCalc = $anneeCalc - 1; 
+if($noSemaine<30) {
+	$anneeCalc = $anneeCalc - 1;
+	if($noSemaine>=$noSemaineSem2) {
+		$semestreAct = 2;
+	}
 }
 function arrondi($note, $fact) {
 	return round($note*$fact)/$fact;

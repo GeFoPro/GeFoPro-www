@@ -68,7 +68,7 @@ function Header()
 {
     global $strHeures,$annee,$nomThemeTitre,$nom,$prenom, $noSemaine, $tri, $semestreAct, $IDTheme, $only;
     // Logo
-    $this->Image("../../images/logoEMT.jpg",20,11,40);
+    $this->Image($_SERVER['DOCUMENT_ROOT']."/".$_SESSION['home'].LogoInstitution,20,11,40);
     // Police Arial gras 15
     $this->SetFont('Arial','B',15);
     // Décalage à droite
@@ -151,6 +151,7 @@ $PDF->AddPage();
 	$lastTheme = -1;
 	while ($ligne = mysqli_fetch_assoc($resultat)) {
 		//$idJournal = $ligne['IDJournal'];
+		if($ligne['TypeRemarque']>1) continue;
 		if($lastTheme!=$ligne['IDTheme']) {
 			//$posLigne = $posLigne+2;
 			$nomTheme = "";

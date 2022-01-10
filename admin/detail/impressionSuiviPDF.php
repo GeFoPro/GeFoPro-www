@@ -188,6 +188,7 @@ $PDF->AddPage();
 		// remplacer les caractère wiki
 		$rem = $ligne['Remarque'];
 		$cntBullet = 1;
+		$cntBulletNbr = 1;
 		// isoler les différentes lignes du commentaire
 		$tok = strtok($rem, "\r\n");
 		$found = 0;
@@ -222,10 +223,12 @@ $PDF->AddPage();
 			if($count!=0) {
 				$cntBullet++;
 			}
-			$tok = preg_replace('/# (.*?)/', $cntBullet.' $1', $tok,1,$count);
+			$tok = preg_replace('/# (.*?)/', $cntBulletNbr.'. $1', $tok,1,$count);
 			if($count!=0) {
-				$cntBullet++;
+				$cntBulletNbr++;
 			}
+			
+			$tok = preg_replace('/\[(.*?) (.*?)\]/', '$2', $tok);
 
 			$debut=0;
 			while(strlen($tok) > $debut) {
@@ -241,7 +244,7 @@ $PDF->AddPage();
 					$PDF->AddPage();
 					$posLigne = 40;
 				}
-				if($cntBullet!=1) {
+				if($cntBullet!=1 || $cntBulletNbr!=1) {
 					$PDF->SetXY($posCol+42,$posLigne);
 				} else {
 					$PDF->SetXY($posCol+40,$posLigne);
